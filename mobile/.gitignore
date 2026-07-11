@@ -1,0 +1,21 @@
+# --- Gradle / Android ---
+.gradle/
+build/
+**/build/
+local.properties
+*.iml
+.idea/
+.cxx/
+.externalNativeBuild/
+captures/
+
+# --- Kotlin ---
+*.kotlin_module
+
+# --- Secrets ---
+keystore.properties
+*.jks
+*.keystore
+
+# --- OS ---
+.DS_Store

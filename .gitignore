@@ -1,0 +1,68 @@
+# --- OS ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# --- IDE / editors ---
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# VS Code: личные настройки; shared-конфиги коммитят отдельно при необходимости
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# --- Secrets & env ---
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+*.p12
+*.crt
+secrets/
+
+# --- Logs & temp ---
+*.log
+logs/
+tmp/
+temp/
+
+# --- Docker (локальные оверрайды) ---
+docker-compose.override.yml
+docker-compose.*.local.yml
+
+# --- Test artifacts (e2e, общие) ---
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+coverage/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.lcov
+
+# --- Build artifacts (корень) ---
+dist/
+build/
+out/
+
+# --- Python (monorepo) ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# --- Android (mobile/) ---
+.gradle/
+local.properties
+*.iml
+.cxx/

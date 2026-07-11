@@ -1,0 +1,29 @@
+# --- Terraform / OpenTofu ---
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# --- Ansible ---
+*.retry
+
+# --- Kubernetes secrets (генерируемые локально) ---
+*-secret.yaml
+*-secrets.yaml
+!*-secret.yaml.example
+
+# --- SSL (приватные ключи не в git) ---
+*.pem
+*.key
+*.crt
+!*.crt.example

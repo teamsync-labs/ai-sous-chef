@@ -1,0 +1,7 @@
+# --- Env (локальные; примеры — .env.example в репо) ---
+.env
+.env.*
+!.env.example
+
+# --- OS ---
+.DS_Store
