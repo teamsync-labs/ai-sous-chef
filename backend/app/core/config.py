@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "AI Sous-Chef API"
     APP_VERSION: str = "0.1.0"
     DEBUG: bool = False
+    LOG_LEVEL: str = "INFO"
 
 
 settings = Settings()
