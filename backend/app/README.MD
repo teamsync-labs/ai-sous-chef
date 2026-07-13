@@ -53,6 +53,10 @@ alembic upgrade head
 uvicorn app.main:app --reload
 ```
 
+## Тестирование работоспособности
+Переходим на http://localhost:8000/health.
+В браузере должно появиться `{"db": "ok"}`
+
 Для остановки сервера нажмите `Ctrl + C`
 
 Для открытия документации API:
