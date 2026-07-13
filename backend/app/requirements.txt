@@ -3,3 +3,4 @@ uvicorn==0.51.0
 pydantic-settings==2.14.2
 sqlalchemy[asyncio]==2.1.0b3
 asyncpg==0.31.0
+alembic==1.18.5
