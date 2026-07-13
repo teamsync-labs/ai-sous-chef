@@ -1,3 +1,20 @@
 # AI Sous-Chef — сервисы будут добавлены по мере реализации backend (API + bot) и frontend.
 
-services: {}
+
+volumes:
+  postgres_data:
+
+services:
+  postgresql:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ai_sous_chef
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
