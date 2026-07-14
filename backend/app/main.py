@@ -17,7 +17,11 @@ app = FastAPI(
 )
 
 
-@app.get("/health")
+@app.get(
+    "/health",
+    summary="Проверка состояния сервера",
+    description="Возвращает статус сервера. Используется для проверки, что backend работает и готов принимать запросы."
+)
 async def health():
     logger.info("Успешный запрос на /health")
     return JSONResponse({"status": "ok"})
