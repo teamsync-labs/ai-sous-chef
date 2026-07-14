@@ -21,7 +21,11 @@ app = FastAPI(
 )
 
 
-@app.get("/health")
+@app.get(
+    "/health",
+    summary="Проверка состояния сервера",
+    description="Возвращает статус сервера и доступность БД. Используется для проверки, что backend работает и готов принимать запросы.",
+)
 async def health(db: Annotated[AsyncSession, Depends(get_db)]):
     try:
         result = await db.execute(select(1))
