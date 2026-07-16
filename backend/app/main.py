@@ -8,6 +8,7 @@ from sqlalchemy import select
 from .core.config import settings
 from .core.logging import setup_logging
 from .database.database import get_db
+from .api import api
 
 setup_logging(settings.LOG_LEVEL)
 
@@ -19,7 +20,7 @@ app = FastAPI(
     debug=settings.DEBUG,
     docs_url="/docs"
 )
-
+app.include_router(api.router)
 
 @app.get("/health")
 async def health(db: Annotated[AsyncSession, Depends(get_db)]):
