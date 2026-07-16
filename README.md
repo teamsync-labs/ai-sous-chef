@@ -43,6 +43,35 @@ infra/               деплой и окружения
 
 ## Локальный запуск
 
+### Требования
+- Docker (>= 20.10)
+- Docker Compose (>= 2.0)
+
+### Запуск
+1. Склонируйте репозиторий (если ещё не сделали):
+   ```bash
+   git clone https://github.com/teamsync-labs/ai-sous-chef.git
+   cd ai-sous-chef
+   ```
+
+2. Запустите фронтенд:
+   ```bash
+   docker compose up frontend --build
+   ```
+
+3. Откройте в браузере: [http://localhost:8080](http://localhost:8080)
+
+### Остановка
+```bash
+docker compose down
+```
+
+### Healthcheck
+Сервис автоматически проверяет работоспособность через `GET /`. Статус можно проверить:
+```bash
+docker inspect ai-sous-chef-frontend --format='{{.State.Health.Status}}'
+```
+
 Инфраструктура и сервисы добавляются по мере реализации.
 
 Статический сайт можно открыть напрямую: `frontend/index.html`.
