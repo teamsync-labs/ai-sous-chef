@@ -1,20 +1,17 @@
-# AI Sous-Chef — сервисы будут добавлены по мере реализации backend (API + bot) и frontend.
-
-
-volumes:
-  postgres_data:
+version: '3.8'
 
 services:
-  postgresql:
-    image: postgres:16
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: ai_sous_chef
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: ${IMAGE_PREFIX:-myapp}-frontend:${IMAGE_TAG:-latest}
+    container_name: ai-sous-chef-frontend
     ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-
+      - "8080:80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
