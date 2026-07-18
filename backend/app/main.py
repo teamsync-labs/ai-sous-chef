@@ -23,8 +23,12 @@ app = FastAPI(
 
 @app.get(
     "/health",
-    summary="Проверка состояния сервера",
-    description="Возвращает статус сервера и доступность БД. Используется для проверки, что backend работает и готов принимать запросы.",
+    summary="Проверка состояния сервиса",
+    description=(
+        "Эндпоинт для проверки работоспособности API и доступности БД. "
+        "Используется для мониторинга и health-проверок "
+        "(например, Docker/Kubernetes)."
+    ),
 )
 async def health(db: Annotated[AsyncSession, Depends(get_db)]):
     try:
