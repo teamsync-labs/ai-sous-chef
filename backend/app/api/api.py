@@ -1,53 +1,53 @@
-from fastapi import APIRouter
-from .api_models import RecipesInput, RecipesOutput
+from typing import Callable
+from fastapi import APIRouter, HTTPException, status
+from .api_models import RecipesInput, RecipesResult, RecognizeInput, RecognizeResult, BaseAPIModel
+from app.core.ai_engine import AIEngine, AIServiceUnavailableError, ProductsNotFoundError
 
 router = APIRouter(
     prefix="/app/api",
     tags=["MVP API"]
 )
 
+async def proceed_ai(ai_method: Callable[[], BaseAPIModel]) -> BaseAPIModel:
+    try:
+        return ai_method()
 
-@router.post("/recognize")
-async def recognize():
-    return {"status": "ok"}
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="missing_input",
+        ) from exc
 
-@router.post("/recipes", response_model=RecipesOutput)
+    except AIServiceUnavailableError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="ai_service_error",
+        ) from exc
+    except ProductsNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="no_products_found",
+        ) from exc
+
+# OPTIMIZE: использовать асинхронные вызовы в ai_engine чтобы async def имело смысл
+
+@router.post("/recognize", response_model=RecognizeResult, summary="Распознать продукты",
+    description=(
+        "Распознаёт продукты по переданному изображению или текстовому описанию. "
+        "Если передано изображение, продукты сначала определяются CV-моделью. "
+        "Затем результат обрабатывается языковой моделью и преобразуется "
+        "в нормализованный список продуктов.\n"
+        "Возвращает список распознанных продуктов и уверенность модели. **Передавать только либо base_64, либо text**"))
+async def recognize(recognize_input: RecognizeInput):
+    return await proceed_ai(lambda: AIEngine.recognize_products(recognize_input))
+
+@router.post("/recipes", response_model=RecipesResult, summary="Сгенерировать рецепты",
+    description=(
+        "Генерирует рецепты на основе переданного списка продуктов. "
+        "Предполагается, что пользователь предварительно проверил и подтвердил "
+        "список продуктов, полученный через эндпоинт `/recognize`.\n"
+        "Возвращает список рецептов. Каждый рецепт содержит название "
+        "и последовательность шагов приготовления."
+    ))
 async def recipes(recipes_input: RecipesInput):
-    return RecipesOutput(recipes=mock_generate_recipes(recipes_input))
-
-
-# region mock funcs
-def mock_generate_recipes(products: RecipesInput):
-    return [{
-        "title": "Спагетти карбонара",
-        "steps": [
-            "Отварить спагетти до состояния al dente.",
-            "Обжарить бекон до золотистой корочки.",
-            "Смешать яйца с тёртым сыром и перцем.",
-            "Добавить спагетти к бекону.",
-            "Снять сковороду с огня и вмешать яичную смесь.",
-        ],
-    },
-    {
-        "title": "Куриный суп",
-        "steps": [
-            "Залить курицу водой и довести до кипения.",
-            "Добавить нарезанный картофель.",
-            "Обжарить лук и морковь.",
-            "Добавить овощи и лапшу в суп.",
-            "Варить до готовности и посолить.",
-        ],
-    },
-    {
-        "title": "Омлет с сыром",
-        "steps": [
-            "Разбить яйца в миску.",
-            "Добавить молоко и соль.",
-            "Взбить смесь венчиком.",
-            "Вылить смесь на разогретую сковороду.",
-            "Посыпать сыром и готовить под крышкой.",
-        ],
-    }]
-
-
-# endregion
+    return await proceed_ai(lambda: AIEngine.generate_recipes(recipes_input))
