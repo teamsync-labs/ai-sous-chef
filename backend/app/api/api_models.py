@@ -12,10 +12,8 @@ class RecognizeInput(BaseAPIModel):
 
     @model_validator(mode='after')
     def check_only_one_not_null(self) -> 'RecognizeInput':
-        values = self.model_dump()
         not_none_count = sum(
-            1 for field in ('text', 'img_base64')
-            if values.get(field) is not None
+            field is not None for field in (self.text, self.img_base64)
         )
 
         if not_none_count != 1:
