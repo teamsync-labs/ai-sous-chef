@@ -21,6 +21,16 @@ app = FastAPI(
 )
 
 
+<<<<<<< HEAD
+@app.get(
+    "/health",
+    summary="Проверка состояния сервера",
+    description="Возвращает статус сервера. Используется для проверки, что backend работает и готов принимать запросы."
+)
+async def health():
+    logger.info("Успешный запрос на /health")
+    return JSONResponse({"status": "ok"})
+=======
 @app.get("/health")
 async def health(db: Annotated[AsyncSession, Depends(get_db)]):
     try:
@@ -34,3 +44,4 @@ async def health(db: Annotated[AsyncSession, Depends(get_db)]):
         logger.warning("Ошибочный запрос на /health: %s", exc)
 
     return JSONResponse({"db": "error"}, status_code=503)
+>>>>>>> d888f5cd0d7b28e8091269f37938784e058765d6
