@@ -5,6 +5,7 @@ from pydantic import BaseModel, model_validator, Base64Str
 class BaseAPIModel(BaseModel):
     pass
 
+
 class RecognizeInput(BaseAPIModel):
     text: Optional[str] = None
     img_base64: Optional[Base64Str] = None
@@ -21,6 +22,7 @@ class RecognizeInput(BaseAPIModel):
             raise ValueError('Только одно из полей text или img_base64 может быть заполнено (не null)')
 
         return self
+
 
 class RecognizeResult(BaseAPIModel):
     products: List[str]

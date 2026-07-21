@@ -8,6 +8,7 @@ router = APIRouter(
     tags=["MVP API"]
 )
 
+
 async def proceed_ai(ai_method: Callable[[], BaseAPIModel]) -> BaseAPIModel:
     try:
         return ai_method()
@@ -29,25 +30,33 @@ async def proceed_ai(ai_method: Callable[[], BaseAPIModel]) -> BaseAPIModel:
             detail="no_products_found",
         ) from exc
 
+
 # OPTIMIZE: использовать асинхронные вызовы в ai_engine чтобы async def имело смысл
 
-@router.post("/recognize", response_model=RecognizeResult, summary="Распознать продукты",
+@router.post(
+    "/recognize",
+    response_model=RecognizeResult,
+    summary="Распознать продукты",
     description=(
-        "Распознаёт продукты по переданному изображению или текстовому описанию. "
-        "Если передано изображение, продукты сначала определяются CV-моделью. "
-        "Затем результат обрабатывается языковой моделью и преобразуется "
-        "в нормализованный список продуктов.\n"
-        "Возвращает список распознанных продуктов и уверенность модели. **Передавать только либо base_64, либо text**"))
+            "Распознаёт продукты по переданному изображению или текстовому описанию. "
+            "Если передано изображение, продукты сначала определяются CV-моделью. "
+            "Затем результат обрабатывается языковой моделью и преобразуется "
+            "в нормализованный список продуктов.\n"
+            "Возвращает список распознанных продуктов и уверенность модели. **Передавать только либо base_64, либо text**"))
 async def recognize(recognize_input: RecognizeInput):
     return await proceed_ai(lambda: AIEngine.recognize_products(recognize_input))
 
-@router.post("/recipes", response_model=RecipesResult, summary="Сгенерировать рецепты",
+
+@router.post(
+    "/recipes",
+    response_model=RecipesResult,
+    summary="Сгенерировать рецепты",
     description=(
-        "Генерирует рецепты на основе переданного списка продуктов. "
-        "Предполагается, что пользователь предварительно проверил и подтвердил "
-        "список продуктов, полученный через эндпоинт `/recognize`.\n"
-        "Возвращает список рецептов. Каждый рецепт содержит название "
-        "и последовательность шагов приготовления."
+            "Генерирует рецепты на основе переданного списка продуктов. "
+            "Предполагается, что пользователь предварительно проверил и подтвердил "
+            "список продуктов, полученный через эндпоинт `/recognize`.\n"
+            "Возвращает список рецептов. Каждый рецепт содержит название "
+            "и последовательность шагов приготовления."
     ))
 async def recipes(recipes_input: RecipesInput):
     return await proceed_ai(lambda: AIEngine.generate_recipes(recipes_input))
