@@ -1,9 +1,9 @@
 shortlist LLM моделей
-OpenAI (GPT-4o или GPT-5.4 nano для экономии).
-Anthropic (Claude Sonnet 4.6 — баланс цены и качества, Opus 4.6 — для сложных задач).
-YandexGPT (5.1 Pro — сильна в русском языке, Lite — для простых задач). 
-GigaChat (Lite, Pro, Max — линейка под разные уровни сложности).
-DeepSeek (V4 Flash — очень дешёвая и быстрая, V4 Pro — для более сложных запросов). 
+|OpenAI    | GPT-4o или GPT-5.4 nano для экономии                                       |
+|Anthropic | Claude Sonnet 4.6 — баланс цены и качества, Opus 4.6 — для сложных задач   |
+|YandexGPT | 5.1 Pro — сильна в русском языке, Lite — для простых задач                 |
+|GigaChat  | Lite, Pro, Max — линейка под разные уровни сложности                       |
+|DeepSeek  | V4 Flash — очень дешёвая и быстрая, V4 Pro — для более сложных запросов    |
 
 Тестовые промты (3–5 наборов)
 Простой
