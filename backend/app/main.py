@@ -2,9 +2,12 @@ import logging
 from typing import Annotated
 
 from fastapi import FastAPI, Depends
+from fastapi.exceptions import RequestValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import JSONResponse
 from sqlalchemy import select
+
+from .api.error_handlers import log_request_validation_error
 from .core.config import settings
 from .core.logging import setup_logging
 from .database.database import get_db
@@ -21,6 +24,11 @@ app = FastAPI(
     docs_url="/docs"
 )
 app.include_router(api.router)
+app.add_exception_handler(
+    RequestValidationError,
+    log_request_validation_error,
+)
+
 
 @app.get("/health")
 async def health(db: Annotated[AsyncSession, Depends(get_db)]):

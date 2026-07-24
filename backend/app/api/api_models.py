@@ -1,5 +1,5 @@
 from typing import Optional, List
-from pydantic import BaseModel, model_validator, Base64Str
+from pydantic import BaseModel, model_validator, Base64Bytes
 
 
 class BaseAPIModel(BaseModel):
@@ -8,7 +8,7 @@ class BaseAPIModel(BaseModel):
 
 class RecognizeInput(BaseAPIModel):
     text: Optional[str] = None
-    img_base64: Optional[Base64Str] = None
+    img_base64: Optional[Base64Bytes] = None
 
     @model_validator(mode='after')
     def check_only_one_not_null(self) -> 'RecognizeInput':
