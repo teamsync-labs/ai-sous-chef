@@ -1,0 +1,11 @@
+.git
+*.md
+__pycache__
+*.pyc
+.env
+venv/
+.venv/
+.pytest_cache/
+.gitignore
+alembic/versions/__pycache__/
+.DS_Store
