@@ -8,7 +8,7 @@ from aiogram import Dispatcher, Bot
 
 from aiogram.client.session.aiohttp import AiohttpSession
 
-from handlers.start import router as start_router
+from handlers import routers
 
 from utils.logging import setup_logging
 
@@ -35,7 +35,7 @@ async def main():
     else:
         logger.info("TG_PROXY_URL не указан в .env. Запуск без прокси")
 
-    dp.include_router(start_router)
+    dp.include_routers(*routers)
     bot = Bot(token=token, session=session)
     await dp.start_polling(bot)
 
