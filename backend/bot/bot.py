@@ -25,7 +25,7 @@ async def main():
         raise ValueError("TG_TOKEN не найден в переменных окружения")
     proxy_url = os.getenv("TG_PROXY_URL")
     session = None
-    if session:
+    if proxy_url:
         logger.info("Найден прокси URL %s", proxy_url)
         session = AiohttpSession(proxy=proxy_url)
 
