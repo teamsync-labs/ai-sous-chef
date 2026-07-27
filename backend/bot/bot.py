@@ -10,6 +10,10 @@ from aiogram.client.session.aiohttp import AiohttpSession
 
 from handlers.start import router as start_router
 
+from utils.logging import setup_logging
+
+setup_logging()
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -28,6 +32,8 @@ async def main():
     if proxy_url:
         logger.info("Найден прокси URL %s", proxy_url)
         session = AiohttpSession(proxy=proxy_url)
+    else:
+        logger.info("TG_PROXY_URL не указан в .env. Запуск без прокси")
 
     dp.include_router(start_router)
     bot = Bot(token=token, session=session)
