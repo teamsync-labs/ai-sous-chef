@@ -46,7 +46,54 @@
     .page {
       max-width: 1280px;
       margin: 0 auto;
-      padding: 40px 24px 80px;
+      padding: 32px 24px 80px;
+    }
+
+    .jump-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      width: 100%;
+      background: rgba(247, 250, 246, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 10px 28px rgba(26, 36, 25, 0.07);
+    }
+
+    .jump-nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 10px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 10px;
+    }
+
+    .jump-nav .label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-right: 4px;
+    }
+
+    .jump-nav a {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink-soft);
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 500;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+    }
+
+    .jump-nav a:hover {
+      border-color: var(--brand);
+      background: #f0f7ef;
+      color: var(--brand);
     }
 
     .hero {
@@ -57,8 +104,30 @@
       margin-bottom: 48px;
     }
 
+    .hero.solo {
+      grid-template-columns: 1fr;
+      align-items: start;
+      max-width: 40rem;
+    }
+
     @media (max-width: 900px) {
       .hero { grid-template-columns: 1fr; }
+    }
+
+    .section-intro {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: start;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 900px) {
+      .section-intro { grid-template-columns: 1fr; }
+    }
+
+    .section-intro .lede {
+      margin-top: 0;
     }
 
     .brand {
@@ -127,9 +196,25 @@
 
     .section-title {
       font-family: "Instrument Serif", Georgia, serif;
-      font-size: 2rem;
+      font-size: clamp(1.75rem, 3vw, 2.15rem);
       font-weight: 400;
-      margin: 48px 0 8px;
+      margin: 56px 0 18px;
+      padding-top: 40px;
+      border-top: 1px solid var(--line);
+      color: var(--ink);
+      scroll-margin-top: 72px;
+      letter-spacing: -0.01em;
+    }
+
+    .section-title .section-kind {
+      display: block;
+      font-family: "Sora", system-ui, sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand);
+      margin-bottom: 8px;
     }
 
     .section-note {
@@ -718,40 +803,437 @@
       font-size: 0.75rem;
       color: var(--ink-soft);
     }
+
+    .tg-phone {
+      width: var(--phone-w);
+      height: var(--phone-h);
+      background: #0e1621;
+      border-radius: 36px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 24px;
+    }
+
+    .tg-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 26px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(ellipse 70% 40% at 50% 0%, rgba(31, 92, 58, 0.18), transparent 60%),
+        #182533;
+      position: relative;
+    }
+
+    .tg-topbar {
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #8b9aab;
+      background: #1f2c3a;
+      flex-shrink: 0;
+      z-index: 2;
+    }
+
+    .tg-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #1f2c3a;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      flex-shrink: 0;
+      z-index: 2;
+    }
+
+    .tg-header img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .tg-header .name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #f2f5f7;
+      line-height: 1.1;
+    }
+
+    .tg-header .status {
+      font-size: 0.68rem;
+      color: #7d8b9a;
+      margin-top: 2px;
+    }
+
+    .tg-screen {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .tg-screen.active { display: flex; }
+
+    .tg-chat {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding: 14px 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tg-day {
+      align-self: center;
+      font-size: 0.68rem;
+      color: #9aa8b6;
+      background: rgba(15, 25, 36, 0.55);
+      padding: 4px 10px;
+      border-radius: 10px;
+      margin-bottom: 2px;
+    }
+
+    .tg-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      max-width: 100%;
+    }
+
+    .tg-row.bot { align-self: flex-start; }
+    .tg-row.user { align-self: flex-end; }
+
+    .tg-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .tg-bubble {
+      max-width: 220px;
+      border-radius: 14px;
+      padding: 8px 10px 6px;
+      font-size: 0.74rem;
+      line-height: 1.35;
+      position: relative;
+    }
+
+    .tg-bubble.bot {
+      background: #212e3c;
+      color: #e8eef4;
+      border-bottom-left-radius: 4px;
+    }
+
+    .tg-bubble.user {
+      background: #2b5278;
+      color: #f2f7fb;
+      border-bottom-right-radius: 4px;
+    }
+
+    .tg-quote {
+      border-left: 2px solid #5bbb6a;
+      padding: 2px 0 2px 8px;
+      margin-bottom: 6px;
+    }
+
+    .tg-quote .q-title {
+      color: #5bbb6a;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-bottom: 1px;
+    }
+
+    .tg-quote .q-body {
+      color: #9aa8b6;
+      font-size: 0.68rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tg-result {
+      word-break: break-word;
+    }
+
+    .tg-result code {
+      font-size: 0.68em;
+      color: #cfe6d4;
+      background: rgba(0, 0, 0, 0.22);
+      padding: 1px 4px;
+    }
+
+    .tg-meta {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+      font-size: 0.62rem;
+      color: #8b9aab;
+    }
+
+    .tg-bubble.user .tg-meta { color: #9ec0df; }
+
+    .tg-checks {
+      letter-spacing: -0.12em;
+      color: #6ec9ff;
+      font-size: 0.7rem;
+      line-height: 1;
+    }
+
+    .tg-photo {
+      width: 168px;
+      height: 168px;
+      border-radius: 10px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(26,36,25,0.12), rgba(26,36,25,0.35)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='168' height='168' viewBox='0 0 168 168'%3E%3Crect fill='%23c8d6c0' width='168' height='168'/%3E%3Cellipse cx='48' cy='108' rx='28' ry='20' fill='%23c45c26'/%3E%3Cellipse cx='88' cy='96' rx='24' ry='22' fill='%23e8b84a'/%3E%3Cellipse cx='126' cy='112' rx='22' ry='18' fill='%237a9e4a'/%3E%3Ccircle cx='70' cy='70' r='16' fill='%23f2f2e8'/%3E%3Ccircle cx='108' cy='66' r='13' fill='%23f0ece0'/%3E%3C/svg%3E") center/cover;
+    }
+
+    .tg-bubble.media {
+      padding: 4px;
+      background: #2b5278;
+    }
+
+    .tg-bubble.media .tg-meta {
+      position: absolute;
+      right: 8px;
+      bottom: 6px;
+      margin: 0;
+      padding: 2px 6px;
+      border-radius: 8px;
+      background: rgba(15, 25, 36, 0.45);
+      color: #e8eef4;
+    }
+
+    .tg-file {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 190px;
+    }
+
+    .tg-file-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #3d7eb8;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .tg-file-name {
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: #f2f7fb;
+      word-break: break-word;
+    }
+
+    .tg-file-size {
+      font-size: 0.66rem;
+      color: #9ec0df;
+      margin-top: 2px;
+    }
+
+    .tg-inline {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 4px;
+      width: 100%;
+      max-width: 232px;
+      align-self: flex-start;
+      margin-left: 34px;
+    }
+
+    .tg-inline button {
+      appearance: none;
+      border: none;
+      background: #2b3947;
+      color: #6ab3f3;
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 400;
+      line-height: 1.2;
+      padding: 9px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.12s, color 0.12s;
+      box-shadow: none;
+    }
+
+    .tg-inline button:hover {
+      background: #334455;
+      color: #7fc0f7;
+    }
+
+    .tg-inline button:active {
+      background: #3a4d60;
+    }
+
+    .tg-inline.row {
+      flex-direction: row;
+      gap: 4px;
+      margin-left: 34px;
+    }
+
+    .tg-inline.row button { flex: 1; min-width: 0; }    .tg-products {
+      margin: 6px 0 2px;
+      padding-left: 1.1rem;
+      color: #e8eef4;
+    }
+
+    .tg-products li {
+      margin: 2px 0;
+      font-size: 0.74rem;
+    }
+
+    .tg-steps {
+      margin: 6px 0 2px;
+      padding-left: 1.1rem;
+      color: #e8eef4;
+    }
+
+    .tg-steps li {
+      margin: 3px 0;
+      font-size: 0.74rem;
+    }
+
+    .tg-composer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px 10px;
+      background: #1f2c3a;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      flex-shrink: 0;
+    }
+
+    .tg-composer button.attach,
+    .tg-composer button.send {
+      appearance: none;
+      border: none;
+      background: transparent;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      line-height: 1;
+      color: #7d8b9a;
+      flex-shrink: 0;
+      cursor: pointer;
+      padding: 0;
+      font: inherit;
+    }
+
+    .tg-composer button.send { color: #5bbb6a; font-size: 1.1rem; }
+
+    .tg-composer button.attach:hover,
+    .tg-composer button.send:hover { color: #cfe6d4; }
+
+    .tg-composer .input {
+      flex: 1;
+      background: #182533;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 7px 12px;
+      font-size: 0.72rem;
+      color: #7d8b9a;
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+      appearance: none;
+    }
+
+    .tg-composer .input:hover {
+      border-color: rgba(91, 187, 106, 0.35);
+      color: #9aa8b6;
+    }
+
+    .tg-attach-menu {
+      display: none;
+      position: absolute;
+      left: 12px;
+      bottom: 52px;
+      background: #212e3c;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 6px;
+      z-index: 5;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+      min-width: 160px;
+    }
+
+    .tg-attach-menu.open { display: flex; flex-direction: column; gap: 2px; }
+
+    .tg-attach-menu button {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: #e8eef4;
+      font: inherit;
+      font-size: 0.78rem;
+      text-align: left;
+      padding: 9px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .tg-attach-menu button:hover { background: rgba(91, 187, 106, 0.15); }
   </style>
 </head>
 <body>
+  <nav class="jump-nav" aria-label="Разделы макета">
+    <div class="jump-nav-inner">
+      <span class="label">Перейти:</span>
+      <a href="#logos">Логотипы</a>
+      <a href="#mobile">Mobile app</a>
+      <a href="#telegram">Telegram-бот</a>
+    </div>
+  </nav>
+
   <div class="page">
-    <header class="hero">
+    <header class="hero solo">
       <div>
         <div class="brand">AI Sous-Chef<br /><em>макет MVP</em></div>
         <p class="lede">
-          UI мобильного приложения по базовому пути из
-          <code>docs/mvp.md</code> и ответам API
-          (<code>products[]</code> → <code>recipes[{title, steps}]</code>).
+          Интерактивные макеты двух клиентов на общем API из
+          <code>docs/mvp.md</code>:
+          мобильное приложение и Telegram-бот.
           Без авторизации, без чата, один запрос — один ответ.
         </p>
         <div class="meta">
-          <span class="chip">React Native</span>
-          <span class="chip">Без логина</span>
-          <span class="chip">Фото или текст</span>
-          <span class="chip">Подтверждение продуктов</span>
+          <span class="chip">Mobile</span>
+          <span class="chip">Telegram</span>
+          <span class="chip">Один API</span>
         </div>
       </div>
-      <aside class="legend">
-        <h2>Базовый путь</h2>
-        <ol>
-          <li>Splash → главный экран</li>
-          <li>Главный экран → Фото или Текст</li>
-          <li>Фото: камера → распознавание → подтверждение</li>
-          <li>Текст: ввод продуктов → сразу рецепты</li>
-          <li>Список рецептов → детали со шагами</li>
-          <li>«На главную» — сброс контекста</li>
-        </ol>
-      </aside>
     </header>
 
-    <h2 class="section-title">Логотипы и иконки</h2>
+    <h2 class="section-title" id="logos">
+      <span class="section-kind">Брендинг</span>
+      Логотипы и иконки
+    </h2>
     <div class="logo-gallery">
       <figure class="logo-card">
         <img src="../branding/app-icon.png" alt="Базовый логотип AI Sous-Chef" width="120" height="120" />
@@ -791,7 +1273,37 @@
       </figure>
     </div>
 
-    <h2 class="section-title">Интерактивный прототип</h2>
+    <h2 class="section-title" id="mobile">
+      <span class="section-kind">Клиент · Mobile</span>
+      Интерактивный прототип
+    </h2>
+    <div class="section-intro">
+      <div>
+        <p class="lede">
+          UI мобильного приложения по базовому пути из
+          <code>docs/mvp.md</code> и ответам API
+          (<code>products[]</code> → <code>recipes[{title, steps}]</code>).
+          Без авторизации, без чата, один запрос — один ответ.
+        </p>
+        <div class="meta">
+          <span class="chip">React Native</span>
+          <span class="chip">Без логина</span>
+          <span class="chip">Фото или текст</span>
+          <span class="chip">Подтверждение продуктов</span>
+        </div>
+      </div>
+      <aside class="legend">
+        <h2>Базовый путь</h2>
+        <ol>
+          <li>Splash → главный экран</li>
+          <li>Главный экран → Фото или Текст</li>
+          <li>Фото: камера → распознавание → подтверждение</li>
+          <li>Текст: ввод продуктов → сразу рецепты</li>
+          <li>Список рецептов → детали со шагами</li>
+          <li>«На главную» — сброс контекста</li>
+        </ol>
+      </aside>
+    </div>
 
     <div class="flow-map" id="flow-map"></div>
 
@@ -975,6 +1487,278 @@
       </div>
     </div>
 
+    <h2 class="section-title" id="telegram">
+      <span class="section-kind">Клиент · Telegram</span>
+      Интерактивный прототип
+    </h2>
+    <div class="section-intro">
+      <div>
+        <p class="lede">
+          Telegram-клиент того же API по <code>docs/mvp.md</code>:
+          фото или текст → подтверждение продуктов → рецепты
+          (или повтор при «Неверно»). Без отдельного API для бота.
+        </p>
+        <div class="meta">
+          <span class="chip">Telegram Bot API</span>
+          <span class="chip">Без логина</span>
+          <span class="chip">Фото или текст</span>
+          <span class="chip">Inline Верно / Неверно</span>
+        </div>
+      </div>
+      <aside class="legend">
+        <h2>Базовый путь</h2>
+        <ol>
+          <li>/start → ознакомительное сообщение</li>
+          <li>Фото или текст продуктов</li>
+          <li>«Продукты распознаны» + Верно / Неверно</li>
+          <li>Верно → список рецептов → шаги</li>
+          <li>Неверно → «попробуйте ещё раз»</li>
+          <li>Новый запрос — сброс контекста</li>
+        </ol>
+      </aside>
+    </div>
+
+    <div class="flow-map" id="tg-flow-map"></div>
+
+    <div class="prototype">
+      <div>
+        <div class="tg-phone" aria-label="Макет Telegram-бота">
+          <div class="tg-inner" id="tg-inner">
+            <div class="tg-topbar"><span>12:36</span><span>LTE</span></div>
+            <div class="tg-header">
+              <img src="../branding/app-icon.png" alt="" width="36" height="36" />
+              <div>
+                <div class="name">AI Sous-Chef</div>
+                <div class="status">бот</div>
+              </div>
+            </div>
+
+            <div class="tg-attach-menu" id="tg-attach-menu" aria-label="Вложения">
+              <button type="button" data-tg-go="confirm-photo">Фото</button>
+            </div>
+
+            <!-- 1. Start -->
+            <section class="tg-screen active" data-tg-screen="start">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row user">
+                  <div class="tg-bubble user">
+                    /start
+                    <div class="tg-meta"><span>12:36</span><span class="tg-checks">✓✓</span></div>
+                  </div>
+                </div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="../branding/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    Привет! Я <strong>AI Sous-Chef</strong> — подскажу, что приготовить из того, что есть.
+                    Пришлите фото продуктов или список текстом. Без регистрации, один запрос — один ответ.
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+                <div class="tg-inline">
+                  <button type="button" data-tg-go="confirm-photo">Отправить фото</button>
+                  <button type="button" data-tg-go="confirm-text">Написать текст</button>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
+                <button type="button" class="input" data-tg-go="confirm-text">Сообщение</button>
+                <button type="button" class="send" data-tg-go="confirm-text" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- 2. Photo → confirm -->
+            <section class="tg-screen" data-tg-screen="confirm-photo">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row user">
+                  <div class="tg-bubble user media">
+                    <div class="tg-photo" role="img" aria-label="Фото продуктов"></div>
+                    <div class="tg-meta"><span>12:36</span><span class="tg-checks">✓✓</span></div>
+                  </div>
+                </div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="../branding/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    <div class="tg-quote">
+                      <div class="q-title">Фотография</div>
+                      <div class="q-body">фото продуктов</div>
+                    </div>
+                    Продукты распознаны:
+                    <ul class="tg-products">
+                      <li>яйца</li>
+                      <li>молоко</li>
+                      <li>сыр</li>
+                      <li>зелень</li>
+                    </ul>
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+                <div class="tg-inline row">
+                  <button type="button" data-tg-go="recipes">✅ Верно</button>
+                  <button type="button" data-tg-go="retry-photo">❌ Неверно</button>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
+                <button type="button" class="input" data-tg-go="confirm-text">Сообщение</button>
+                <button type="button" class="send" data-tg-go="confirm-text" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- 3. Text → confirm -->
+            <section class="tg-screen" data-tg-screen="confirm-text">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row user">
+                  <div class="tg-bubble user">
+                    курица, рис, лук
+                    <div class="tg-meta"><span>12:36</span><span class="tg-checks">✓✓</span></div>
+                  </div>
+                </div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="../branding/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    <div class="tg-quote">
+                      <div class="q-title">курица, рис, лук</div>
+                      <div class="q-body">текстовое сообщение</div>
+                    </div>
+                    Продукты распознаны:
+                    <ul class="tg-products">
+                      <li>курица</li>
+                      <li>рис</li>
+                      <li>лук</li>
+                    </ul>
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+                <div class="tg-inline row">
+                  <button type="button" data-tg-go="recipes">✅ Верно</button>
+                  <button type="button" data-tg-go="retry-text">❌ Неверно</button>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
+                <button type="button" class="input" data-tg-go="confirm-text">Сообщение</button>
+                <button type="button" class="send" data-tg-go="confirm-text" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- 4. Recipes -->
+            <section class="tg-screen" data-tg-screen="recipes">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="../branding/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    Вот что можно приготовить. Выберите рецепт, чтобы открыть шаги.
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+                <div class="tg-inline">
+                  <button type="button" data-tg-go="recipe-detail" data-tg-recipe="0">Яичница</button>
+                  <button type="button" data-tg-go="recipe-detail" data-tg-recipe="1">Яичница с сыром</button>
+                  <button type="button" data-tg-go="start">Новый запрос · /start</button>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
+                <button type="button" class="input" data-tg-go="confirm-text">Сообщение</button>
+                <button type="button" class="send" data-tg-go="confirm-text" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- 5. Recipe detail -->
+            <section class="tg-screen" data-tg-screen="recipe-detail">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="../branding/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    <strong id="tg-recipe-title">Яичница с сыром</strong>
+                    <ol class="tg-steps" id="tg-recipe-steps">
+                      <li>Разбить яйца</li>
+                      <li>Добавить молоко</li>
+                      <li>Добавить сыр</li>
+                      <li>Разогреть на сковороде</li>
+                    </ol>
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+                <div class="tg-inline">
+                  <button type="button" data-tg-go="recipes">К списку рецептов</button>
+                  <button type="button" data-tg-go="start">Новый запрос · /start</button>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
+                <button type="button" class="input" data-tg-go="confirm-text">Сообщение</button>
+                <button type="button" class="send" data-tg-go="confirm-text" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- 6. Retry photo -->
+            <section class="tg-screen" data-tg-screen="retry-photo">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="../branding/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    Попробуйте отправить фото ещё раз.
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+                <div class="tg-inline">
+                  <button type="button" data-tg-go="confirm-photo">Отправить фото</button>
+                  <button type="button" data-tg-go="start">Новый запрос · /start</button>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
+                <button type="button" class="input" data-tg-go="confirm-text">Сообщение</button>
+                <button type="button" class="send" data-tg-go="confirm-text" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- 7. Retry text -->
+            <section class="tg-screen" data-tg-screen="retry-text">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="../branding/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    Попробуйте отправить текст ещё раз.
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+                <div class="tg-inline">
+                  <button type="button" data-tg-go="confirm-text">Написать текст</button>
+                  <button type="button" data-tg-go="start">Новый запрос · /start</button>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
+                <button type="button" class="input" data-tg-go="confirm-text">Сообщение</button>
+                <button type="button" class="send" data-tg-go="confirm-text" aria-label="Отправить">›</button>
+              </div>
+            </section>
+          </div>
+        </div>
+        <div class="nav-dots" id="tg-nav-dots"></div>
+        <p class="screen-label">Сейчас: <strong id="tg-screen-name">/start</strong></p>
+      </div>
+
+      <div class="panel" id="tg-spec-panel">
+        <h3>/start</h3>
+        <p>Ознакомительное сообщение. Две точки входа — фото и текст.</p>
+        <ul>
+          <li>Без авторизации</li>
+          <li>Один запрос — один ответ</li>
+          <li>Дальше — подтверждение продуктов</li>
+        </ul>
+      </div>
+    </div>
+
     <div class="specs">
       <div class="panel">
         <h3>Карта экранов (mobile)</h3>
@@ -1015,10 +1799,10 @@
         <h3>Telegram (параллельный клиент)</h3>
         <ul>
           <li>/start → intro</li>
-          <li>фото/текст → «Продукты распознаны» + inline-кнопки</li>
-          <li>Верно → список рецептов в сообщениях</li>
+          <li>фото/текст → «Продукты распознаны» + inline Верно / Неверно</li>
+          <li>Верно → список рецептов в сообщениях → шаги</li>
           <li>Неверно → «попробуйте ещё раз»</li>
-          <li>Тот же backend, без отдельного «чатового» UX в приложении</li>
+          <li>Тот же backend, без отдельного API для бота</li>
         </ul>
       </div>
     </div>
@@ -1039,18 +1823,70 @@
       { id: "error", name: "Ошибка", blurb: "Единый экран для 422 / 502 / сетевых сбоев с возвратом на Home.", bullets: ["Короткий текст причины", "Один CTA — На главную"] },
     ];
 
+    const TG_SCREENS = [
+      {
+        id: "start",
+        name: "/start",
+        blurb: "Ознакомительное сообщение. Две точки входа — фото и текст. Без авторизации, один запрос — один ответ.",
+        bullets: ["Inline-кнопки и composer", "Тот же backend API", "Дальше — подтверждение products[]"],
+      },
+      {
+        id: "confirm-photo",
+        name: "Фото · подтверждение",
+        blurb: "После снимка бот распознаёт продукты (до 5 с) и показывает список с кнопками Верно / Неверно.",
+        bullets: ["POST /api/recognize", "Поле ввода не блокируется", "Верно → recipes, Неверно → повтор фото"],
+      },
+      {
+        id: "confirm-text",
+        name: "Текст · подтверждение",
+        blurb: "Пользователь пишет продукты (например «курица, рис, лук»). Бот показывает список и ждёт подтверждения.",
+        bullets: ["Пример из mvp.md", "Верно → подбор рецептов", "Неверно → «отправьте текст ещё раз»"],
+      },
+      {
+        id: "recipes",
+        name: "Список рецептов",
+        blurb: "После «Верно» бот отдаёт title[] inline-кнопками. Тап открывает шаги. Можно начать новый запрос.",
+        bullets: ["POST /api/recipes", "Без рейтингов и картинок в MVP", "Новый текстовый запрос = новый цикл"],
+      },
+      {
+        id: "recipe-detail",
+        name: "Рецепт · шаги",
+        blurb: "Пошаговая инструкция steps[] в одном сообщении. Успех MVP для Telegram-клиента.",
+        bullets: ["К списку или новый /start", "Без чата уточнений"],
+      },
+      {
+        id: "retry-photo",
+        name: "Повтор фото",
+        blurb: "После «Неверно» — сообщение из mvp.md: попробуйте отправить фото ещё раз.",
+        bullets: ["Без правки списка вручную", "Можно сразу новое фото или /start"],
+      },
+      {
+        id: "retry-text",
+        name: "Повтор текста",
+        blurb: "После «Неверно» по текстовому сценарию — попробуйте отправить текст ещё раз.",
+        bullets: ["Тот же паттерн, что у фото", "Ввод не блокируется"],
+      },
+    ];
+
     const RECIPES = [
       { title: "Яичница", steps: ["Разбить яйца", "Добавить молоко", "Разогреть на сковороде"] },
       { title: "Яичница с сыром", steps: ["Разбить яйца", "Добавить молоко", "Добавить сыр", "Разогреть на сковороде"] },
     ];
 
     let current = "splash";
+    let tgCurrent = "start";
 
     const map = document.getElementById("flow-map");
     const dots = document.getElementById("nav-dots");
     const nameEl = document.getElementById("screen-name");
     const panel = document.getElementById("spec-panel");
     const phoneInner = document.getElementById("phone-inner");
+
+    const tgMap = document.getElementById("tg-flow-map");
+    const tgDots = document.getElementById("tg-nav-dots");
+    const tgNameEl = document.getElementById("tg-screen-name");
+    const tgPanel = document.getElementById("tg-spec-panel");
+    const tgAttachMenu = document.getElementById("tg-attach-menu");
 
     SCREENS.forEach((s, i) => {
       const btn = document.createElement("button");
@@ -1065,12 +1901,25 @@
       dots.appendChild(dot);
     });
 
+    TG_SCREENS.forEach((s, i) => {
+      const btn = document.createElement("button");
+      btn.className = "flow-card" + (i === 0 ? " active" : "");
+      btn.dataset.tgGo = s.id;
+      btn.innerHTML = `<strong>${i + 1}. ${s.name}</strong><span>${s.id}</span>`;
+      tgMap.appendChild(btn);
+
+      const dot = document.createElement("button");
+      dot.dataset.tgGo = s.id;
+      if (i === 0) dot.classList.add("active");
+      tgDots.appendChild(dot);
+    });
+
     function show(id) {
       current = id;
-      document.querySelectorAll(".screen").forEach((el) => {
+      document.querySelectorAll("#phone-inner .screen").forEach((el) => {
         el.classList.toggle("active", el.dataset.screen === id);
       });
-      document.querySelectorAll(".flow-card, .nav-dots button").forEach((el) => {
+      document.querySelectorAll("#flow-map .flow-card, #nav-dots button").forEach((el) => {
         el.classList.toggle("active", el.dataset.go === id);
       });
       phoneInner.classList.toggle("is-splash", id === "splash");
@@ -1081,7 +1930,49 @@
       }
     }
 
+    function closeTgAttach() {
+      tgAttachMenu.classList.remove("open");
+    }
+
+    function showTg(id) {
+      tgCurrent = id;
+      closeTgAttach();
+      document.querySelectorAll("#tg-inner .tg-screen").forEach((el) => {
+        el.classList.toggle("active", el.dataset.tgScreen === id);
+      });
+      document.querySelectorAll("#tg-flow-map .flow-card, #tg-nav-dots button").forEach((el) => {
+        el.classList.toggle("active", el.dataset.tgGo === id);
+      });
+      const meta = TG_SCREENS.find((s) => s.id === id);
+      tgNameEl.textContent = meta ? meta.name : id;
+      if (meta) {
+        tgPanel.innerHTML = `<h3>${meta.name}</h3><p>${meta.blurb}</p><ul>${meta.bullets.map((b) => `<li>${b}</li>`).join("")}</ul>`;
+      }
+    }
+
     document.body.addEventListener("click", (e) => {
+      const attachBtn = e.target.closest("[data-tg-attach]");
+      if (attachBtn) {
+        e.stopPropagation();
+        tgAttachMenu.classList.toggle("open");
+        return;
+      }
+
+      const tgGo = e.target.closest("[data-tg-go]");
+      if (tgGo) {
+        if (tgGo.dataset.tgRecipe !== undefined) {
+          const r = RECIPES[Number(tgGo.dataset.tgRecipe)] || RECIPES[1];
+          document.getElementById("tg-recipe-title").textContent = r.title;
+          document.getElementById("tg-recipe-steps").innerHTML = r.steps.map((s) => `<li>${s}</li>`).join("");
+        }
+        showTg(tgGo.dataset.tgGo);
+        return;
+      }
+
+      if (!e.target.closest("#tg-attach-menu") && !e.target.closest("[data-tg-attach]")) {
+        closeTgAttach();
+      }
+
       const go = e.target.closest("[data-go]");
       if (!go) return;
       const id = go.dataset.go;
@@ -1094,6 +1985,7 @@
     });
 
     show("splash");
+    showTg("start");
   </script>
 </body>
 </html>
