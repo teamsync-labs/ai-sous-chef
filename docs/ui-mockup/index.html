@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Sous-Chef — UI-макет MVP</title>
+  <link rel="icon" href="../branding/app-icon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../branding/app-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #e8efe6;
+      --bg-deep: #d4e0d1;
+      --ink: #1a2419;
+      --ink-soft: #4a5a47;
+      --muted: #6b7a68;
+      --surface: #f7faf6;
+      --surface-2: #eef4ec;
+      --line: #c5d4c1;
+      --brand: #1f5c3a;
+      --brand-hover: #174a2e;
+      --accent: #c45c26;
+      --danger: #8b2e2e;
+      --ok: #1f5c3a;
+      --shadow: 0 24px 60px rgba(26, 36, 25, 0.18);
+      --radius: 18px;
+      --phone-w: 320px;
+      --phone-h: 640px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Sora", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse 80% 50% at 10% 0%, #cfe0c8 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 90% 100%, #d9e6d4 0%, transparent 50%),
+        linear-gradient(165deg, #eef4ec 0%, #dce8d8 45%, #e8efe6 100%);
+      min-height: 100vh;
+      line-height: 1.45;
+    }
+
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 40px;
+      align-items: end;
+      margin-bottom: 48px;
+    }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+    }
+
+    .brand {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      letter-spacing: -0.02em;
+      line-height: 0.95;
+      color: var(--brand);
+    }
+
+    .brand em {
+      font-style: italic;
+      color: var(--ink);
+    }
+
+    .lede {
+      margin-top: 16px;
+      max-width: 36rem;
+      color: var(--ink-soft);
+      font-size: 1.05rem;
+    }
+
+    .meta {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: 1px solid var(--line);
+      background: rgba(247, 250, 246, 0.7);
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+    }
+
+    .legend {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 20px 22px;
+    }
+
+    .legend h2 {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 10px;
+    }
+
+    .legend ol {
+      padding-left: 1.2rem;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+    }
+
+    .legend li { margin: 6px 0; }
+    .legend code {
+      font-size: 0.82em;
+      background: var(--surface-2);
+      padding: 1px 5px;
+    }
+
+    .section-title {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 2rem;
+      font-weight: 400;
+      margin: 48px 0 8px;
+    }
+
+    .section-note {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 24px;
+      max-width: 40rem;
+    }
+
+    .flow-map {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .flow-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+      width: 100%;
+    }
+
+    .flow-card:hover,
+    .flow-card.active {
+      border-color: var(--brand);
+      background: #f0f7ef;
+    }
+
+    .flow-card strong {
+      display: block;
+      font-size: 0.88rem;
+      margin-bottom: 4px;
+    }
+
+    .flow-card span {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .prototype {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 36px;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      .prototype { grid-template-columns: 1fr; justify-items: center; }
+    }
+
+    .phone {
+      width: var(--phone-w);
+      height: var(--phone-h);
+      background: #111;
+      border-radius: 36px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 24px;
+    }
+
+    .phone-inner {
+      width: 100%;
+      height: 100%;
+      background: var(--surface);
+      border-radius: 26px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .status-bar {
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+      flex-shrink: 0;
+    }
+
+    .screen {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      min-height: 0;
+      padding: 8px 18px 20px;
+    }
+
+    .screen.active { display: flex; }
+
+    .app-header {
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .app-header .app-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid var(--line);
+    }
+
+    .app-header .mark-wrap { min-width: 0; }
+
+    .app-header .mark {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 1.55rem;
+      color: var(--brand);
+      line-height: 1;
+    }
+
+    .app-header .sub {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .headline {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 1.65rem;
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+
+    .hint {
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      margin-bottom: 18px;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: auto;
+    }
+
+    .mode-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      padding: 16px;
+      cursor: pointer;
+      font: inherit;
+      color: inherit;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .mode-btn:hover { border-color: var(--brand); background: #e4efe1; }
+
+    .mode-btn .label {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .mode-btn .desc {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .btn {
+      appearance: none;
+      border: none;
+      font: inherit;
+      font-weight: 600;
+      font-size: 0.88rem;
+      padding: 14px 16px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.15s, color 0.15s, opacity 0.15s;
+    }
+
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-primary {
+      background: var(--brand);
+      color: #f7faf6;
+    }
+
+    .btn-primary:hover:not(:disabled) { background: var(--brand-hover); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink-soft);
+      border: 1px solid var(--line);
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid #e0b4b4;
+    }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .camera-view {
+      flex: 1;
+      min-height: 0;
+      background:
+        linear-gradient(180deg, rgba(26,36,25,0.15), rgba(26,36,25,0.45)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='360' viewBox='0 0 280 360'%3E%3Crect fill='%23c8d6c0' width='280' height='360'/%3E%3Cellipse cx='70' cy='220' rx='40' ry='28' fill='%23c45c26'/%3E%3Cellipse cx='130' cy='200' rx='36' ry='30' fill='%23e8b84a'/%3E%3Cellipse cx='190' cy='230' rx='34' ry='26' fill='%237a9e4a'/%3E%3Ccircle cx='100' cy='160' r='22' fill='%23f2f2e8'/%3E%3Ccircle cx='160' cy='155' r='18' fill='%23f0ece0'/%3E%3Crect x='40' y='260' width='90' height='40' rx='8' fill='%23a67c52'/%3E%3C/svg%3E") center/cover;
+      border: 1px solid var(--line);
+      position: relative;
+      margin-bottom: 14px;
+    }
+
+    .camera-view .frame {
+      position: absolute;
+      inset: 18px;
+      border: 1.5px solid rgba(247, 250, 246, 0.85);
+      pointer-events: none;
+    }
+
+    .camera-view .cap {
+      position: absolute;
+      left: 14px;
+      bottom: 14px;
+      color: #f7faf6;
+      font-size: 0.72rem;
+      background: rgba(26, 36, 25, 0.55);
+      padding: 6px 10px;
+    }
+
+    .shutter {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 3px solid var(--brand);
+      background: var(--surface);
+      margin: 0 auto 8px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    .shutter span {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--brand);
+      display: block;
+    }
+
+    .loading {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 14px;
+      color: var(--ink-soft);
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--line);
+      border-top-color: var(--brand);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .product-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 8px 0 20px;
+    }
+
+    .product-list li {
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      padding: 8px 12px;
+      font-size: 0.84rem;
+      font-weight: 500;
+    }
+
+    .conf {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .field {
+      width: 100%;
+      min-height: 110px;
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 12px 14px;
+      font: inherit;
+      font-size: 0.9rem;
+      color: var(--ink);
+      resize: none;
+      margin-bottom: 12px;
+    }
+
+    .field:focus {
+      outline: 2px solid rgba(31, 92, 58, 0.35);
+      border-color: var(--brand);
+    }
+
+    .field::placeholder { color: #9aa894; }
+
+    .recipe-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: auto;
+      flex: 1;
+      min-height: 0;
+      margin-bottom: 12px;
+      padding-right: 2px;
+    }
+
+    .recipe-item {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 14px;
+      cursor: pointer;
+      font: inherit;
+      color: inherit;
+    }
+
+    .recipe-item:hover { border-color: var(--brand); }
+
+    .recipe-item .title {
+      font-weight: 600;
+      font-size: 0.92rem;
+      margin-bottom: 4px;
+    }
+
+    .recipe-item .meta-line {
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+
+    .steps {
+      list-style: none;
+      counter-reset: step;
+      overflow: auto;
+      flex: 1;
+      min-height: 0;
+      margin: 8px 0 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .steps li {
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      font-size: 0.86rem;
+      color: var(--ink-soft);
+    }
+
+    .steps li::before {
+      content: counter(step);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--brand);
+      color: #f7faf6;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: grid;
+      place-items: center;
+    }
+
+    .banner {
+      background: #f4e8e6;
+      border: 1px solid #e0b4b4;
+      color: var(--danger);
+      padding: 12px 14px;
+      font-size: 0.84rem;
+      margin-bottom: 16px;
+    }
+
+    .banner.ok {
+      background: #e6f0e8;
+      border-color: #a8c4ae;
+      color: var(--ok);
+    }
+
+    .back {
+      appearance: none;
+      border: none;
+      background: none;
+      color: var(--muted);
+      font: inherit;
+      font-size: 0.78rem;
+      cursor: pointer;
+      margin-bottom: 10px;
+      padding: 0;
+      text-align: left;
+    }
+
+    .back:hover { color: var(--brand); }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 22px 24px;
+    }
+
+    .panel h3 {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 400;
+      margin-bottom: 10px;
+    }
+
+    .panel p, .panel li {
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+    }
+
+    .panel ul {
+      padding-left: 1.1rem;
+      margin: 8px 0 0;
+    }
+
+    .panel li { margin: 4px 0; }
+
+    .specs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 700px) {
+      .specs { grid-template-columns: 1fr; }
+    }
+
+    .nav-dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-top: 14px;
+    }
+
+    .nav-dots button {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: none;
+      background: var(--line);
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .nav-dots button.active { background: var(--brand); }
+
+    .screen-label {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .screen-label strong { color: var(--ink-soft); }
+
+    .phone-inner.is-splash .status-bar {
+      background: var(--brand);
+      color: rgba(247, 250, 246, 0.75);
+    }
+
+    .screen[data-screen="splash"] {
+      padding: 0;
+    }
+
+    .screen-splash {
+      background: var(--brand);
+      color: #f7faf6;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px 28px 36px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .screen-splash .splash-logo {
+      width: 112px;
+      height: 112px;
+      border-radius: 28px;
+      object-fit: cover;
+      display: block;
+      margin: 0 auto 18px;
+      border: 1px solid rgba(247, 250, 246, 0.18);
+    }
+
+    .screen-splash .splash-title {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 1.85rem;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .screen-splash .splash-sub {
+      font-size: 0.78rem;
+      opacity: 0.78;
+      max-width: 14rem;
+      margin: 0 auto;
+    }
+
+    .app-header .mark-wrap { min-width: 0; }
+
+    .logo-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 40px;
+    }
+
+    .logo-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 14px;
+      text-align: center;
+    }
+
+    .logo-card img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 28px;
+      display: block;
+      margin: 0 auto 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .logo-card img.preview-dark {
+      background: #1a2419;
+      border-color: #1a2419;
+    }
+
+    .logo-card strong {
+      display: block;
+      font-size: 0.86rem;
+      margin-bottom: 4px;
+    }
+
+    .logo-card span,
+    .logo-card code {
+      font-size: 0.72rem;
+      color: var(--muted);
+      word-break: break-all;
+    }
+
+    .logo-card .uses {
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: var(--ink-soft);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <div>
+        <div class="brand">AI Sous-Chef<br /><em>макет MVP</em></div>
+        <p class="lede">
+          UI мобильного приложения по базовому пути из
+          <code>docs/mvp.md</code> и ответам API
+          (<code>products[]</code> → <code>recipes[{title, steps}]</code>).
+          Без авторизации, без чата, один запрос — один ответ.
+        </p>
+        <div class="meta">
+          <span class="chip">React Native</span>
+          <span class="chip">Без логина</span>
+          <span class="chip">Фото или текст</span>
+          <span class="chip">Подтверждение продуктов</span>
+        </div>
+      </div>
+      <aside class="legend">
+        <h2>Базовый путь</h2>
+        <ol>
+          <li>Splash → главный экран</li>
+          <li>Главный экран → Фото или Текст</li>
+          <li>Фото: камера → распознавание → подтверждение</li>
+          <li>Текст: ввод продуктов → сразу рецепты</li>
+          <li>Список рецептов → детали со шагами</li>
+          <li>«На главную» — сброс контекста</li>
+        </ol>
+      </aside>
+    </header>
+
+    <h2 class="section-title">Логотипы и иконки</h2>
+    <div class="logo-gallery">
+      <figure class="logo-card">
+        <img src="../branding/app-icon.png" alt="Базовый логотип AI Sous-Chef" width="120" height="120" />
+        <strong>Базовый</strong>
+        <code>../branding/app-icon.png</code>
+        <p class="uses">Иконка приложения · аватар Telegram · splash</p>
+      </figure>
+      <figure class="logo-card">
+        <img src="../branding/app-icon-no-accent.png" alt="Логотип без акцента" width="120" height="120" />
+        <strong>Без акцента</strong>
+        <code>../branding/app-icon-no-accent.png</code>
+        <p class="uses">Когда нужен только green/white</p>
+      </figure>
+      <figure class="logo-card">
+        <img src="../branding/app-icon-mono-light.png" alt="Светлый монохром" width="120" height="120" />
+        <strong>Mono light</strong>
+        <code>../branding/app-icon-mono-light.png</code>
+        <p class="uses">Светлый splash / светлая тема</p>
+      </figure>
+      <figure class="logo-card">
+        <img src="../branding/app-icon-mono-dark.png" alt="Тёмный монохром" width="120" height="120" />
+        <strong>Mono dark</strong>
+        <code>../branding/app-icon-mono-dark.png</code>
+        <p class="uses">Тёмный splash</p>
+      </figure>
+      <figure class="logo-card">
+        <img src="../branding/app-icon-sc.png" alt="Монограмма SC" width="120" height="120" />
+        <strong>Монограмма SC</strong>
+        <code>../branding/app-icon-sc.png</code>
+        <p class="uses">Альтернатива аватару / иконке</p>
+      </figure>
+      <figure class="logo-card">
+        <img src="../branding/app-icon-wordmark.png" alt="Вордмарк Sous Chef" width="120" height="120" />
+        <strong>Wordmark</strong>
+        <code>../branding/app-icon-wordmark.png</code>
+        <p class="uses">Крупные поверхности; на мелком круге хуже</p>
+      </figure>
+    </div>
+
+    <h2 class="section-title">Интерактивный прототип</h2>
+
+    <div class="flow-map" id="flow-map"></div>
+
+    <div class="prototype">
+      <div>
+        <div class="phone" aria-label="Макет телефона">
+          <div class="phone-inner is-splash" id="phone-inner">
+            <div class="status-bar"><span>9:41</span><span>AI Sous-Chef</span></div>
+
+            <!-- 0. Splash -->
+            <section class="screen active" data-screen="splash">
+              <div class="screen-splash">
+                <img class="splash-logo" src="../branding/app-icon.png" alt="" width="112" height="112" />
+                <div class="splash-title">AI Sous-Chef</div>
+                <p class="splash-sub">Что приготовить из того, что есть</p>
+              </div>
+            </section>
+
+            <!-- 1. Home -->
+            <section class="screen" data-screen="home">
+              <div class="app-header">
+                <img class="app-logo" src="../branding/app-icon.png" alt="" width="44" height="44" />
+                <div class="mark-wrap">
+                  <div class="mark">AI Sous-Chef</div>
+                  <div class="sub">Что приготовить из того, что есть?</div>
+                </div>
+              </div>
+              <h1 class="headline">Выберите способ</h1>
+              <p class="hint">Без регистрации. Один запрос — один набор рецептов. История не сохраняется.</p>
+              <div class="actions">
+                <button class="mode-btn" data-go="camera">
+                  <div class="label">Фото продуктов</div>
+                  <div class="desc">Снимите продукты на столе или в холодильнике. Мы распознаем их и предложим рецепты.</div>
+                </button>
+                <button class="mode-btn" data-go="text">
+                  <div class="label">Список текстом</div>
+                  <div class="desc">Напишите ингредиенты через запятую — сразу подберём блюда.</div>
+                </button>
+              </div>
+            </section>
+
+            <!-- 2. Camera -->
+            <section class="screen" data-screen="camera">
+              <button class="back" data-go="home">← На главную</button>
+              <h1 class="headline">Сфотографируйте продукты</h1>
+              <p class="hint">Держите кадр ровно, при хорошем свете. В кадре — только еда.</p>
+              <div class="camera-view">
+                <div class="frame"></div>
+                <div class="cap">Камера React Native</div>
+              </div>
+              <button class="shutter" data-go="recognizing" aria-label="Сделать фото"><span></span></button>
+            </section>
+
+            <!-- 3. Recognizing -->
+            <section class="screen" data-screen="recognizing">
+              <div class="loading">
+                <div class="spinner" aria-hidden="true"></div>
+                <div>
+                  <strong style="color:var(--ink);display:block;margin-bottom:4px">Распознаём продукты</strong>
+                  Обычно до 5 секунд · <code>POST /api/recognize</code>
+                </div>
+                <button class="btn btn-primary" data-go="confirm" style="margin-top:8px;width:auto;min-width:180px">Показать результат</button>
+              </div>
+            </section>
+
+            <!-- 4. Confirm -->
+            <section class="screen" data-screen="confirm">
+              <button class="back" data-go="home">← На главную</button>
+              <h1 class="headline">Продукты распознаны</h1>
+              <p class="hint">Проверьте список. Поле ввода скрыто — только подтверждение.</p>
+              <ul class="product-list">
+                <li>яйца</li>
+                <li>молоко</li>
+                <li>сыр</li>
+                <li>зелень</li>
+              </ul>
+              <p class="conf">confidence ≈ 0.85</p>
+              <div class="actions">
+                <div class="btn-row">
+                  <button class="btn btn-primary" data-go="loading-recipes">Верно</button>
+                  <button class="btn btn-danger" data-go="retry-photo">Неверно</button>
+                </div>
+              </div>
+            </section>
+
+            <!-- 5. Retry photo -->
+            <section class="screen" data-screen="retry-photo">
+              <div class="banner">Не удалось подтвердить список. Попробуйте отправить фото ещё раз.</div>
+              <h1 class="headline">Повторить снимок?</h1>
+              <p class="hint">По mvp.md после «Неверно» — новый снимок, без правки списка вручную.</p>
+              <div class="actions">
+                <button class="btn btn-primary" data-go="camera">Сделать фото снова</button>
+                <button class="btn btn-ghost" data-go="home">На главную</button>
+              </div>
+            </section>
+
+            <!-- 6. Text input -->
+            <section class="screen" data-screen="text">
+              <button class="back" data-go="home">← На главную</button>
+              <h1 class="headline">Что есть на кухне?</h1>
+              <p class="hint">По mvp.md текст идёт сразу в подбор рецептов — отдельный шаг подтверждения не нужен.</p>
+              <textarea class="field" id="products-input" placeholder="например: курица, рис, лук">курица, рис, лук</textarea>
+              <div class="actions">
+                <button class="btn btn-primary" data-go="loading-recipes">Найти рецепты</button>
+              </div>
+            </section>
+
+            <!-- 7. Loading recipes -->
+            <section class="screen" data-screen="loading-recipes">
+              <div class="loading">
+                <div class="spinner" aria-hidden="true"></div>
+                <div>
+                  <strong style="color:var(--ink);display:block;margin-bottom:4px">Подбираем рецепты</strong>
+                  <code>POST /api/recipes</code> · products[]
+                </div>
+                <button class="btn btn-primary" data-go="recipes" style="margin-top:8px;width:auto;min-width:180px">Показать рецепты</button>
+              </div>
+            </section>
+
+            <!-- 8. Recipes list -->
+            <section class="screen" data-screen="recipes">
+              <button class="back" data-go="home">← На главную</button>
+              <h1 class="headline">Варианты блюд</h1>
+              <p class="hint">Выберите рецепт, чтобы открыть пошаговую инструкцию.</p>
+              <ul class="recipe-list">
+                <li>
+                  <button class="recipe-item" data-go="recipe-detail" data-recipe="0">
+                    <div class="title">Яичница</div>
+                    <div class="meta-line">3 шага</div>
+                  </button>
+                </li>
+                <li>
+                  <button class="recipe-item" data-go="recipe-detail" data-recipe="1">
+                    <div class="title">Яичница с сыром</div>
+                    <div class="meta-line">4 шага</div>
+                  </button>
+                </li>
+              </ul>
+              <button class="btn btn-ghost" data-go="home">На главную</button>
+            </section>
+
+            <!-- 9. Recipe detail -->
+            <section class="screen" data-screen="recipe-detail">
+              <button class="back" data-go="recipes">← К списку</button>
+              <h1 class="headline" id="recipe-title">Яичница с сыром</h1>
+              <p class="hint">Пошаговое приготовление. Без чата и уточнений в MVP.</p>
+              <ol class="steps" id="recipe-steps">
+                <li>Разбить яйца</li>
+                <li>Добавить молоко</li>
+                <li>Добавить сыр</li>
+                <li>Разогреть на сковороде</li>
+              </ol>
+              <div class="actions">
+                <button class="btn btn-ghost" data-go="home">На главную</button>
+              </div>
+            </section>
+
+            <!-- 10. Error -->
+            <section class="screen" data-screen="error">
+              <div class="banner">Сервис временно недоступен (502 ai_service_error).</div>
+              <h1 class="headline">Не получилось</h1>
+              <p class="hint">CV/LLM недоступны или продукты не найдены (422). Предложите повторить запрос.</p>
+              <div class="actions">
+                <button class="btn btn-primary" data-go="home">На главную</button>
+              </div>
+            </section>
+          </div>
+        </div>
+        <div class="nav-dots" id="nav-dots"></div>
+        <p class="screen-label">Сейчас: <strong id="screen-name">Splash</strong></p>
+      </div>
+
+      <div class="panel" id="spec-panel">
+        <h3>Splash</h3>
+        <p>Короткий брендовый экран при запуске. Логотип по центру, без лишнего UI.</p>
+        <ul>
+          <li>Иконка приложения по центру</li>
+          <li>Фон brand green</li>
+          <li>Дальше — главный экран</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="specs">
+      <div class="panel">
+        <h3>Карта экранов (mobile)</h3>
+        <ul>
+          <li><strong>Splash</strong> — логотип + название</li>
+          <li><strong>Home</strong> — фото / текст</li>
+          <li><strong>Camera</strong> — React Native</li>
+          <li><strong>Recognizing</strong> — лоадер ≤5 с</li>
+          <li><strong>Confirm</strong> — products + Верно / Неверно</li>
+          <li><strong>Retry</strong> — «отправьте фото ещё раз»</li>
+          <li><strong>Text</strong> — поле + «Найти рецепты»</li>
+          <li><strong>Recipes</strong> — список title</li>
+          <li><strong>Detail</strong> — steps[]</li>
+          <li><strong>Error</strong> — 422 / 502</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Сознательно вне UI</h3>
+        <ul>
+          <li>Чат и диалог с ИИ</li>
+          <li>Правка списка продуктов вручную после фото</li>
+          <li>Авторизация / профиль</li>
+          <li>История запросов</li>
+          <li>Список покупок, калории, диеты</li>
+          <li>Соцфункции и умная техника</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Визуальное направление</h3>
+        <ul>
+          <li>Кухонный «sage/forest» — зелёный акцент, светлая поверхность</li>
+          <li>Шрифты: Instrument Serif (бренд) + Sora (UI)</li>
+          <li>Минимум карточек: только интерактивные блоки (режимы, рецепты)</li>
+          <li>Один job на экран — без дашборда и вторичных виджетов</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Telegram (параллельный клиент)</h3>
+        <ul>
+          <li>/start → intro</li>
+          <li>фото/текст → «Продукты распознаны» + inline-кнопки</li>
+          <li>Верно → список рецептов в сообщениях</li>
+          <li>Неверно → «попробуйте ещё раз»</li>
+          <li>Тот же backend, без отдельного «чатового» UX в приложении</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SCREENS = [
+      { id: "splash", name: "Splash", blurb: "Короткий брендовый экран при запуске. Логотип по центру, без лишнего UI.", bullets: ["Иконка приложения по центру", "Фон brand green", "Дальше — главный экран"] },
+      { id: "home", name: "Главный экран", blurb: "Точка входа без авторизации. Две равнозначные точки входа — фото и текст — с короткой инструкцией у каждой.", bullets: ["Нет таббара, нет профиля, нет истории", "Бренд — главный визуальный якорь", "После любого сценария — возврат сюда сбрасывает контекст"] },
+      { id: "camera", name: "Камера", blurb: "Системная камера через React Native. После снимка — экран без поля ввода, сразу распознавание.", bullets: ["Превью кадра + шторка", "Подсказка по свету/кадру", "Шторка ведёт на Recognizing"] },
+      { id: "recognizing", name: "Распознавание", blurb: "Ожидание ответа CV/LLM. По mvp.md — до 5 секунд. Затем Confirm.", bullets: ["POST /api/recognize { image }", "При ошибке → Error", "Дальше — экран подтверждения"] },
+      { id: "confirm", name: "Подтверждение продуктов", blurb: "Показать products[] и две кнопки. Поле ввода скрыто, чтобы не путать с текстовым сценарием.", bullets: ["Верно → /api/recipes", "Неверно → Retry", "confidence можно показать мелко"] },
+      { id: "retry-photo", name: "Повтор фото", blurb: "Сообщение из mvp.md: попробуйте отправить фото ещё раз. Без редактирования чипов.", bullets: ["Сделать фото снова", "Или На главную"] },
+      { id: "text", name: "Текстовый ввод", blurb: "Экран с полем и «Найти рецепты». По mvp.md распознавание отдельно не запускается — сразу recipes.", bullets: ["Пример: курица, рис, лук", "Можно позже добавить confirm, если выровняете с ботом"] },
+      { id: "loading-recipes", name: "Подбор рецептов", blurb: "Лоадер на POST /api/recipes. Затем список.", bullets: ["Тот же лоадер из фото и текста", "Дальше — список рецептов"] },
+      { id: "recipes", name: "Список рецептов", blurb: "Список title из ответа API. Тап открывает шаги. Кнопка «На главную» обязательна.", bullets: ["Минимум метаданных: число шагов", "Без рейтингов и картинок в MVP"] },
+      { id: "recipe-detail", name: "Рецепт · шаги", blurb: "Успех MVP: пошаговые инструкции. steps[] нумерованным списком.", bullets: ["Данные из api-design.md", "Без чата уточнений"] },
+      { id: "error", name: "Ошибка", blurb: "Единый экран для 422 / 502 / сетевых сбоев с возвратом на Home.", bullets: ["Короткий текст причины", "Один CTA — На главную"] },
+    ];
+
+    const RECIPES = [
+      { title: "Яичница", steps: ["Разбить яйца", "Добавить молоко", "Разогреть на сковороде"] },
+      { title: "Яичница с сыром", steps: ["Разбить яйца", "Добавить молоко", "Добавить сыр", "Разогреть на сковороде"] },
+    ];
+
+    let current = "splash";
+
+    const map = document.getElementById("flow-map");
+    const dots = document.getElementById("nav-dots");
+    const nameEl = document.getElementById("screen-name");
+    const panel = document.getElementById("spec-panel");
+    const phoneInner = document.getElementById("phone-inner");
+
+    SCREENS.forEach((s, i) => {
+      const btn = document.createElement("button");
+      btn.className = "flow-card" + (i === 0 ? " active" : "");
+      btn.dataset.go = s.id;
+      btn.innerHTML = `<strong>${i + 1}. ${s.name}</strong><span>${s.id}</span>`;
+      map.appendChild(btn);
+
+      const dot = document.createElement("button");
+      dot.dataset.go = s.id;
+      if (i === 0) dot.classList.add("active");
+      dots.appendChild(dot);
+    });
+
+    function show(id) {
+      current = id;
+      document.querySelectorAll(".screen").forEach((el) => {
+        el.classList.toggle("active", el.dataset.screen === id);
+      });
+      document.querySelectorAll(".flow-card, .nav-dots button").forEach((el) => {
+        el.classList.toggle("active", el.dataset.go === id);
+      });
+      phoneInner.classList.toggle("is-splash", id === "splash");
+      const meta = SCREENS.find((s) => s.id === id);
+      nameEl.textContent = meta ? meta.name : id;
+      if (meta) {
+        panel.innerHTML = `<h3>${meta.name}</h3><p>${meta.blurb}</p><ul>${meta.bullets.map((b) => `<li>${b}</li>`).join("")}</ul>`;
+      }
+    }
+
+    document.body.addEventListener("click", (e) => {
+      const go = e.target.closest("[data-go]");
+      if (!go) return;
+      const id = go.dataset.go;
+      if (go.dataset.recipe !== undefined) {
+        const r = RECIPES[Number(go.dataset.recipe)] || RECIPES[1];
+        document.getElementById("recipe-title").textContent = r.title;
+        document.getElementById("recipe-steps").innerHTML = r.steps.map((s) => `<li>${s}</li>`).join("");
+      }
+      show(id);
+    });
+
+    show("splash");
+  </script>
+</body>
+</html>
