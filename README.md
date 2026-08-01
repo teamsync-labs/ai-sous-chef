@@ -39,6 +39,7 @@ infra/               деплой и окружения
 ## Документация
 
 - [Vision](docs/vision.md)
+- [Yandex Cloud API: CV + LLM](docs/ai/yandex-api-quickstart.md)
 - [Участие в разработке](CONTRIBUTING.md)
 
 ## Локальный запуск
