@@ -9,7 +9,7 @@ async def recognize(base64: str | None = None, text: str | None = None) -> dict:
     async with httpx.AsyncClient(timeout=30) as client:
         response = await client.post(
             f"{API_BASE}/recognize",
-            json={"base64": base64, "text": text}
+            json={"img_base64": base64, "text": text}
         )
         response.raise_for_status()
         return response.json()
