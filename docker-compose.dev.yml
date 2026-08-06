@@ -1,0 +1,6 @@
+# Local / future GitHub Environment `dev`
+# Usage: docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+services:
+  nginx:
+    ports:
+      - "${NGINX_BIND:-0.0.0.0}:${NGINX_PORT:-8080}:80"
