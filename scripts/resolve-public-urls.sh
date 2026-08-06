@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Derive NGINX_BIND / APP_PUBLIC_URL / HEALTHCHECK_URL from ACCESS_VIA_DOMAIN.
+# Expects in env: ACCESS_VIA_DOMAIN, SERVER_HOST, NGINX_PORT, APP_DOMAIN (optional until domain mode).
+set -euo pipefail
+
+ACCESS_VIA_DOMAIN="${ACCESS_VIA_DOMAIN:-false}"
+SERVER_HOST="${SERVER_HOST:?SERVER_HOST required}"
+NGINX_PORT="${NGINX_PORT:?NGINX_PORT required}"
+APP_DOMAIN="${APP_DOMAIN:-}"
+
+if [ "$ACCESS_VIA_DOMAIN" = "true" ]; then
+  if [ -z "$APP_DOMAIN" ]; then
+    echo "APP_DOMAIN required when ACCESS_VIA_DOMAIN=true" >&2
+    exit 1
+  fi
+  NGINX_BIND=127.0.0.1
+  APP_PUBLIC_URL="https://${APP_DOMAIN}"
+else
+  NGINX_BIND=0.0.0.0
+  APP_PUBLIC_URL="http://${SERVER_HOST}:${NGINX_PORT}"
+fi
+
+HEALTHCHECK_URL="${APP_PUBLIC_URL%/}/health"
+
+export NGINX_BIND APP_PUBLIC_URL HEALTHCHECK_URL
+echo "NGINX_BIND=${NGINX_BIND}"
+echo "APP_PUBLIC_URL=${APP_PUBLIC_URL}"
+echo "HEALTHCHECK_URL=${HEALTHCHECK_URL}"
