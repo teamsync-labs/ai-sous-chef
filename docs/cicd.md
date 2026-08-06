@@ -13,33 +13,42 @@
 
 Прямой push в `main`/`dev` деплой **не** запускает.
 
-## Environment `prod` (сейчас)
+## Environment `prod`
 
-VPS: `157.22.207.238` · пользователь `ai-sous-chef-prod` · код `/var/www/ai-sous-chef/prod`
+Пользователь на VPS: `ai-sous-chef-prod`. Хост, пути и порт — только в GitHub Variables (в репо не дублируем).
 
 ### Secrets
 
 | Name | Значение |
 |------|----------|
-| `SSH_PRIVATE_KEY` | `~/.ssh/ai-sous-chef_deploy_prod` (private) |
+| `SSH_PRIVATE_KEY` | deploy-ключ пользователя `ai-sous-chef-prod` (private) |
 | `POSTGRES_PASSWORD` | сырой пароль (можно со спецсимволами `$`, `!`, `@`, `#` …) |
 
 **Не нужен** `DATABASE_URL`: его собирает `scripts/vps-write-deploy-env.sh` из `POSTGRES_USER`/`POSTGRES_PASSWORD`/`POSTGRES_DB` с **URL-encode** пароля. Если secret `DATABASE_URL` уже создан — удали, чтобы не путаться.
 
 ### Variables (только эти)
 
-| Name | Значение |
-|------|----------|
-| `SERVER_HOST` | `157.22.207.238` |
+| Name | Смысл |
+|------|--------|
+| `SERVER_HOST` | IP или hostname VPS |
 | `SERVER_USER` | `ai-sous-chef-prod` |
-| `SERVER_PATH` | `/var/www/ai-sous-chef/prod` |
-| `DATA_PATH` | `/var/www/ai-sous-chef/prod_data` |
+| `SERVER_PATH` | каталог кода на VPS (без публикации в docs) |
+| `DATA_PATH` | каталог данных на VPS |
 | `COMPOSE_PROJECT_NAME` | `ai-sous-chef-prod` |
 | `NGINX_PORT` | `3101` |
-| `ACCESS_VIA_DOMAIN` | `false` |
+| `ACCESS_VIA_DOMAIN` | `false` до host nginx+TLS |
 | `APP_DOMAIN` | `ai-sous-chef.ru` |
 
 **Удалить из Environment, если уже добавили:** `NGINX_BIND`, `HEALTHCHECK_URL`, `APP_PUBLIC_URL`, `IMAGE_PREFIX`, `IMAGE_TAG`, `POSTGRES_USER`, `POSTGRES_DB`, `DATABASE_URL`.
+
+### Требования на VPS
+
+На сервере нужны: Docker Engine, Compose plugin, **`rsync`**, OpenSSH. Deploy-пользователь — в группе `docker`.
+
+```bash
+# под root
+apt-get update && apt-get install -y rsync
+```
 
 ### Экранирование паролей (как в geek-tik)
 
@@ -59,12 +68,12 @@ VPS: `157.22.207.238` · пользователь `ai-sous-chef-prod` · код 
 | `IMAGE_PREFIX` | `ai-sous-chef` |
 | `POSTGRES_USER` / `POSTGRES_DB` | `postgres` / `ai_sous_chef` |
 
-Сейчас (`ACCESS_VIA_DOMAIN=false`): `http://157.22.207.238:3101/health`.  
-После host nginx + TLS: `ACCESS_VIA_DOMAIN=true` → `https://ai-sous-chef.ru/health`.
+Пока `ACCESS_VIA_DOMAIN=false`: healthcheck по `http://$SERVER_HOST:$NGINX_PORT/health`.  
+После host nginx + TLS: `ACCESS_VIA_DOMAIN=true` → `https://$APP_DOMAIN/health`.
 
 ## Environment `dev` (позже)
 
-Те же имена. Порт `3100`, пути `…/dev` и `dev_data`, `COMPOSE_PROJECT_NAME=ai-sous-chef-dev`. Environment в GitHub пока **не** создаём.
+Те же имена. Порт `3100`, отдельные `SERVER_PATH`/`DATA_PATH`/`COMPOSE_PROJECT_NAME`. Environment в GitHub пока **не** создаём.
 
 ## Ручной redeploy
 
