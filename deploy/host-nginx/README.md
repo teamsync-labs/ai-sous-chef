@@ -47,6 +47,7 @@ certbot --nginx -d ai-sous-chef.ru -d www.ai-sous-chef.ru
 
 После успеха скопируй обновлённый `/etc/nginx/sites-available/ai-sous-chef-prod.conf`
 обратно в репо (`deploy/host-nginx/`) — источник правды с SSL-блоками.
+Проверь, что www→apex редирект на **https** (certbot иногда оставляет `http://`).
 
 ### 3. Закрыть прямой доступ по порту compose
 
