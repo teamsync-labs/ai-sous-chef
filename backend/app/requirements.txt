@@ -5,5 +5,4 @@ sqlalchemy[asyncio]==2.1.0b3
 asyncpg==0.31.0
 alembic==1.18.5
 pytest>=7.0.0
-httpx>=0.25.0
-python-dotenv>=1.0.0
+openai==2.52.0
