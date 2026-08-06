@@ -24,7 +24,7 @@
 | `SSH_PRIVATE_KEY` | deploy-ключ пользователя `ai-sous-chef-prod` (private) |
 | `POSTGRES_PASSWORD` | сырой пароль (можно со спецсимволами `$`, `!`, `@`, `#` …) |
 
-**Не нужен** `DATABASE_URL`: его собирает `scripts/vps-write-deploy-env.sh` из `POSTGRES_USER`/`POSTGRES_PASSWORD`/`POSTGRES_DB` с **URL-encode** пароля. Если secret `DATABASE_URL` уже создан — удали, чтобы не путаться.
+**Не нужен** `DATABASE_URL`: его собирает `scripts/vps-write-deploy-env.sh` из `POSTGRES_USER`/`POSTGRES_PASSWORD`/`POSTGRES_DB` с **URL-encode** пароля. Лишний secret `DATABASE_URL` в Environment лучше удалить, чтобы не путаться.
 
 ### Variables (только эти)
 
@@ -39,7 +39,7 @@
 | `ACCESS_VIA_DOMAIN` | `false` до host nginx+TLS |
 | `APP_DOMAIN` | `ai-sous-chef.ru` |
 
-**Удалить из Environment, если уже добавили:** `NGINX_BIND`, `HEALTHCHECK_URL`, `APP_PUBLIC_URL`, `IMAGE_PREFIX`, `IMAGE_TAG`, `POSTGRES_USER`, `POSTGRES_DB`, `DATABASE_URL`.
+Из Environment не используются (лишние — убрать): `NGINX_BIND`, `HEALTHCHECK_URL`, `APP_PUBLIC_URL`, `IMAGE_PREFIX`, `IMAGE_TAG`, `POSTGRES_USER`, `POSTGRES_DB`, `DATABASE_URL`.
 
 ### Требования на VPS
 
