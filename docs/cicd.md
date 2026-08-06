@@ -71,6 +71,8 @@ apt-get update && apt-get install -y rsync
 Пока `ACCESS_VIA_DOMAIN=false`: healthcheck по `http://$SERVER_HOST:$NGINX_PORT/health`.  
 После host nginx + TLS: `ACCESS_VIA_DOMAIN=true` → `https://$APP_DOMAIN/health`.
 
+Хостовый nginx: [`deploy/host-nginx/`](../deploy/host-nginx/) (vhost + maintenance). Копируется на VPS вручную — см. README там.
+
 ## Environment `dev` (позже)
 
 Те же имена. Порт `3100`, отдельные `SERVER_PATH`/`DATA_PATH`/`COMPOSE_PROJECT_NAME`. Environment в GitHub пока **не** создаём.
