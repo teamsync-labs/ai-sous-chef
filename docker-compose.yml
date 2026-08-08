@@ -64,6 +64,21 @@ services:
       start_period: 30s
     restart: unless-stopped
 
+  bot:
+    build:
+      context: ./backend/bot
+      dockerfile: Dockerfile
+    image: ${IMAGE_PREFIX:-ai-sous-chef}-bot:${IMAGE_TAG:-latest}
+    environment:
+      TG_TOKEN: ${TG_TOKEN:?TG_TOKEN is required}
+      TG_PROXY_URL: ${TG_PROXY_URL:?TG_PROXY_URL is required}
+      API_BASE: ${API_BASE:-http://backend:8000/app/api}
+      PYTHONUNBUFFERED: "1"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
   nginx:
     image: nginx:alpine
     depends_on:

@@ -52,6 +52,7 @@ jobs:
             echo "prefix=${PREFIX}"
             echo "frontend=${PREFIX}-frontend:${TAG}"
             echo "backend=${PREFIX}-backend:${TAG}"
+            echo "bot=${PREFIX}-bot:${TAG}"
             echo "nginx_bind=${NGINX_BIND}"
             echo "app_public_url=${APP_PUBLIC_URL}"
             echo "healthcheck_url=${HEALTHCHECK_URL}"
@@ -61,12 +62,14 @@ jobs:
         run: |
           docker build -t "${{ steps.meta.outputs.frontend }}" ./frontend
           docker build -t "${{ steps.meta.outputs.backend }}" ./backend
+          docker build -t "${{ steps.meta.outputs.bot }}" ./backend/bot
 
       - name: Save images
         run: |
           docker save \
             "${{ steps.meta.outputs.frontend }}" \
             "${{ steps.meta.outputs.backend }}" \
+            "${{ steps.meta.outputs.bot }}" \
             | gzip > /tmp/ai-sous-chef-images.tar.gz
 
       - name: Setup SSH
@@ -106,6 +109,8 @@ jobs:
           APP_PUBLIC_URL: ${{ steps.meta.outputs.app_public_url }}
           HEALTHCHECK_URL: ${{ steps.meta.outputs.healthcheck_url }}
           DATA_PATH: ${{ vars.DATA_PATH }}
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_PROXY_URL: ${{ secrets.TG_PROXY_URL }}
         run: |
           : "${POSTGRES_USER:=postgres}"
           : "${POSTGRES_DB:=ai_sous_chef}"

@@ -2,11 +2,13 @@
 
 Модель: сборка образов на GitHub Actions runner → `docker save` → scp → `docker load` на VPS → `compose up` **без** `--build`. Registry нет.
 
+Образы: `frontend`, `backend`, `bot`. Telegram-бот — сервис в том же compose (`API_BASE=http://backend:8000/app/api`), secret `TG_TOKEN`.
+
 ## Workflows
 
 | Событие | Workflow | Действие |
 |---------|----------|----------|
-| PR → `main` / `dev` | `ci.yml` | сборка Docker-образов + import-smoke backend |
+| PR → `main` / `dev` | `ci.yml` | сборка образов frontend/backend/bot + import-smoke backend |
 | merge PR → `main` | `deploy-main.yml` | deploy **prod** |
 | merge PR → `dev` | `deploy-dev.yml` | deploy **dev** (Environment пока не создаём) |
 | `workflow_dispatch` | `deploy-main.yml` / `deploy-dev.yml` | ручной redeploy |
@@ -23,6 +25,8 @@
 |------|----------|
 | `SSH_PRIVATE_KEY` | deploy-ключ пользователя `ai-sous-chef-prod` (private) |
 | `POSTGRES_PASSWORD` | сырой пароль (можно со спецсимволами `$`, `!`, `@`, `#` …) |
+| `TG_TOKEN` | токен Telegram-бота (BotFather) |
+| `TG_PROXY_URL` | URL прокси до Telegram API |
 
 **Не нужен** `DATABASE_URL`: его собирает `scripts/vps-write-deploy-env.sh` из `POSTGRES_USER`/`POSTGRES_PASSWORD`/`POSTGRES_DB` с **URL-encode** пароля. Лишний secret `DATABASE_URL` в Environment лучше удалить, чтобы не путаться.
 
