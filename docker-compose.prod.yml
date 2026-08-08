@@ -1,0 +1,6 @@
+# Prod on VPS (GitHub Environment `prod`)
+# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+services:
+  nginx:
+    ports:
+      - "${NGINX_BIND:-0.0.0.0}:${NGINX_PORT:-3101}:80"

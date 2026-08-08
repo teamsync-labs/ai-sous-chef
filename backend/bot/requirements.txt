@@ -1,0 +1,4 @@
+aiogram==3.30.0
+python-dotenv==1.2.2
+aiohttp-socks==0.11.0
+httpx==0.28.1
