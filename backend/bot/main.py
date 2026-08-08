@@ -30,10 +30,10 @@ async def main():
     proxy_url = os.getenv("TG_PROXY_URL")
     session = None
     if proxy_url:
-        logger.info("Найден прокси URL %s", proxy_url)
+        logger.info("Прокси для Telegram API задан")
         session = AiohttpSession(proxy=proxy_url)
     else:
-        logger.info("TG_PROXY_URL не указан в .env. Запуск без прокси")
+        logger.info("TG_PROXY_URL не указан. Запуск без прокси")
 
     dp.include_routers(*routers)
     bot = Bot(token=token, session=session)
