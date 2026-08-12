@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  frontend-image:
+    name: Frontend image
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build frontend image
+        run: |
+          docker build -t ai-sous-chef-frontend:ci ./frontend
+
+  backend-image:
+    name: Backend image
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build backend image
+        run: |
+          docker build -t ai-sous-chef-backend:ci ./backend
+
+  bot-image:
+    name: Bot image
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build bot image
+        run: |
+          docker build -t ai-sous-chef-bot:ci ./backend/bot
+
+  backend-import:
+    name: Backend import smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: pip install -r app/requirements.txt
+      - name: Import app
+        env:
+          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/ai_sous_chef
+        run: python -c "from app.main import app; print(app.title)"

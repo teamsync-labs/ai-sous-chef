@@ -28,13 +28,14 @@ backend/
   app/               HTTP API, бизнес-логика, интеграции с LLM
   bot/               Telegram-клиент (тот же backend, отдельного API нет)
   tests/
-mobile/              Android-приложение (Kotlin)
 frontend/            сайт-визитка и страница команды
 prompts/             промпты, evals, фикстуры для AI-аналитика
 docs/                vision и прочая документация
 infra/               деплой и окружения
 .github/workflows/   CI/CD
 ```
+
+Мобильное приложение — отдельный репозиторий: [teamsync-labs/ai-sous-chef-app](https://github.com/teamsync-labs/ai-sous-chef-app).
 
 ## Документация
 
@@ -55,12 +56,28 @@ infra/               деплой и окружения
    cd ai-sous-chef
    ```
 
-2. Запустите фронтенд:
+2. Скопируйте env:
    ```bash
-   docker compose up frontend --build
+   cp .env.example .env
    ```
 
-3. Откройте в браузере: [http://localhost:8080](http://localhost:8080)
+3. Задайте в `.env` токен бота (`TG_TOKEN=…` от BotFather). Без него контейнер `bot` не стартует.
+
+4. Запустите стек (frontend + API + bot + PostgreSQL + nginx):
+   ```bash
+   docker compose up --build
+   ```
+   В `.env` задано `COMPOSE_FILE=docker-compose.yml:docker-compose.dev.yml`, поэтому
+   снаружи один порт `NGINX_PORT` (по умолчанию `8080`).
+
+5. Проверьте:
+   - сайт: [http://localhost:8080](http://localhost:8080)
+   - health: [http://localhost:8080/health](http://localhost:8080/health) → `{"db":"ok"}`
+   - docs: [http://localhost:8080/docs](http://localhost:8080/docs)
+   - API: `/app/api/...` через тот же порт
+   - bot: `docker compose ps` — сервис `bot` в статусе Up
+
+Prod-overlay (на VPS): `docker-compose.prod.yml`, порт `3101`.
 
 ### Остановка
 ```bash
@@ -68,13 +85,9 @@ docker compose down
 ```
 
 ### Healthcheck
-Сервис автоматически проверяет работоспособность через `GET /`. Статус можно проверить:
 ```bash
-docker inspect ai-sous-chef-frontend --format='{{.State.Health.Status}}'
+docker compose ps
+curl -fsS http://localhost:8080/health
 ```
 
-Инфраструктура и сервисы добавляются по мере реализации.
-
 Статический сайт можно открыть напрямую: `frontend/index.html`.
-
-Инструкции по backend, mobile и боту появятся в README, когда появятся каркасы приложений.
