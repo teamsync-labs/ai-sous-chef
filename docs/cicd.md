@@ -68,6 +68,7 @@ apt-get update && apt-get install -y rsync
 |------|--------|
 | `NGINX_BIND` / `APP_PUBLIC_URL` / `HEALTHCHECK_URL` | `scripts/resolve-public-urls.sh` |
 | `DATABASE_URL` | из `POSTGRES_*` + URL-encode |
+| `REDIS_URL` | по умолчанию `redis://redis:6379/0` (secret не нужен) |
 | `IMAGE_TAG` | короткий SHA |
 | `IMAGE_PREFIX` | `ai-sous-chef` |
 | `POSTGRES_USER` / `POSTGRES_DB` | `postgres` / `ai_sous_chef` |

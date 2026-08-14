@@ -35,6 +35,7 @@ write_kv_compose() {
 : "${TG_TOKEN:?}"
 : "${TG_PROXY_URL:?}"
 : "${API_BASE:=http://backend:8000/app/api}"
+: "${REDIS_URL:=redis://redis:6379/0}"
 
 # DATABASE_URL собираем сами: пароль URL-encode (спецсимволы @:#/?% и т.д.).
 # Отдельный secret DATABASE_URL не нужен — иначе легко разъехаться с POSTGRES_PASSWORD.
@@ -52,6 +53,7 @@ write_kv_compose POSTGRES_USER "$POSTGRES_USER"
 write_kv_compose POSTGRES_PASSWORD "$POSTGRES_PASSWORD"
 write_kv_compose POSTGRES_DB "$POSTGRES_DB"
 write_kv_compose DATABASE_URL "$DATABASE_URL"
+write_kv_compose REDIS_URL "$REDIS_URL"
 
 write_kv_compose NGINX_PORT "$NGINX_PORT"
 write_kv_compose NGINX_BIND "$NGINX_BIND"
