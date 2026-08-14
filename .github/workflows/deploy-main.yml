@@ -133,6 +133,13 @@ jobs:
             -f docker-compose.yml \
             -f docker-compose.prod.yml \
             up -d --remove-orphans
+          # nginx кэширует IP upstream при старте; после recreate backend/frontend
+          # без пересоздания nginx остаётся на старых адресах → 502/503.
+          docker compose \
+            -p "\${COMPOSE_PROJECT_NAME}" \
+            -f docker-compose.yml \
+            -f docker-compose.prod.yml \
+            up -d --force-recreate --no-deps nginx
           docker image prune -f
           EOF
 
