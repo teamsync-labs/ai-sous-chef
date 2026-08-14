@@ -1,19 +1,62 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Sous-Chef</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Sous-Chef</title>
+  <link rel="icon" href="assets/app-icon.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <h1>AI Sous-Chef</h1>
-    <p>ИИ-помощник на кухне. Сайт в разработке.</p>
-    <nav>
-        <ul>
-            <li><a href="team.html">Команда</a></li>
-            <li><a href="#">Мобильное приложение</a></li>
-            <li><a href="#">Telegram-бот</a></li>
-        </ul>
-    </nav>
+  <nav class="site-nav" aria-label="Навигация">
+    <div class="site-nav-inner">
+      <a class="brand-mark" href="index.html">
+        <img src="assets/app-icon.png" width="28" height="28" alt="" />
+        AI Sous-Chef
+      </a>
+      <a class="nav-link" href="index.html" aria-current="page">О проекте</a>
+      <a class="nav-link" href="team.html">Команда</a>
+      <a class="nav-link" href="https://github.com/teamsync-labs/ai-sous-chef-app">Приложение</a>
+      <a class="nav-link" href="#">Telegram-бот</a>
+    </div>
+  </nav>
+
+  <main class="page">
+    <header class="hero">
+      <div class="brand">AI Sous-Chef<br /><em>ИИ на кухне</em></div>
+      <p class="lede">
+        Персональный ИИ-помощник, который отвечает на вопрос «Что приготовить?»:
+        по фото или списку продуктов подбирает рецепты и помогает с приготовлением.
+      </p>
+      <p class="lede">
+        Проект командной стажировки <a href="https://geek-tik.tech/teams/ai-sous-chef">geek-tik.tech</a>.
+        Клиенты — мобильное приложение и Telegram-бот; общая логика в одном backend.
+      </p>
+      <div class="meta">
+        <span class="chip">Mobile</span>
+        <span class="chip">Telegram</span>
+        <span class="chip">Один API</span>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="team.html">Команда</a>
+        <a class="btn btn-ghost" href="https://github.com/teamsync-labs/ai-sous-chef-app">Мобильное приложение</a>
+        <a class="btn btn-ghost" href="#">Telegram-бот</a>
+      </div>
+    </header>
+
+    <h2 class="section-title">
+      <span class="section-kind">MVP</span>
+      Что уже задумано
+    </h2>
+    <p class="section-note">
+      Сфотографировать продукты или перечислить их текстом → получить варианты рецептов →
+      приготовить блюдо с подсказками ИИ. Без лишнего чата: один запрос — один ответ.
+    </p>
+
+    <p class="footer">Сайт в разработке · geek-tik.tech</p>
+  </main>
 </body>
 </html>
