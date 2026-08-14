@@ -1,5 +1,13 @@
+import base64
+import json
+import re
+
 from app.api.api_models import RecipesResult, RecognizeResult, RecipesInput, RecognizeInput
 from abc import ABC, abstractmethod
+
+from app.core.config import settings
+from openai import AsyncOpenAI
+
 
 class AIServiceError(RuntimeError):
     pass
@@ -27,12 +35,106 @@ class AIEngine(AIProtocol):
     TODO здесь должно выбрасываться исключение AIServiceUnavailableError в случае ошибки внешнего ИИ сервиса и ProductsNotFoundError,
     если продукты не распознаны - ProductsNotFoundError
     """
+    AI_API_URL = "https://ai.api.cloud.yandex.net/v1"
+
+    YANDEX_API_KEY = settings.YANDEX_API_KEY
+    YANDEX_FOLDER_ID = settings.YANDEX_FOLDER_ID
+
+    MODEL_FOR_CV = f"gpt://{YANDEX_FOLDER_ID}/qwen3.6-35b-a3b/latest"
+    MODEL_FOR_LLM = f"gpt://{YANDEX_FOLDER_ID}/yandexgpt/latest"
+
+    @staticmethod
+    def _parse_products(raw_text: str) -> list[str]:
+        """
+        Извлекает список продуктов из ответа модели.
+        Работает с JSON-массивами, текстом через запятую и другими форматами.
+        """
+        if not raw_text or not raw_text.strip():
+            return []
+
+        raw_text = raw_text.strip()
+
+        try:
+            products = json.loads(raw_text)
+            if isinstance(products, list):
+                return [p.strip() for p in products if p]
+        except json.JSONDecodeError:
+            pass
+
+        json_match = re.search(r'\[.*?\]', raw_text, re.DOTALL)
+        if json_match:
+            try:
+                products = json.loads(json_match.group())
+                if isinstance(products, list):
+                    return [p.strip() for p in products if p]
+            except json.JSONDecodeError:
+                pass
+
+        if ',' in raw_text:
+            products = [p.strip().strip('"\'') for p in raw_text.split(',') if p.strip()]
+            if products:
+                return products
+
+        if '\n' in raw_text:
+            products = [p.strip().strip('"-•*') for p in raw_text.split('\n') if p.strip()]
+            if products:
+                return products
+
+        return []
+
+    @staticmethod
+    def _build_client():
+        return AsyncOpenAI(
+            api_key=AIEngine.YANDEX_API_KEY,
+            base_url=AIEngine.AI_API_URL,
+            project=AIEngine.YANDEX_FOLDER_ID,
+        )
+
+    @staticmethod
+    async def _client_responses_create(prompt: str, input_type: str = "input_text"):
+        text = ""
+        input_key = ""
+        if input_type == "input_text":
+            text = "Перечисли продукты/ингредиенты из текста списком. Только названия. Верни ответ в виде списка из продуктов в формате json, чтобы я в дальнейшем смог десериализовать в объект"
+            input_key = "text"
+        elif input_type == "input_image":
+            text = "Перечисли продукты/ингредиенты на фото списком. Только названия. Верни ответ в виде списка из продуктов в формате json, чтобы я в дальнейшем смог десериализовать в объект"
+            input_key = "image_url"
+
+        client = AIEngine._build_client()
+        try:
+            response = await client.responses.create(
+                model=AIEngine.MODEL_FOR_CV,
+                temperature=0.3,
+                max_output_tokens=4000,
+                input=[{
+                    "role": "user",
+                    "content": [
+                        {"type": "input_text", "text": text},
+                        {"type": input_type, input_key: prompt},
+                    ],
+                }]
+            )
+        except Exception as exc:
+            raise AIServiceUnavailableError()
+
+        products = AIEngine._parse_products(response.output_text)
+        print(products)
+
+        if len(products) == 0:
+            raise ProductsNotFoundError()
+
+        return products
+
     @staticmethod
     async def recognize_products(recognize_input: RecognizeInput) -> RecognizeResult:
         if recognize_input.img_base64 is not None:
-            return RecognizeResult(products=["base64 input"], confidence=1.0)
+            products = await AIEngine._client_responses_create(
+                f"data:image/jpeg;base64,{base64.b64encode(recognize_input.img_base64).decode()}")
+            return RecognizeResult(products=products, confidence=1.0)
         if recognize_input.text is not None:
-            return RecognizeResult(products=["text input"], confidence=1.0)
+            products = await AIEngine._client_responses_create(recognize_input.text)
+            return RecognizeResult(products=products, confidence=1.0)
         raise ValueError("Invalid input")
 
     # TODO здесь должно выбрасываться исключение AIServiceUnavailableError в случае ошибки внешнего ИИ сервиса
