@@ -12,11 +12,14 @@ from openai import AsyncOpenAI
 class AIServiceError(RuntimeError):
     pass
 
+
 class AIServiceUnavailableError(AIServiceError):
     pass
 
+
 class ProductsNotFoundError(AIServiceError):
     pass
+
 
 class AIProtocol(ABC):
     @staticmethod
