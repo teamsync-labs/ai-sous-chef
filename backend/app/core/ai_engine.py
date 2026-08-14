@@ -28,7 +28,7 @@ class AIEngine(AIProtocol):
     если продукты не распознаны - ProductsNotFoundError
     """
     @staticmethod
-    def recognize_products(recognize_input: RecognizeInput) -> RecognizeResult:
+    async def recognize_products(recognize_input: RecognizeInput) -> RecognizeResult:
         if recognize_input.img_base64 is not None:
             return RecognizeResult(products=["base64 input"], confidence=1.0)
         if recognize_input.text is not None:
