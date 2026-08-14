@@ -37,7 +37,7 @@ class AIEngine(AIProtocol):
 
     # TODO здесь должно выбрасываться исключение AIServiceUnavailableError в случае ошибки внешнего ИИ сервиса
     @staticmethod
-    def generate_recipes(recipes_input: RecipesInput) -> RecipesResult:
+    async def generate_recipes(recipes_input: RecipesInput) -> RecipesResult:
         if recipes_input.products is not None:
             return RecipesResult(recipes=AIEngine._mock_generate_recipes())
         raise ValueError("Invalid input")
