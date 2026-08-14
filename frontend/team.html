@@ -1,13 +1,103 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Команда — AI Sous-Chef</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Команда — AI Sous-Chef</title>
+  <link rel="icon" href="assets/app-icon.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <h1>Команда AI Sous-Chef</h1>
-    <p>Страница команды в разработке.</p>
-    <p><a href="index.html">На главную</a></p>
+  <nav class="site-nav" aria-label="Навигация">
+    <div class="site-nav-inner">
+      <a class="brand-mark" href="index.html">
+        <img src="assets/app-icon.png" width="28" height="28" alt="" />
+        AI Sous-Chef
+      </a>
+      <a class="nav-link" href="index.html">О проекте</a>
+      <a class="nav-link" href="team.html" aria-current="page">Команда</a>
+      <a class="nav-link" href="https://github.com/teamsync-labs/ai-sous-chef-app">Приложение</a>
+      <a class="nav-link" href="#">Telegram-бот</a>
+    </div>
+  </nav>
+
+  <main class="page">
+    <header class="hero">
+      <div class="brand">Команда<br /><em>проекта</em></div>
+      <p class="lede">
+        Роли в AI Sous-Chef.
+      </p>
+    </header>
+
+    <h2 class="section-title">
+      <span class="section-kind">Участники</span>
+      Роли
+    </h2>
+    <p class="section-note">Кратко по зонам ответственности.</p>
+
+    <ul class="team-list">
+      <li class="member">
+        <img src="avatars/placeholder.svg" width="56" height="56" alt="" />
+        <div>
+          <div class="role">Project Manager</div>
+          <div class="desc">Синхронизация команды, контроль сроков и скоупа MVP</div>
+          <div class="name">Имя: —</div>
+        </div>
+      </li>
+      <li class="member">
+        <img src="avatars/placeholder.svg" width="56" height="56" alt="" />
+        <div>
+          <div class="role">Backend, Telegram-бот (Python)</div>
+          <div class="desc">API, бизнес-логика, интеграции с ИИ, Клиент в Telegram</div>
+          <div class="name">Имя: —</div>
+        </div>
+      </li>
+      <li class="member">
+        <img src="avatars/placeholder.svg" width="56" height="56" alt="" />
+        <div>
+          <div class="role">Backend (Junior Python)</div>
+          <div class="desc">Тестирование, отладка, документация</div>
+          <div class="name">Имя: —</div>
+        </div>
+      </li>
+      <li class="member">
+        <img src="avatars/placeholder.svg" width="56" height="56" alt="" />
+        <div>
+          <div class="role">Мобильное приложение (React Native, Android)</div>
+          <div class="desc">Android-клиент</div>
+          <div class="name">Имя: —</div>
+        </div>
+      </li>
+      <li class="member">
+        <img src="avatars/placeholder.svg" width="56" height="56" alt="" />
+        <div>
+          <div class="role">Frontend</div>
+          <div class="desc">Сайт проекта</div>
+          <div class="name">Имя: —</div>
+        </div>
+      </li>
+      <li class="member">
+        <img src="avatars/placeholder.svg" width="56" height="56" alt="" />
+        <div>
+          <div class="role">AI-аналитик</div>
+          <div class="desc">Выбор моделей, промпты, тестирование</div>
+          <div class="name">Имя: —</div>
+        </div>
+      </li>
+      <li class="member">
+        <img src="avatars/placeholder.svg" width="56" height="56" alt="" />
+        <div>
+          <div class="role">Инфраструктура</div>
+          <div class="desc">Деплой, окружения, CI/CD</div>
+          <div class="name">Имя: —</div>
+        </div>
+      </li>
+    </ul>
+
+    <p class="footer"><a href="index.html">← На главную</a></p>
+  </main>
 </body>
 </html>
