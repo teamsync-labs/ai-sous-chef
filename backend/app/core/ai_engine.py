@@ -141,7 +141,28 @@ class AIEngine(AIProtocol):
     @staticmethod
     async def generate_recipes(recipes_input: RecipesInput) -> RecipesResult:
         if recipes_input.products is not None:
-            return RecipesResult(recipes=AIEngine._mock_generate_recipes())
+            client = AIEngine._build_client()
+            prompt = (
+                "По списку продуктов предложи 4 коротких рецепта на русском. "
+                "Ответ строго JSON: {\"title\": string, \"steps\": string[]}[]. "
+                f"Продукты: {', '.join(recipes_input.products)}"
+            )
+            try:
+                response = await client.chat.completions.create(
+                    model=AIEngine.MODEL_FOR_CV,
+                    temperature=0.3,
+                    max_tokens=1200,
+                    messages=[{"role": "user", "content": prompt}],
+                    reasoning_effort="none"
+                )
+            except Exception as exc:
+                raise AIServiceUnavailableError()
+            content = response.choices[0].message.content
+            try:
+                recipes = json.loads(content)
+            except json.JSONDecodeError:
+                raise AIServiceError()
+            return RecipesResult(recipes=recipes, confidence=1.0)
         raise ValueError("Invalid input")
 
     @staticmethod
