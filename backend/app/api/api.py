@@ -4,8 +4,8 @@ from typing import Callable
 from fastapi import APIRouter, HTTPException, status
 
 from .api_models import RecipesInput, RecipesResult, RecognizeInput, RecognizeResult, BaseAPIModel
-from app.core.ai_engine import AIEngine, AIServiceUnavailableError, ProductsNotFoundError
 
+from ..core.ai_engine import get_ai_engine, AIServiceUnavailableError, ProductsNotFoundError
 
 logger = logging.getLogger(__name__)
 
