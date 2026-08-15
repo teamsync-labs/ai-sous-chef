@@ -19,7 +19,7 @@ async def proceed_ai(
         ai_method: Callable[[], BaseAPIModel],
 ) -> BaseAPIModel:
     try:
-        return ai_method()
+        return await ai_method()
 
     except ValueError as exc:
         logger.warning(
