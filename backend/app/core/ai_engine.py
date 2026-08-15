@@ -2,12 +2,12 @@ import base64
 import json
 import logging
 import re
+from abc import ABC, abstractmethod
+from openai import AsyncOpenAI, OpenAIError
 
 from ..api.api_models import RecipesResult, RecognizeResult, RecipesInput, RecognizeInput
-from abc import ABC, abstractmethod
 
 from ..core.config import settings
-from openai import AsyncOpenAI, OpenAIError
 
 logger = logging.getLogger(__name__)
 
@@ -27,12 +27,12 @@ class ProductsNotFoundError(AIServiceError):
 class AIProtocol(ABC):
     @staticmethod
     @abstractmethod
-    def recognize_products(recognize_input: RecognizeInput) -> RecognizeResult:
+    async def recognize_products(recognize_input: RecognizeInput) -> RecognizeResult:
         pass
 
     @staticmethod
     @abstractmethod
-    def generate_recipes(recipes_input: RecipesInput) -> RecipesResult:
+    async def generate_recipes(recipes_input: RecipesInput) -> RecipesResult:
         pass
 
 
@@ -110,8 +110,7 @@ class AIEngine(AIProtocol):
         except Exception as exc:
             logger.error("Failed to build OpenAI client: %s", exc, exc_info=True)
             raise AIServiceUnavailableError(exc) from exc
-        else:
-            return client
+        return client
 
     @staticmethod
     async def _client_responses_create(prompt: str, input_type: str = "input_text"):
@@ -190,7 +189,7 @@ class AIEngine(AIProtocol):
             try:
                 logger.info("LLM request: model=%s products=%d", AIEngine.MODEL_FOR_CV, len(recipes_input.products))
                 response = await client.chat.completions.create(
-                    model=AIEngine.MODEL_FOR_CV,
+                    model=AIEngine.MODEL_FOR_LLM,
                     temperature=0.3,
                     max_tokens=1200,
                     messages=[{"role": "user", "content": prompt}],
@@ -200,11 +199,11 @@ class AIEngine(AIProtocol):
             except Exception as exc:
                 logger.error("LLM request failed: model=%s: %s", AIEngine.MODEL_FOR_CV, exc, exc_info=True)
                 raise AIServiceUnavailableError(exc) from exc
-            content = response.choices[0].message.content
+            content = response.choices[0].message.content.replace('`', '')
             try:
                 recipes = json.loads(content)
             except json.JSONDecodeError as exc:
-                logger.error("Failed to parse recipes JSON from model response: %s", exc)
+                logger.error("Failed to parse recipes JSON (%s) from model response: %s", content, exc)
                 raise AIServiceError(exc) from exc
             logger.info("Recipes parsed successfully: count=%d", len(recipes))
             return RecipesResult(recipes=recipes)
