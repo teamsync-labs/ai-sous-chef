@@ -128,7 +128,6 @@ class AIEngine(AIProtocol):
             raise AIServiceUnavailableError()
 
         products = AIEngine._parse_products(response.output_text)
-        print(products)
 
         if len(products) == 0:
             raise ProductsNotFoundError()
@@ -139,7 +138,8 @@ class AIEngine(AIProtocol):
     async def recognize_products(recognize_input: RecognizeInput) -> RecognizeResult:
         if recognize_input.img_base64 is not None:
             products = await AIEngine._client_responses_create(
-                f"data:image/jpeg;base64,{base64.b64encode(recognize_input.img_base64).decode()}")
+                f"data:image/jpeg;base64,{base64.b64encode(recognize_input.img_base64).decode()}",
+                input_type="input_image")
             return RecognizeResult(products=products, confidence=1.0)
         if recognize_input.text is not None:
             products = await AIEngine._client_responses_create(recognize_input.text)
@@ -171,7 +171,7 @@ class AIEngine(AIProtocol):
                 recipes = json.loads(content)
             except json.JSONDecodeError:
                 raise AIServiceError()
-            return RecipesResult(recipes=recipes, confidence=1.0)
+            return RecipesResult(recipes=recipes)
         raise ValueError("Invalid input")
 
     # endregion
