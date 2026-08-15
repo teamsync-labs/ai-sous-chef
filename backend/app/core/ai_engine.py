@@ -2,10 +2,10 @@ import base64
 import json
 import re
 
-from app.api.api_models import RecipesResult, RecognizeResult, RecipesInput, RecognizeInput
+from ..api.api_models import RecipesResult, RecognizeResult, RecipesInput, RecognizeInput
 from abc import ABC, abstractmethod
 
-from app.core.config import settings
+from ..core.config import settings
 from openai import AsyncOpenAI
 
 
