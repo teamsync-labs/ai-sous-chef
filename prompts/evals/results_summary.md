@@ -178,7 +178,7 @@
 ## Приложения
 
 - **Eval-таблица:** `eval/eval_table.md`
-- **Golden-ответы:** `eval/responses/`
+- **Ответы:** `eval/responses/`
 - **Скрипт для прогона:** `eval/run_eval.py`
 - **Инструкция по интеграции:** `INTEGRATION.md`
 
