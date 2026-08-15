@@ -30,7 +30,15 @@ app.add_exception_handler(
 )
 
 
-@app.get("/health")
+@app.get(
+    "/health",
+    summary="Проверка состояния сервиса",
+    description=(
+        "Эндпоинт для проверки работоспособности API и доступности БД. "
+        "Используется для мониторинга и health-проверок "
+        "(например, Docker/Kubernetes)."
+    ),
+)
 async def health(db: Annotated[AsyncSession, Depends(get_db)]):
     try:
         result = await db.execute(select(1))
