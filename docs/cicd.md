@@ -68,12 +68,15 @@ apt-get update && apt-get install -y rsync
 |------|--------|
 | `NGINX_BIND` / `APP_PUBLIC_URL` / `HEALTHCHECK_URL` | `scripts/resolve-public-urls.sh` |
 | `DATABASE_URL` | из `POSTGRES_*` + URL-encode |
+| `REDIS_URL` | по умолчанию `redis://redis:6379/0` (secret не нужен) |
 | `IMAGE_TAG` | короткий SHA |
 | `IMAGE_PREFIX` | `ai-sous-chef` |
 | `POSTGRES_USER` / `POSTGRES_DB` | `postgres` / `ai_sous_chef` |
 
 Пока `ACCESS_VIA_DOMAIN=false`: healthcheck по `http://$SERVER_HOST:$NGINX_PORT/health`.  
 После host nginx + TLS: `ACCESS_VIA_DOMAIN=true` → `https://$APP_DOMAIN/health`.
+
+После `compose up` CI всегда делает `--force-recreate --no-deps nginx`: образ `nginx:alpine` не меняется, а upstream IP backend/frontend после recreate иначе остаются закэшированными → 502 и публичный 503/maintenance.
 
 Хостовый nginx: [`deploy/host-nginx/`](../deploy/host-nginx/) (vhost + maintenance). Копируется на VPS вручную — см. README там.
 

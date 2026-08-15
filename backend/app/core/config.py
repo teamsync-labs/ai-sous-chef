@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file="app/.env",
+        env_file=".env",
         env_file_encoding="utf-8",
         extra="ignore"
     )
@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     LOG_LEVEL: str = "INFO"
     DATABASE_URL: str = ""
+
+    YANDEX_API_KEY: str = ""
+    YANDEX_FOLDER_ID: str = ""
 
 
 settings = Settings()

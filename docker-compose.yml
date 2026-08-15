@@ -35,6 +35,18 @@ services:
       retries: 5
       start_period: 10s
 
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
   backend:
     build:
       context: ./backend
@@ -44,11 +56,14 @@ services:
       - "8000"
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://postgres:postgres@postgresql:5432/ai_sous_chef}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
       POSTGRES_HOST: postgresql
       POSTGRES_PORT: "5432"
       PYTHONUNBUFFERED: "1"
     depends_on:
       postgresql:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     healthcheck:
       test:
