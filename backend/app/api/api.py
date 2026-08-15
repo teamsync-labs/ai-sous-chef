@@ -72,9 +72,10 @@ async def proceed_ai(
             "в нормализованный список продуктов.\n"
             "Возвращает список распознанных продуктов и уверенность модели. **Передавать только либо base_64, либо text**"))
 async def recognize(recognize_input: RecognizeInput):
+    ai_engine = get_ai_engine()
     return await proceed_ai(
         "recognize",
-        lambda: AIEngine.recognize_products(recognize_input),
+        lambda: ai_engine.recognize_products(recognize_input),
     )
 
 
@@ -90,7 +91,8 @@ async def recognize(recognize_input: RecognizeInput):
             "и последовательность шагов приготовления."
     ))
 async def recipes(recipes_input: RecipesInput):
+    ai_engine = get_ai_engine()
     return await proceed_ai(
         "recipes",
-        lambda: AIEngine.generate_recipes(recipes_input),
+        lambda: ai_engine.generate_recipes(recipes_input),
     )

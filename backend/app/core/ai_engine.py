@@ -33,6 +33,12 @@ class AIProtocol(ABC):
         pass
 
 
+def get_ai_engine():
+    if settings.AI_MODE == "stub":
+        return AIEngineStub
+    return AIEngine
+
+
 class AIEngine(AIProtocol):
     """
     TODO здесь должно выбрасываться исключение AIServiceUnavailableError в случае ошибки внешнего ИИ сервиса и ProductsNotFoundError,
@@ -167,39 +173,6 @@ class AIEngine(AIProtocol):
                 raise AIServiceError()
             return RecipesResult(recipes=recipes, confidence=1.0)
         raise ValueError("Invalid input")
-
-    @staticmethod
-    def _mock_generate_recipes():
-        return [{
-            "title": "Спагетти карбонара",
-            "steps": [
-                "Отварить спагетти до состояния al dente.",
-                "Обжарить бекон до золотистой корочки.",
-                "Смешать яйца с тёртым сыром и перцем.",
-                "Добавить спагетти к бекону.",
-                "Снять сковороду с огня и вмешать яичную смесь.",
-            ],
-        },
-            {
-                "title": "Куриный суп",
-                "steps": [
-                    "Залить курицу водой и довести до кипения.",
-                    "Добавить нарезанный картофель.",
-                    "Обжарить лук и морковь.",
-                    "Добавить овощи и лапшу в суп.",
-                    "Варить до готовности и посолить.",
-                ],
-            },
-            {
-                "title": "Омлет с сыром",
-                "steps": [
-                    "Разбить яйца в миску.",
-                    "Добавить молоко и соль.",
-                    "Взбить смесь венчиком.",
-                    "Вылить смесь на разогретую сковороду.",
-                    "Посыпать сыром и готовить под крышкой.",
-                ],
-            }]
 
     # endregion
 
