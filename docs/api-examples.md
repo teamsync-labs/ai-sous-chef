@@ -1,6 +1,25 @@
 # Curl-примеры API
 
-> Маршруты используют префикс `/app/api`, заданный в `APIRouter`.
+> Маршруты API используют префикс `/app/api`, заданный в `APIRouter`.
+> Health-check доступен без префикса: `GET /health`.
+
+## Health-check
+
+### `GET /health`
+
+Проверяет, что API запущено и есть ответ от БД.
+
+```bash
+curl http://localhost:8000/health
+```
+
+Пример успешного ответа:
+
+```json
+{"db": "ok"}
+```
+
+Если БД недоступна, сервер вернёт `503` и `{"db": "error"}`.
 
 ## Распознавание продуктов
 
@@ -29,21 +48,22 @@ curl -X POST "http://127.0.0.1:8000/app/api/recognize" \
 }
 ```
 
-Также эндпоинт принимает поле `image` вместо `text`:
+Также эндпоинт принимает поле `img_base64` вместо `text` (ровно одно из двух):
 
 ```bash
 curl -X POST "http://127.0.0.1:8000/app/api/recognize" \
   -H "Content-Type: application/json" \
   -d '{
-    "image": "<строковое представление изображения>"
+    "img_base64": "<base64-строка изображения>"
   }'
 ```
 
-Точный формат значения `image` определяется моделью `RecognizeInput`.
+Формат `img_base64` задаётся моделью `RecognizeInput` (`Base64Bytes`).
 
 Возможные ошибки:
 
-- `400 missing_input` — не передано ни `image`, ни `text`;
+- `422` — не передано ни `img_base64`, ни `text`, либо переданы оба поля;
+- `400 missing_input` — вход отклонён на уровне AI-обработчика;
 - `422 no_products_found` — продукты не удалось распознать;
 - `502 ai_service_error` — сервис CV или LLM недоступен либо вернул ошибку.
 

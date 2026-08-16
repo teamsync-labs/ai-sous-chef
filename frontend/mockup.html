@@ -4,11 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Sous-Chef — UI-макет MVP</title>
-  <link rel="icon" href="../branding/app-icon.png" type="image/png" />
-  <link rel="apple-touch-icon" href="../branding/app-icon.png" />
+  <link rel="icon" href="assets/app-icon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/app-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
   <style>
     :root {
       --bg: #e8efe6;
@@ -47,53 +48,6 @@
       max-width: 1280px;
       margin: 0 auto;
       padding: 32px 24px 80px;
-    }
-
-    .jump-nav {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      width: 100%;
-      background: rgba(247, 250, 246, 0.9);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--line);
-      box-shadow: 0 10px 28px rgba(26, 36, 25, 0.07);
-    }
-
-    .jump-nav-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 10px 24px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px 10px;
-    }
-
-    .jump-nav .label {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-right: 4px;
-    }
-
-    .jump-nav a {
-      display: inline-flex;
-      align-items: center;
-      padding: 6px 12px;
-      border: 1px solid var(--line);
-      background: var(--surface);
-      color: var(--ink-soft);
-      text-decoration: none;
-      font-size: 0.78rem;
-      font-weight: 500;
-      transition: border-color 0.15s, background 0.15s, color 0.15s;
-    }
-
-    .jump-nav a:hover {
-      border-color: var(--brand);
-      background: #f0f7ef;
-      color: var(--brand);
     }
 
     .hero {
@@ -202,7 +156,7 @@
       padding-top: 40px;
       border-top: 1px solid var(--line);
       color: var(--ink);
-      scroll-margin-top: 72px;
+      scroll-margin-top: 112px;
       letter-spacing: -0.01em;
     }
 
@@ -279,7 +233,7 @@
       padding: 12px;
       box-shadow: var(--shadow);
       position: sticky;
-      top: 24px;
+      top: 112px;
     }
 
     .phone-inner {
@@ -812,7 +766,7 @@
       padding: 12px;
       box-shadow: var(--shadow);
       position: sticky;
-      top: 24px;
+      top: 112px;
     }
 
     .tg-inner {
@@ -1203,14 +1157,29 @@
   </style>
 </head>
 <body>
-  <nav class="jump-nav" aria-label="Разделы макета">
-    <div class="jump-nav-inner">
-      <span class="label">Перейти:</span>
-      <a href="#logos">Логотипы</a>
-      <a href="#mobile">Mobile app</a>
-      <a href="#telegram">Telegram-бот</a>
-    </div>
-  </nav>
+  <div class="site-chrome">
+    <nav class="site-nav" aria-label="Навигация">
+      <div class="site-nav-inner">
+        <a class="brand-mark" href="index.html">
+          <img src="assets/app-icon.png" width="28" height="28" alt="" />
+          AI Sous-Chef
+        </a>
+        <a class="nav-link" href="index.html">О проекте</a>
+        <a class="nav-link" href="team.html">Команда</a>
+        <a class="nav-link" href="index.html#app">Приложение</a>
+        <a class="nav-link" href="index.html#bot">Telegram-бот</a>
+        <a class="nav-link" href="mockup.html" aria-current="page">Макет</a>
+      </div>
+    </nav>
+    <nav class="mockup-subnav" aria-label="Разделы макета">
+      <div class="mockup-subnav-inner">
+        <span class="label">На странице</span>
+        <a href="#logos">Логотипы</a>
+        <a href="#mobile">Mobile app</a>
+        <a href="#telegram">Telegram-бот</a>
+      </div>
+    </nav>
+  </div>
 
   <div class="page">
     <header class="hero solo">
@@ -1236,39 +1205,39 @@
     </h2>
     <div class="logo-gallery">
       <figure class="logo-card">
-        <img src="../branding/app-icon.png" alt="Базовый логотип AI Sous-Chef" width="120" height="120" />
+        <img src="assets/app-icon.png" alt="Базовый логотип AI Sous-Chef" width="120" height="120" />
         <strong>Базовый</strong>
-        <code>../branding/app-icon.png</code>
+        <code>assets/app-icon.png</code>
         <p class="uses">Иконка приложения · аватар Telegram · splash</p>
       </figure>
       <figure class="logo-card">
-        <img src="../branding/app-icon-no-accent.png" alt="Логотип без акцента" width="120" height="120" />
+        <img src="assets/app-icon-no-accent.png" alt="Логотип без акцента" width="120" height="120" />
         <strong>Без акцента</strong>
-        <code>../branding/app-icon-no-accent.png</code>
+        <code>assets/app-icon-no-accent.png</code>
         <p class="uses">Когда нужен только green/white</p>
       </figure>
       <figure class="logo-card">
-        <img src="../branding/app-icon-mono-light.png" alt="Светлый монохром" width="120" height="120" />
+        <img src="assets/app-icon-mono-light.png" alt="Светлый монохром" width="120" height="120" />
         <strong>Mono light</strong>
-        <code>../branding/app-icon-mono-light.png</code>
+        <code>assets/app-icon-mono-light.png</code>
         <p class="uses">Светлый splash / светлая тема</p>
       </figure>
       <figure class="logo-card">
-        <img src="../branding/app-icon-mono-dark.png" alt="Тёмный монохром" width="120" height="120" />
+        <img src="assets/app-icon-mono-dark.png" alt="Тёмный монохром" width="120" height="120" />
         <strong>Mono dark</strong>
-        <code>../branding/app-icon-mono-dark.png</code>
+        <code>assets/app-icon-mono-dark.png</code>
         <p class="uses">Тёмный splash</p>
       </figure>
       <figure class="logo-card">
-        <img src="../branding/app-icon-sc.png" alt="Монограмма SC" width="120" height="120" />
+        <img src="assets/app-icon-sc.png" alt="Монограмма SC" width="120" height="120" />
         <strong>Монограмма SC</strong>
-        <code>../branding/app-icon-sc.png</code>
+        <code>assets/app-icon-sc.png</code>
         <p class="uses">Альтернатива аватару / иконке</p>
       </figure>
       <figure class="logo-card">
-        <img src="../branding/app-icon-wordmark.png" alt="Вордмарк Sous Chef" width="120" height="120" />
+        <img src="assets/app-icon-wordmark.png" alt="Вордмарк Sous Chef" width="120" height="120" />
         <strong>Wordmark</strong>
-        <code>../branding/app-icon-wordmark.png</code>
+        <code>assets/app-icon-wordmark.png</code>
         <p class="uses">Крупные поверхности; на мелком круге хуже</p>
       </figure>
     </div>
@@ -1316,7 +1285,7 @@
             <!-- 0. Splash -->
             <section class="screen active" data-screen="splash">
               <div class="screen-splash">
-                <img class="splash-logo" src="../branding/app-icon.png" alt="" width="112" height="112" />
+                <img class="splash-logo" src="assets/app-icon.png" alt="" width="112" height="112" />
                 <div class="splash-title">AI Sous-Chef</div>
                 <p class="splash-sub">Что приготовить из того, что есть</p>
               </div>
@@ -1325,7 +1294,7 @@
             <!-- 1. Home -->
             <section class="screen" data-screen="home">
               <div class="app-header">
-                <img class="app-logo" src="../branding/app-icon.png" alt="" width="44" height="44" />
+                <img class="app-logo" src="assets/app-icon.png" alt="" width="44" height="44" />
                 <div class="mark-wrap">
                   <div class="mark">AI Sous-Chef</div>
                   <div class="sub">Что приготовить из того, что есть?</div>
@@ -1526,7 +1495,7 @@
           <div class="tg-inner" id="tg-inner">
             <div class="tg-topbar"><span>12:36</span><span>LTE</span></div>
             <div class="tg-header">
-              <img src="../branding/app-icon.png" alt="" width="36" height="36" />
+              <img src="assets/app-icon.png" alt="" width="36" height="36" />
               <div>
                 <div class="name">AI Sous-Chef</div>
                 <div class="status">бот</div>
@@ -1548,7 +1517,7 @@
                   </div>
                 </div>
                 <div class="tg-row bot">
-                  <img class="tg-avatar" src="../branding/app-icon.png" alt="" width="28" height="28" />
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
                   <div class="tg-bubble bot">
                     Привет! Я <strong>AI Sous-Chef</strong> — подскажу, что приготовить из того, что есть.
                     Пришлите фото продуктов или список текстом. Без регистрации, один запрос — один ответ.
@@ -1578,7 +1547,7 @@
                   </div>
                 </div>
                 <div class="tg-row bot">
-                  <img class="tg-avatar" src="../branding/app-icon.png" alt="" width="28" height="28" />
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
                   <div class="tg-bubble bot">
                     <div class="tg-quote">
                       <div class="q-title">Фотография</div>
@@ -1617,7 +1586,7 @@
                   </div>
                 </div>
                 <div class="tg-row bot">
-                  <img class="tg-avatar" src="../branding/app-icon.png" alt="" width="28" height="28" />
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
                   <div class="tg-bubble bot">
                     <div class="tg-quote">
                       <div class="q-title">курица, рис, лук</div>
@@ -1649,7 +1618,7 @@
               <div class="tg-chat">
                 <div class="tg-day">Сегодня</div>
                 <div class="tg-row bot">
-                  <img class="tg-avatar" src="../branding/app-icon.png" alt="" width="28" height="28" />
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
                   <div class="tg-bubble bot">
                     Вот что можно приготовить. Выберите рецепт, чтобы открыть шаги.
                     <div class="tg-meta"><span>12:36</span></div>
@@ -1673,7 +1642,7 @@
               <div class="tg-chat">
                 <div class="tg-day">Сегодня</div>
                 <div class="tg-row bot">
-                  <img class="tg-avatar" src="../branding/app-icon.png" alt="" width="28" height="28" />
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
                   <div class="tg-bubble bot">
                     <strong id="tg-recipe-title">Яичница с сыром</strong>
                     <ol class="tg-steps" id="tg-recipe-steps">
@@ -1702,7 +1671,7 @@
               <div class="tg-chat">
                 <div class="tg-day">Сегодня</div>
                 <div class="tg-row bot">
-                  <img class="tg-avatar" src="../branding/app-icon.png" alt="" width="28" height="28" />
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
                   <div class="tg-bubble bot">
                     Попробуйте отправить фото ещё раз.
                     <div class="tg-meta"><span>12:36</span></div>
@@ -1725,7 +1694,7 @@
               <div class="tg-chat">
                 <div class="tg-day">Сегодня</div>
                 <div class="tg-row bot">
-                  <img class="tg-avatar" src="../branding/app-icon.png" alt="" width="28" height="28" />
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
                   <div class="tg-bubble bot">
                     Попробуйте отправить текст ещё раз.
                     <div class="tg-meta"><span>12:36</span></div>
