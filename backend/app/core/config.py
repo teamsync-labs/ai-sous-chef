@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -16,6 +18,8 @@ class Settings(BaseSettings):
 
     YANDEX_API_KEY: str = ""
     YANDEX_FOLDER_ID: str = ""
+
+    AI_MODE: Literal["stub", "real"] = "stub"
 
 
 settings = Settings()

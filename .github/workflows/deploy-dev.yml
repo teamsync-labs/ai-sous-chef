@@ -111,10 +111,14 @@ jobs:
           DATA_PATH: ${{ vars.DATA_PATH }}
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           TG_PROXY_URL: ${{ secrets.TG_PROXY_URL }}
+          AI_MODE: ${{ vars.AI_MODE }}
+          YANDEX_API_KEY: ${{ secrets.YANDEX_API_KEY }}
+          YANDEX_FOLDER_ID: ${{ secrets.YANDEX_FOLDER_ID }}
         run: |
           : "${POSTGRES_USER:=postgres}"
           : "${POSTGRES_DB:=ai_sous_chef}"
           : "${COMPOSE_PROJECT_NAME:=ai-sous-chef-dev}"
+          : "${AI_MODE:=stub}"
           ENV_FILE="$(mktemp)"
           bash scripts/vps-write-deploy-env.sh "$ENV_FILE"
           scp -o StrictHostKeyChecking=no "$ENV_FILE" \
