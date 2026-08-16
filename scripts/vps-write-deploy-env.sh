@@ -36,6 +36,17 @@ write_kv_compose() {
 : "${TG_PROXY_URL:?}"
 : "${API_BASE:=http://backend:8000/app/api}"
 : "${REDIS_URL:=redis://redis:6379/0}"
+: "${AI_MODE:=stub}"
+: "${YANDEX_API_KEY:=}"
+: "${YANDEX_FOLDER_ID:=}"
+
+case "$AI_MODE" in
+  stub|real) ;;
+  *)
+    echo "AI_MODE must be 'stub' or 'real' (got: $AI_MODE)" >&2
+    exit 1
+    ;;
+esac
 
 # DATABASE_URL собираем сами: пароль URL-encode (спецсимволы @:#/?% и т.д.).
 # Отдельный secret DATABASE_URL не нужен — иначе легко разъехаться с POSTGRES_PASSWORD.
@@ -67,5 +78,9 @@ write_kv_compose DATA_PATH "$DATA_PATH"
 write_kv_compose TG_TOKEN "$TG_TOKEN"
 write_kv_compose TG_PROXY_URL "$TG_PROXY_URL"
 write_kv_compose API_BASE "$API_BASE"
+
+write_kv_compose AI_MODE "$AI_MODE"
+write_kv_compose YANDEX_API_KEY "$YANDEX_API_KEY"
+write_kv_compose YANDEX_FOLDER_ID "$YANDEX_FOLDER_ID"
 
 chmod 600 "$ENV_FILE"
