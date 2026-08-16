@@ -3,7 +3,7 @@
 Не требуют Redis и реального LLM.
 """
 
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
@@ -26,20 +26,12 @@ _MOCK_RECIPES = RecipesResult(
 
 @pytest.fixture
 def mock_ai_engine():
-    """Подменяем AIEngine в api.py: proceed_ai не ходит во внешний API."""
-    with (
-        patch(
-            "app.api.api.AIEngine.recognize_products",
-            new_callable=AsyncMock,
-            return_value=_MOCK_RECOGNIZE,
-        ),
-        patch(
-            "app.api.api.AIEngine.generate_recipes",
-            new_callable=AsyncMock,
-            return_value=_MOCK_RECIPES,
-        ),
-    ):
-        yield
+    """Подменяем get_ai_engine(): хендлеры не ходят во внешний API."""
+    engine = MagicMock()
+    engine.recognize_products = AsyncMock(return_value=_MOCK_RECOGNIZE)
+    engine.generate_recipes = AsyncMock(return_value=_MOCK_RECIPES)
+    with patch("app.api.api.get_ai_engine", return_value=engine):
+        yield engine
 
 
 # ============================================
