@@ -1,20 +1,20 @@
 (function () {
   var KEY = "ai-sous-chef_cookie_consent_v1";
+  var SUBJECT_KEY = "ai-sous-chef_subject_id_v1";
   var ACCEPTED = "accepted";
   var NECESSARY = "necessary";
   var TAG_SRC = "https://mc.yandex.ru/metrika/tag.js";
   var TAG_SCRIPT_ID = "yandex-metrika-tag";
-  /** Счётчик Яндекс.Метрики для ai-sous-chef.ru. Пусто — «Принять» запоминается, скрипт не грузится. */
-  var DEFAULT_METRIKA_ID = "111661284";
+  var CONSENT_API = "/app/api/consent";
+  var METRIKA_ID = 111661284;
 
   var script = document.currentScript;
   if (!script) {
     var scripts = document.getElementsByTagName("script");
     script = scripts[scripts.length - 1];
   }
-  var policyHref = (script && script.getAttribute("data-policy-href")) || "legal/policy.html";
+  var policyHref = (script && script.getAttribute("data-policy-href")) || "";
   var overlayOn = !(script && script.getAttribute("data-overlay") === "0");
-  var metrikaId = (script && script.getAttribute("data-metrika-id")) || DEFAULT_METRIKA_ID;
 
   function readChoice() {
     try {
@@ -34,10 +34,37 @@
     }
   }
 
-  function loadMetrika() {
-    var id = Number(metrikaId);
-    if (!isFinite(id) || id <= 0) return;
+  function subjectId() {
+    try {
+      var existing = window.localStorage.getItem(SUBJECT_KEY);
+      if (existing) return existing;
+      var created =
+        window.crypto && crypto.randomUUID
+          ? crypto.randomUUID()
+          : String(Date.now()) + "-" + Math.random().toString(16).slice(2);
+      window.localStorage.setItem(SUBJECT_KEY, created);
+      return created;
+    } catch (e) {
+      return "anon-" + String(Date.now());
+    }
+  }
 
+  function recordAnalytics(choice) {
+    return fetch(CONSENT_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        subject_id: subjectId(),
+        channel: "site",
+        consent_type: "analytics",
+        action: choice === ACCEPTED ? "granted" : "withdrawn",
+      }),
+    }).then(function (res) {
+      if (!res.ok) throw new Error("consent_" + res.status);
+    });
+  }
+
+  function loadMetrika() {
     if (!window.ym) {
       var stub = function () {
         stub.a = stub.a || [];
@@ -63,7 +90,7 @@
       document.head.appendChild(el);
     }
 
-    window.ym(id, "init", {
+    window.ym(METRIKA_ID, "init", {
       clickmap: true,
       trackLinks: true,
       accurateTrackBounce: true,
@@ -91,11 +118,10 @@
     (overlayOn ? "true" : "false") +
     '" aria-labelledby="cookie-notice-title">' +
     '<p id="cookie-notice-title" class="cookie-notice-text">' +
-    "Сайт сохраняет служебные cookie, чтобы страницы открывались. " +
-    "Чтобы понять, как им пользуются, можем включить Яндекс.Метрику — только если согласитесь. " +
+    "На сайте используются cookie. Можно оставить только служебные или включить аналитику — Яндекс.Метрику. " +
     'Подробнее — в <a href="' +
     policyHref +
-    '">политике конфиденциальности</a>.' +
+    '" target="_blank" rel="noopener">политике конфиденциальности</a>.' +
     "</p>" +
     '<div class="cookie-notice-actions">' +
     '<button type="button" class="cookie-notice-btn cookie-notice-btn--ghost" data-cookie-choice="' +
@@ -115,13 +141,29 @@
   if (document.body) mount();
   else document.addEventListener("DOMContentLoaded", mount);
 
+  function setBusy(busy) {
+    var buttons = root.querySelectorAll("[data-cookie-choice]");
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].disabled = busy;
+    }
+  }
+
   root.addEventListener("click", function (event) {
     var btn = event.target.closest("[data-cookie-choice]");
-    if (!btn) return;
+    if (!btn || btn.disabled) return;
     var choice = btn.getAttribute("data-cookie-choice");
     if (choice !== ACCEPTED && choice !== NECESSARY) return;
-    writeChoice(choice);
-    if (choice === ACCEPTED) loadMetrika();
-    dismiss(root);
+
+    setBusy(true);
+    recordAnalytics(choice)
+      .then(function () {
+        writeChoice(choice);
+        if (choice === ACCEPTED) loadMetrika();
+        dismiss(root);
+      })
+      .catch(function (err) {
+        setBusy(false);
+        console.warn("cookie consent journal", err);
+      });
   });
 })();

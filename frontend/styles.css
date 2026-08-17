@@ -463,6 +463,11 @@ a:hover {
   background: rgba(26, 36, 25, 0.06);
 }
 
+.cookie-notice-btn:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
 .product-section {
   scroll-margin-top: 72px;
 }
