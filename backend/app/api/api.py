@@ -6,15 +6,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .api_models import (
     BaseAPIModel,
+    ConsentChannel,
     ConsentProxyResult,
     ConsentRecordInput,
-    ConsentSubjectInput,
-    ConsentSubjectResult,
     ConsentWithdrawInput,
     RecipesInput,
     RecipesResult,
     RecognizeInput,
     RecognizeResult,
+    validate_consent_identity,
 )
 
 from ..core.ai_engine import get_ai_engine, AIServiceUnavailableError, ProductsNotFoundError
@@ -132,22 +132,29 @@ async def _call_journal(operation, **kwargs) -> ConsentProxyResult:
     return ConsentProxyResult(ok=True, journal=journal)
 
 
-@router.post("/consent/subject", response_model=ConsentSubjectResult)
-async def get_consent_subject(
-    body: ConsentSubjectInput,
-    db: Annotated[AsyncSession, Depends(get_db)],
-):
-    subject_id = await consent_subjects.get_or_create_id(
-        db, body.channel, body.external_id
+async def _journal_subject_id(
+    db: AsyncSession,
+    channel: str | None,
+    subject_id: str | None,
+    external_id: str | None,
+) -> str:
+    return await consent_subjects.resolve_journal_subject_id(
+        db, channel, subject_id, external_id
     )
-    return ConsentSubjectResult(id=subject_id)
 
 
 @router.post("/consent", response_model=ConsentProxyResult)
-async def record_consent(body: ConsentRecordInput, request: Request):
+async def record_consent(
+    body: ConsentRecordInput,
+    request: Request,
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    subject_id = await _journal_subject_id(
+        db, body.channel, body.subject_id, body.external_id
+    )
     return await _call_journal(
         consent_journal.record_consent,
-        subject_id=body.subject_id,
+        subject_id=subject_id,
         channel=body.channel,
         consent_type=body.consent_type,
         action=body.action,
@@ -158,23 +165,42 @@ async def record_consent(body: ConsentRecordInput, request: Request):
 
 @router.get("/consent/latest", response_model=ConsentProxyResult)
 async def latest_consent(
-    subject_id: str,
     consent_type: str,
-    channel: str | None = None,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    subject_id: str | None = None,
+    external_id: str | None = None,
+    channel: ConsentChannel | None = None,
 ):
+    try:
+        validate_consent_identity(channel, subject_id, external_id)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail=str(exc),
+        ) from exc
+    journal_subject_id = await _journal_subject_id(
+        db, channel, subject_id, external_id
+    )
     return await _call_journal(
         consent_journal.latest_consent,
-        subject_id=subject_id,
+        subject_id=journal_subject_id,
         consent_type=consent_type,
         channel=channel,
     )
 
 
 @router.post("/consent/withdraw", response_model=ConsentProxyResult)
-async def withdraw_consent(body: ConsentWithdrawInput, request: Request):
+async def withdraw_consent(
+    body: ConsentWithdrawInput,
+    request: Request,
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    subject_id = await _journal_subject_id(
+        db, body.channel, body.subject_id, body.external_id
+    )
     return await _call_journal(
         consent_journal.withdraw_consent,
-        subject_id=body.subject_id,
+        subject_id=subject_id,
         consent_type=body.consent_type,
         channel=body.channel,
         erase=body.erase,

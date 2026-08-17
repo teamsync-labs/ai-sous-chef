@@ -1,4 +1,4 @@
-"""Внутренний id субъекта: get-or-create, без внешних id в журнале."""
+"""Маппинг bot/app внутри прокси: в журнал только внутренний id."""
 
 import asyncio
 import uuid
@@ -52,99 +52,160 @@ def _memory_mapping():
     return store, fake
 
 
-def test_same_telegram_id_returns_same_id():
-    _, fake = _memory_mapping()
-    with patch("app.api.api.consent_subjects.get_or_create_id", new=fake):
-        first = client.post(
-            "/app/api/consent/subject",
-            json={"channel": "bot", "external_id": _TELEGRAM_ID},
-        )
-        second = client.post(
-            "/app/api/consent/subject",
-            json={"channel": "bot", "external_id": _TELEGRAM_ID},
-        )
-    assert first.status_code == 200
-    assert second.status_code == 200
-    assert first.json()["id"] == second.json()["id"]
-    uuid.UUID(first.json()["id"])
-
-
-def test_app_channel_accepts_install_id():
-    _, fake = _memory_mapping()
-    with patch("app.api.api.consent_subjects.get_or_create_id", new=fake):
-        response = client.post(
-            "/app/api/consent/subject",
-            json={"channel": "app", "external_id": _INSTALL_ID},
-        )
-    assert response.status_code == 200
-    uuid.UUID(response.json()["id"])
-
-
-def test_bot_and_app_are_not_merged():
-    _, fake = _memory_mapping()
-    with patch("app.api.api.consent_subjects.get_or_create_id", new=fake):
-        bot = client.post(
-            "/app/api/consent/subject",
-            json={"channel": "bot", "external_id": _TELEGRAM_ID},
-        )
-        app_resp = client.post(
-            "/app/api/consent/subject",
-            json={"channel": "app", "external_id": _TELEGRAM_ID},
-        )
-    assert bot.json()["id"] != app_resp.json()["id"]
-
-
-def test_site_channel_rejected():
+def test_subject_endpoint_removed():
     response = client.post(
         "/app/api/consent/subject",
-        json={"channel": "site", "external_id": "browser-uuid"},
+        json={"channel": "bot", "external_id": _TELEGRAM_ID},
     )
-    assert response.status_code == 422
+    assert response.status_code == 404
 
 
-def test_subject_endpoint_does_not_call_journal():
+def test_same_telegram_id_maps_to_same_journal_subject():
+    _, fake = _memory_mapping()
+    captured: list[str] = []
+    with (
+        patch("app.api.api.consent_subjects.get_or_create_id", new=fake),
+        patch(
+            "app.api.api.consent_journal.record_consent",
+            new=AsyncMock(return_value={"id": "evt"}),
+        ) as journal,
+    ):
+        first = client.post(
+            "/app/api/consent",
+            json={
+                "channel": "bot",
+                "external_id": _TELEGRAM_ID,
+                "consent_type": "privacy",
+                "action": "granted",
+            },
+        )
+        second = client.post(
+            "/app/api/consent",
+            json={
+                "channel": "bot",
+                "external_id": _TELEGRAM_ID,
+                "consent_type": "pdn",
+                "action": "granted",
+            },
+        )
+        captured = [
+            journal.await_args_list[0].kwargs["subject_id"],
+            journal.await_args_list[1].kwargs["subject_id"],
+        ]
+    assert first.status_code == 200
+    assert second.status_code == 200
+    assert captured[0] == captured[1]
+    uuid.UUID(captured[0])
+    assert captured[0] != _TELEGRAM_ID
+    assert _TELEGRAM_ID not in journal.await_args_list[0].kwargs.values()
+
+
+def test_app_channel_maps_install_id():
     _, fake = _memory_mapping()
     with (
         patch("app.api.api.consent_subjects.get_or_create_id", new=fake),
         patch(
             "app.api.api.consent_journal.record_consent",
-            new=AsyncMock(),
+            new=AsyncMock(return_value={"id": "evt"}),
         ) as journal,
     ):
         response = client.post(
-            "/app/api/consent/subject",
-            json={"channel": "bot", "external_id": _TELEGRAM_ID},
-        )
-    assert response.status_code == 200
-    journal.assert_not_awaited()
-
-
-def test_journal_consent_gets_internal_id_not_telegram_id():
-    _, fake = _memory_mapping()
-    with patch("app.api.api.consent_subjects.get_or_create_id", new=fake):
-        mapped = client.post(
-            "/app/api/consent/subject",
-            json={"channel": "bot", "external_id": _TELEGRAM_ID},
-        )
-    internal_id = mapped.json()["id"]
-    with patch(
-        "app.api.api.consent_journal.record_consent",
-        new=AsyncMock(return_value={"id": "evt-1"}),
-    ) as journal:
-        response = client.post(
             "/app/api/consent",
             json={
-                "subject_id": internal_id,
-                "channel": "bot",
-                "consent_type": "privacy",
+                "channel": "app",
+                "external_id": _INSTALL_ID,
+                "consent_type": "pdn",
                 "action": "granted",
             },
         )
     assert response.status_code == 200
-    kwargs = journal.await_args.kwargs
-    assert kwargs["subject_id"] == internal_id
-    assert kwargs["subject_id"] != _TELEGRAM_ID
-    assert _TELEGRAM_ID not in kwargs.values()
+    journal_subject = journal.await_args.kwargs["subject_id"]
+    uuid.UUID(journal_subject)
+    assert journal_subject != _INSTALL_ID
+    assert _INSTALL_ID not in journal.await_args.kwargs.values()
+
+
+def test_bot_and_app_are_not_merged():
+    _, fake = _memory_mapping()
+    with (
+        patch("app.api.api.consent_subjects.get_or_create_id", new=fake),
+        patch(
+            "app.api.api.consent_journal.record_consent",
+            new=AsyncMock(return_value={"id": "evt"}),
+        ) as journal,
+    ):
+        client.post(
+            "/app/api/consent",
+            json={
+                "channel": "bot",
+                "external_id": _TELEGRAM_ID,
+                "consent_type": "pdn",
+                "action": "granted",
+            },
+        )
+        client.post(
+            "/app/api/consent",
+            json={
+                "channel": "app",
+                "external_id": _TELEGRAM_ID,
+                "consent_type": "pdn",
+                "action": "granted",
+            },
+        )
+    bot_id = journal.await_args_list[0].kwargs["subject_id"]
+    app_id = journal.await_args_list[1].kwargs["subject_id"]
+    assert bot_id != app_id
+
+
+def test_site_does_not_use_mapping_table():
+    with (
+        patch(
+            "app.api.api.consent_subjects.get_or_create_id",
+            new=AsyncMock(),
+        ) as mapped,
+        patch(
+            "app.api.api.consent_journal.record_consent",
+            new=AsyncMock(return_value={"id": "evt"}),
+        ) as journal,
+    ):
+        response = client.post(
+            "/app/api/consent",
+            json={
+                "channel": "site",
+                "subject_id": "browser-uuid",
+                "consent_type": "analytics",
+                "action": "granted",
+            },
+        )
+    assert response.status_code == 200
+    mapped.assert_not_awaited()
+    assert journal.await_args.kwargs["subject_id"] == "browser-uuid"
+
+
+def test_bot_rejects_subject_id():
+    response = client.post(
+        "/app/api/consent",
+        json={
+            "channel": "bot",
+            "subject_id": "should-not-work",
+            "consent_type": "privacy",
+            "action": "granted",
+        },
+    )
+    assert response.status_code == 422
+
+
+def test_site_rejects_external_id():
+    response = client.post(
+        "/app/api/consent",
+        json={
+            "channel": "site",
+            "external_id": _TELEGRAM_ID,
+            "consent_type": "analytics",
+            "action": "granted",
+        },
+    )
+    assert response.status_code == 422
 
 
 def _session_mock():
