@@ -61,6 +61,9 @@ jobs:
       - name: Import app
         env:
           DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/ai_sous_chef
+          CONSENT_JOURNAL_URL: http://consent.test
+          CONSENT_JOURNAL_API_KEY: test-key
+          CONSENT_PUBLIC_BASE: http://consent.test/t/test
         run: python -c "from app.main import app; print(app.title)"
 
   backend-tests:
@@ -80,4 +83,7 @@ jobs:
       - name: Run pytest
         env:
           DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/ai_sous_chef
+          CONSENT_JOURNAL_URL: http://consent.test
+          CONSENT_JOURNAL_API_KEY: test-key
+          CONSENT_PUBLIC_BASE: http://consent.test/t/test
         run: python -m pytest tests/ -q
