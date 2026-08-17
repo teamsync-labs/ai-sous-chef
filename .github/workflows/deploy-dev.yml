@@ -114,6 +114,9 @@ jobs:
           AI_MODE: ${{ vars.AI_MODE }}
           YANDEX_API_KEY: ${{ secrets.YANDEX_API_KEY }}
           YANDEX_FOLDER_ID: ${{ secrets.YANDEX_FOLDER_ID }}
+          CONSENT_JOURNAL_URL: ${{ vars.CONSENT_JOURNAL_URL }}
+          CONSENT_JOURNAL_API_KEY: ${{ secrets.CONSENT_JOURNAL_API_KEY }}
+          CONSENT_PUBLIC_BASE: ${{ vars.CONSENT_PUBLIC_BASE }}
         run: |
           : "${POSTGRES_USER:=postgres}"
           : "${POSTGRES_DB:=ai_sous_chef}"

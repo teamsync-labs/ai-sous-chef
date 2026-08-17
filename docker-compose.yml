@@ -60,6 +60,9 @@ services:
       AI_MODE: ${AI_MODE:-stub}
       YANDEX_API_KEY: ${YANDEX_API_KEY:-}
       YANDEX_FOLDER_ID: ${YANDEX_FOLDER_ID:-}
+      CONSENT_JOURNAL_URL: ${CONSENT_JOURNAL_URL:?CONSENT_JOURNAL_URL is required}
+      CONSENT_JOURNAL_API_KEY: ${CONSENT_JOURNAL_API_KEY:?CONSENT_JOURNAL_API_KEY is required}
+      CONSENT_PUBLIC_BASE: ${CONSENT_PUBLIC_BASE:?CONSENT_PUBLIC_BASE is required}
       POSTGRES_HOST: postgresql
       POSTGRES_PORT: "5432"
       PYTHONUNBUFFERED: "1"
@@ -91,6 +94,7 @@ services:
       TG_TOKEN: ${TG_TOKEN:?TG_TOKEN is required}
       TG_PROXY_URL: ${TG_PROXY_URL:?TG_PROXY_URL is required}
       API_BASE: ${API_BASE:-http://backend:8000/app/api}
+      CONSENT_PUBLIC_BASE: ${CONSENT_PUBLIC_BASE:?CONSENT_PUBLIC_BASE is required}
       PYTHONUNBUFFERED: "1"
     depends_on:
       backend:

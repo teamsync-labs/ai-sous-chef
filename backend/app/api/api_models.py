@@ -1,5 +1,5 @@
-from typing import Optional, List
-from pydantic import BaseModel, model_validator, Base64Bytes
+from typing import Optional, List, Literal, Any
+from pydantic import BaseModel, Field, model_validator, Base64Bytes
 
 
 class BaseAPIModel(BaseModel):
@@ -33,3 +33,27 @@ class RecipesInput(BaseAPIModel):
 
 class RecipesResult(BaseAPIModel):
     recipes: List[dict[str, str | list[str]]]
+
+
+ConsentChannel = Literal["site", "bot", "app"]
+ConsentType = Literal["privacy", "pdn", "analytics", "marketing"]
+ConsentAction = Literal["granted", "withdrawn"]
+
+
+class ConsentRecordInput(BaseAPIModel):
+    subject_id: str = Field(min_length=1, max_length=256)
+    channel: ConsentChannel
+    consent_type: ConsentType
+    action: ConsentAction
+
+
+class ConsentWithdrawInput(BaseAPIModel):
+    subject_id: str = Field(min_length=1, max_length=256)
+    consent_type: Optional[ConsentType] = None
+    channel: Optional[ConsentChannel] = None
+    erase: bool = False
+
+
+class ConsentProxyResult(BaseAPIModel):
+    ok: bool = True
+    journal: Optional[dict[str, Any]] = None

@@ -1,11 +1,21 @@
 import logging
 from typing import Callable
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Request, status
 
-from .api_models import RecipesInput, RecipesResult, RecognizeInput, RecognizeResult, BaseAPIModel
+from .api_models import (
+    BaseAPIModel,
+    ConsentProxyResult,
+    ConsentRecordInput,
+    ConsentWithdrawInput,
+    RecipesInput,
+    RecipesResult,
+    RecognizeInput,
+    RecognizeResult,
+)
 
 from ..core.ai_engine import get_ai_engine, AIServiceUnavailableError, ProductsNotFoundError
+from ..services import consent_journal
 
 logger = logging.getLogger(__name__)
 
@@ -95,4 +105,63 @@ async def recipes(recipes_input: RecipesInput):
     return await proceed_ai(
         "recipes",
         lambda: ai_engine.generate_recipes(recipes_input),
+    )
+
+
+def _client_ip(request: Request) -> str | None:
+    forwarded = request.headers.get("x-forwarded-for")
+    if forwarded:
+        return forwarded.split(",")[0].strip() or None
+    return request.client.host if request.client else None
+
+
+async def _call_journal(operation, **kwargs) -> ConsentProxyResult:
+    try:
+        journal = await operation(**kwargs)
+    except consent_journal.ConsentJournalError as exc:
+        logger.warning("consent journal failed: %s", exc)
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="consent_journal_error",
+        ) from exc
+    return ConsentProxyResult(ok=True, journal=journal)
+
+
+@router.post("/consent", response_model=ConsentProxyResult)
+async def record_consent(body: ConsentRecordInput, request: Request):
+    return await _call_journal(
+        consent_journal.record_consent,
+        subject_id=body.subject_id,
+        channel=body.channel,
+        consent_type=body.consent_type,
+        action=body.action,
+        ip=_client_ip(request),
+        user_agent=request.headers.get("user-agent"),
+    )
+
+
+@router.get("/consent/latest", response_model=ConsentProxyResult)
+async def latest_consent(
+    subject_id: str,
+    consent_type: str,
+    channel: str | None = None,
+):
+    return await _call_journal(
+        consent_journal.latest_consent,
+        subject_id=subject_id,
+        consent_type=consent_type,
+        channel=channel,
+    )
+
+
+@router.post("/consent/withdraw", response_model=ConsentProxyResult)
+async def withdraw_consent(body: ConsentWithdrawInput, request: Request):
+    return await _call_journal(
+        consent_journal.withdraw_consent,
+        subject_id=body.subject_id,
+        consent_type=body.consent_type,
+        channel=body.channel,
+        erase=body.erase,
+        ip=_client_ip(request),
+        user_agent=request.headers.get("user-agent"),
     )
