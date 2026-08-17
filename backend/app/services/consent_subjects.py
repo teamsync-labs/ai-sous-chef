@@ -10,6 +10,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database.models import ConsentSubject
 
+_MAPPED_CHANNELS = frozenset({"bot", "app"})
+
 
 async def get_or_create_id(
     session: AsyncSession,
@@ -37,3 +39,14 @@ async def get_or_create_id(
         existing = (await session.execute(stmt)).scalar_one()
         return existing.id
     return row.id
+
+
+async def resolve_journal_subject_id(
+    session: AsyncSession,
+    channel: str | None,
+    subject_id: str | None,
+    external_id: str | None,
+) -> str:
+    if channel in _MAPPED_CHANNELS:
+        return await get_or_create_id(session, channel, external_id or "")
+    return subject_id or ""
