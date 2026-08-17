@@ -1,12 +1,15 @@
 import logging
-from typing import Callable
+from typing import Annotated, Callable
 
-from fastapi import APIRouter, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from .api_models import (
     BaseAPIModel,
     ConsentProxyResult,
     ConsentRecordInput,
+    ConsentSubjectInput,
+    ConsentSubjectResult,
     ConsentWithdrawInput,
     RecipesInput,
     RecipesResult,
@@ -15,7 +18,9 @@ from .api_models import (
 )
 
 from ..core.ai_engine import get_ai_engine, AIServiceUnavailableError, ProductsNotFoundError
+from ..database.database import get_db
 from ..services import consent_journal
+from ..services import consent_subjects
 
 logger = logging.getLogger(__name__)
 
@@ -125,6 +130,17 @@ async def _call_journal(operation, **kwargs) -> ConsentProxyResult:
             detail="consent_journal_error",
         ) from exc
     return ConsentProxyResult(ok=True, journal=journal)
+
+
+@router.post("/consent/subject", response_model=ConsentSubjectResult)
+async def get_consent_subject(
+    body: ConsentSubjectInput,
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    subject_id = await consent_subjects.get_or_create_id(
+        db, body.channel, body.external_id
+    )
+    return ConsentSubjectResult(id=subject_id)
 
 
 @router.post("/consent", response_model=ConsentProxyResult)

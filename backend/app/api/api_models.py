@@ -36,6 +36,7 @@ class RecipesResult(BaseAPIModel):
 
 
 ConsentChannel = Literal["site", "bot", "app"]
+ConsentSubjectChannel = Literal["bot", "app"]
 ConsentType = Literal["privacy", "pdn", "analytics", "marketing"]
 ConsentAction = Literal["granted", "withdrawn"]
 
@@ -57,3 +58,12 @@ class ConsentWithdrawInput(BaseAPIModel):
 class ConsentProxyResult(BaseAPIModel):
     ok: bool = True
     journal: Optional[dict[str, Any]] = None
+
+
+class ConsentSubjectInput(BaseAPIModel):
+    channel: ConsentSubjectChannel
+    external_id: str = Field(min_length=1, max_length=256)
+
+
+class ConsentSubjectResult(BaseAPIModel):
+    id: str
