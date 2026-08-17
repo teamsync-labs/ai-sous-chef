@@ -13,6 +13,7 @@ from app.main import app
 
 # Создаем клиент для тестов
 client = TestClient(app)
+_API_HEADERS = {"X-Api-Key": "test-bot-key"}
 
 # Готовые ответы «как будто вернул LLM» — без сети и ключей.
 _MOCK_RECOGNIZE = RecognizeResult(
@@ -45,6 +46,7 @@ class TestRecognizeEndpoint:
         """Тест: успешное распознавание продуктов по тексту."""
         response = client.post(
             "/app/api/recognize",
+            headers=_API_HEADERS,
             json={"text": "chicken, rice, onion"}
         )
         assert response.status_code == 200
@@ -64,6 +66,7 @@ class TestRecognizeEndpoint:
         """Тест: ошибка при отсутствии входа (нет text и нет img_base64)."""
         response = client.post(
             "/app/api/recognize",
+            headers=_API_HEADERS,
             json={}  # Пустой запрос
         )
         # API должен вернуть 400 или 422
@@ -77,6 +80,7 @@ class TestRecognizeEndpoint:
         """Тест: ошибка при передаче обоих полей (text и img_base64)."""
         response = client.post(
             "/app/api/recognize",
+            headers=_API_HEADERS,
             json={
                 "text": "chicken",
                 "img_base64": "dummy_data"
@@ -99,6 +103,7 @@ class TestRecipesEndpoint:
         """Тест: успешная генерация рецептов по продуктам."""
         response = client.post(
             "/app/api/recipes",
+            headers=_API_HEADERS,
             json={"products": ["chicken", "rice", "onion"]}
         )
         assert response.status_code == 200
@@ -120,6 +125,7 @@ class TestRecipesEndpoint:
         """Тест: ошибка при отсутствии поля products."""
         response = client.post(
             "/app/api/recipes",
+            headers=_API_HEADERS,
             json={}  # Пустой запрос
         )
         assert response.status_code in [400, 422]
@@ -130,6 +136,7 @@ class TestRecipesEndpoint:
         """Тест: ошибка при неверном типе products (число вместо списка)."""
         response = client.post(
             "/app/api/recipes",
+            headers=_API_HEADERS,
             json={"products": 123}
         )
         # FastAPI вернет 422 при валидации модели
@@ -146,6 +153,7 @@ def test_recognize_response_structure(mock_ai_engine):
     """Тест: проверка структуры ответа recognize."""
     response = client.post(
         "/app/api/recognize",
+        headers=_API_HEADERS,
         json={"text": "chicken, rice"}
     )
     assert response.status_code == 200
@@ -165,6 +173,7 @@ def test_recipes_response_structure(mock_ai_engine):
     """Тест: проверка структуры ответа recipes."""
     response = client.post(
         "/app/api/recipes",
+        headers=_API_HEADERS,
         json={"products": ["chicken", "rice"]}
     )
     assert response.status_code == 200
@@ -179,3 +188,31 @@ def test_recipes_response_structure(mock_ai_engine):
         assert "title" in recipe
         assert "steps" in recipe
         assert isinstance(recipe["steps"], list)
+
+
+def test_recognize_without_key_is_401(mock_ai_engine):
+    response = client.post(
+        "/app/api/recognize",
+        json={"text": "chicken, rice"},
+    )
+    assert response.status_code == 401
+    mock_ai_engine.recognize_products.assert_not_called()
+
+
+def test_recipes_accepts_app_key(mock_ai_engine):
+    response = client.post(
+        "/app/api/recipes",
+        headers={"X-Api-Key": "test-app-key"},
+        json={"products": ["chicken"]},
+    )
+    assert response.status_code == 200
+
+
+def test_recognize_rejects_site_key(mock_ai_engine):
+    response = client.post(
+        "/app/api/recognize",
+        headers={"X-Api-Key": "test-site-key"},
+        json={"text": "chicken, rice"},
+    )
+    assert response.status_code == 401
+    mock_ai_engine.recognize_products.assert_not_called()

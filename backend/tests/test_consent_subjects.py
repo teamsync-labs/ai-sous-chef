@@ -14,6 +14,9 @@ from app.services.consent_subjects import get_or_create_id
 
 client = TestClient(app)
 
+_BOT_HEADERS = {"X-Api-Key": "test-bot-key"}
+_APP_HEADERS = {"X-Api-Key": "test-app-key"}
+_SITE_HEADERS = {"X-Api-Key": "test-site-key"}
 _TELEGRAM_ID = "482917"
 _INSTALL_ID = "install-7f3a2c1e"
 _prev_get_db = None
@@ -72,6 +75,7 @@ def test_same_telegram_id_maps_to_same_journal_subject():
     ):
         first = client.post(
             "/app/api/consent",
+            headers=_BOT_HEADERS,
             json={
                 "channel": "bot",
                 "external_id": _TELEGRAM_ID,
@@ -81,6 +85,7 @@ def test_same_telegram_id_maps_to_same_journal_subject():
         )
         second = client.post(
             "/app/api/consent",
+            headers=_BOT_HEADERS,
             json={
                 "channel": "bot",
                 "external_id": _TELEGRAM_ID,
@@ -111,6 +116,7 @@ def test_app_channel_maps_install_id():
     ):
         response = client.post(
             "/app/api/consent",
+            headers=_APP_HEADERS,
             json={
                 "channel": "app",
                 "external_id": _INSTALL_ID,
@@ -136,6 +142,7 @@ def test_bot_and_app_are_not_merged():
     ):
         client.post(
             "/app/api/consent",
+            headers=_BOT_HEADERS,
             json={
                 "channel": "bot",
                 "external_id": _TELEGRAM_ID,
@@ -145,6 +152,7 @@ def test_bot_and_app_are_not_merged():
         )
         client.post(
             "/app/api/consent",
+            headers=_APP_HEADERS,
             json={
                 "channel": "app",
                 "external_id": _TELEGRAM_ID,
@@ -170,6 +178,7 @@ def test_site_does_not_use_mapping_table():
     ):
         response = client.post(
             "/app/api/consent",
+            headers=_SITE_HEADERS,
             json={
                 "channel": "site",
                 "subject_id": "browser-uuid",

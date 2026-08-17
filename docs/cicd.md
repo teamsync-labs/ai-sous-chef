@@ -30,6 +30,9 @@
 | `YANDEX_API_KEY` | API-ключ Yandex Cloud (нужен при `AI_MODE=real`) |
 | `YANDEX_FOLDER_ID` | ID каталога Yandex Cloud (нужен при `AI_MODE=real`) |
 | `CONSENT_JOURNAL_API_KEY` | ключ API журнала согласий |
+| `API_KEY_BOT` | ключ клиента API для бота (`X-Api-Key` на `/app/api`) |
+| `API_KEY_APP` | ключ клиента API для приложения (`X-Api-Key` на `/app/api`) |
+| `API_KEY_SITE` | ключ сайта для `channel=site` (в `cookie-notice.js`; не открывает recognize/recipes) |
 
 **Не нужен** `DATABASE_URL`: его собирает `scripts/vps-write-deploy-env.sh` из `POSTGRES_USER`/`POSTGRES_PASSWORD`/`POSTGRES_DB` с **URL-encode** пароля. Лишний secret `DATABASE_URL` в Environment лучше удалить, чтобы не путаться.
 

@@ -476,6 +476,29 @@ a:hover {
   margin: -8px 0 24px;
 }
 
+.stack-list {
+  display: grid;
+  gap: 16px;
+  margin: 0 0 8px;
+}
+
+.stack-list > div {
+  margin: 0;
+}
+
+.stack-list dt {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brand);
+  margin-bottom: 8px;
+}
+
+.stack-list dd.meta {
+  margin: 0;
+}
+
 .section-note-follow {
   margin-top: 8px;
 }

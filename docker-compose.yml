@@ -6,6 +6,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        API_KEY_SITE: ${API_KEY_SITE:-local-site-key}
     image: ${IMAGE_PREFIX:-ai-sous-chef}-frontend:${IMAGE_TAG:-latest}
     expose:
       - "80"
@@ -63,6 +65,9 @@ services:
       CONSENT_JOURNAL_URL: ${CONSENT_JOURNAL_URL:?CONSENT_JOURNAL_URL is required}
       CONSENT_JOURNAL_API_KEY: ${CONSENT_JOURNAL_API_KEY:?CONSENT_JOURNAL_API_KEY is required}
       CONSENT_PUBLIC_BASE: ${CONSENT_PUBLIC_BASE:?CONSENT_PUBLIC_BASE is required}
+      API_KEY_BOT: ${API_KEY_BOT:?API_KEY_BOT is required}
+      API_KEY_APP: ${API_KEY_APP:?API_KEY_APP is required}
+      API_KEY_SITE: ${API_KEY_SITE:?API_KEY_SITE is required}
       POSTGRES_HOST: postgresql
       POSTGRES_PORT: "5432"
       PYTHONUNBUFFERED: "1"
@@ -95,6 +100,7 @@ services:
       TG_PROXY_URL: ${TG_PROXY_URL:?TG_PROXY_URL is required}
       API_BASE: ${API_BASE:-http://backend:8000/app/api}
       CONSENT_PUBLIC_BASE: ${CONSENT_PUBLIC_BASE:?CONSENT_PUBLIC_BASE is required}
+      API_KEY_BOT: ${API_KEY_BOT:?API_KEY_BOT is required}
       PYTHONUNBUFFERED: "1"
     depends_on:
       backend:
