@@ -7,6 +7,8 @@ from abc import ABC, abstractmethod
 
 from app.core.config import settings
 from openai import AsyncOpenAI
+from openai.types.chat import ChatCompletionSystemMessageParam, ChatCompletionUserMessageParam
+from openai.types.shared_params import ResponseFormatJSONObject
 
 
 class AIServiceError(RuntimeError):
@@ -145,27 +147,55 @@ class AIEngine(AIProtocol):
     async def generate_recipes(recipes_input: RecipesInput) -> RecipesResult:
         if recipes_input.products is not None:
             client = AIEngine._build_client()
-            prompt = (
-                "По списку продуктов предложи 4 коротких рецепта на русском. "
-                "Ответ строго JSON: {\"title\": string, \"steps\": string[]}[]. "
-                f"Продукты: {', '.join(recipes_input.products)}"
+            system_prompt = (
+                f"Ты — помощник на кухне AI Sous-Chef. По списку продуктов: {', '.join(recipes_input.products)} "
+                "предложи 2–3 простых рецепта. Правила:\n"
+                "- используй в основном переданные продукты;\n"
+                "- если добавляешь базу (соль, масло, вода) — укажи это явно;\n"
+                "- не выдумывай редкие ингредиенты, которых нет в списке;\n"
+                "- шаги конкретные: время, температура или визуальный признак готовности;\n"
+                "- язык: русский;\n"
+                r"- ответь ТОЛЬКО валидным JSON без markdown-обёрток (никаких ```json);\n"
+                "- лимит ответа ~1200–1500 токенов"
+            )
+
+            user_message = (
+                "Верни ответ в формате:\n"
+                "{\n"
+                '  "recipes": [\n'
+                "    {\n"
+                '      "title": "Название рецепта",\n'
+                '      "steps": ["Шаг 1", "Шаг 2", "Шаг 3"]\n'
+                "    }\n"
+                "  ]\n"
+                "}\n\n"
+                "Требования:\n"
+                "- строго валидный JSON\n"
+                "- без markdown-обёрток\n"
+                "- лимит ответа: ~1200–1500 токенов\n"
+                "- каждый шаг — конкретное действие с параметром готовности"
             )
             try:
                 response = await client.chat.completions.create(
                     model=AIEngine.MODEL_FOR_CV,
                     temperature=0.3,
                     max_tokens=1200,
-                    messages=[{"role": "user", "content": prompt}],
-                    reasoning_effort="none"
+                    messages=[
+                        ChatCompletionSystemMessageParam(role="system", content=system_prompt),
+                        ChatCompletionUserMessageParam(role="user", content=user_message)
+                    ],
+                    reasoning_effort="none",
+                    response_format=ResponseFormatJSONObject(type="json_object")
                 )
             except Exception as exc:
                 raise AIServiceUnavailableError()
             content = response.choices[0].message.content
             try:
                 recipes = json.loads(content)
+                print(recipes)
             except json.JSONDecodeError:
                 raise AIServiceError()
-            return RecipesResult(recipes=recipes, confidence=1.0)
+            return RecipesResult(recipes=recipes.get("recipes", []), confidence=1.0)
         raise ValueError("Invalid input")
 
     @staticmethod
