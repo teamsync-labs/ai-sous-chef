@@ -216,3 +216,25 @@ def test_recognize_rejects_site_key(mock_ai_engine):
     )
     assert response.status_code == 401
     mock_ai_engine.recognize_products.assert_not_called()
+
+
+def test_api_docs_require_basic_auth():
+    for path in ("/docs", "/redoc", "/openapi.json"):
+        response = client.get(path)
+        assert response.status_code == 401
+        assert response.headers.get("www-authenticate", "").lower().startswith("basic")
+
+
+def test_api_docs_reject_wrong_basic_auth():
+    assert client.get("/docs", auth=("dev", "wrong")).status_code == 401
+
+
+def test_api_docs_accept_basic_auth():
+    auth = ("dev", "dev")
+    docs = client.get("/docs", auth=auth)
+    assert docs.status_code == 200
+    redoc = client.get("/redoc", auth=auth)
+    assert redoc.status_code == 200
+    schema = client.get("/openapi.json", auth=auth)
+    assert schema.status_code == 200
+    assert "/app/api/recognize" in schema.json()["paths"]
