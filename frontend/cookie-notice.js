@@ -6,6 +6,7 @@
   var TAG_SRC = "https://mc.yandex.ru/metrika/tag.js";
   var TAG_SCRIPT_ID = "yandex-metrika-tag";
   var CONSENT_API = "/app/api/consent";
+  var API_KEY_SITE = "local-site-key";
   var METRIKA_ID = 111661284;
 
   var script = document.currentScript;
@@ -52,7 +53,10 @@
   function recordAnalytics(choice) {
     return fetch(CONSENT_API, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Api-Key": API_KEY_SITE,
+      },
       body: JSON.stringify({
         subject_id: subjectId(),
         channel: "site",

@@ -75,8 +75,7 @@ infra/               деплой и окружения
 5. Проверьте:
    - сайт: [http://localhost:8080](http://localhost:8080)
    - health: [http://localhost:8080/health](http://localhost:8080/health) → `{"db":"ok"}`
-   - docs: [http://localhost:8080/docs](http://localhost:8080/docs)
-   - API: `/app/api/...` через тот же порт
+   - API: `/app/api/...` через тот же порт, заголовок `X-Api-Key`
    - bot: `docker compose ps` — сервис `bot` в статусе Up
    - redis: `docker compose ps` — сервис `redis` healthy
 

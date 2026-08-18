@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     CONSENT_JOURNAL_URL: str = Field(min_length=1)
     CONSENT_JOURNAL_API_KEY: str = Field(min_length=1)
     CONSENT_PUBLIC_BASE: str = Field(min_length=1)
+    API_KEY_BOT: str = Field(min_length=1)
+    API_KEY_APP: str = Field(min_length=1)
+    API_KEY_SITE: str = Field(min_length=1)
 
 
 settings = Settings()

@@ -10,6 +10,10 @@ from app.services.consent_journal import ConsentJournalError
 
 client = TestClient(app)
 
+_BOT_HEADERS = {"X-Api-Key": "test-bot-key"}
+_APP_HEADERS = {"X-Api-Key": "test-app-key"}
+_SITE_HEADERS = {"X-Api-Key": "test-site-key"}
+
 _RECORD = {
     "subject_id": "user_internal_1",
     "channel": "site",
@@ -43,7 +47,7 @@ def test_record_consent_proxies_to_journal():
         "app.api.api.consent_journal.record_consent",
         new=AsyncMock(return_value=recorded),
     ) as mocked:
-        response = client.post("/app/api/consent", json=_RECORD)
+        response = client.post("/app/api/consent", headers=_SITE_HEADERS, json=_RECORD)
     assert response.status_code == 200
     assert response.json() == {"ok": True, "journal": recorded}
     kwargs = mocked.await_args.kwargs
@@ -67,6 +71,7 @@ def test_record_pdn_granted():
     ):
         response = client.post(
             "/app/api/consent",
+            headers=_BOT_HEADERS,
             json={
                 "external_id": "482917",
                 "channel": "bot",
@@ -95,6 +100,7 @@ def test_latest_consent_check():
     ):
         response = client.get(
             "/app/api/consent/latest",
+            headers=_BOT_HEADERS,
             params={
                 "external_id": "482917",
                 "consent_type": "pdn",
@@ -125,6 +131,7 @@ def test_withdraw_with_erase():
     ):
         response = client.post(
             "/app/api/consent/withdraw",
+            headers=_BOT_HEADERS,
             json={
                 "external_id": "482917",
                 "consent_type": "pdn",
@@ -144,6 +151,93 @@ def test_journal_error_returns_502():
         new=AsyncMock(side_effect=ConsentJournalError(
             "journal_error", status_code=401)),
     ):
-        response = client.post("/app/api/consent", json=_RECORD)
+        response = client.post("/app/api/consent", headers=_SITE_HEADERS, json=_RECORD)
     assert response.status_code == 502
     assert response.json()["detail"] == "consent_journal_error"
+
+
+def test_bot_consent_without_key_is_401():
+    with patch(
+        "app.api.api.consent_journal.record_consent",
+        new=AsyncMock(),
+    ) as mocked:
+        response = client.post(
+            "/app/api/consent",
+            json={
+                "external_id": "482917",
+                "channel": "bot",
+                "consent_type": "pdn",
+                "action": "granted",
+            },
+        )
+    assert response.status_code == 401
+    mocked.assert_not_awaited()
+
+
+def test_bot_consent_rejects_app_key():
+    with patch(
+        "app.api.api.consent_journal.record_consent",
+        new=AsyncMock(),
+    ) as mocked:
+        response = client.post(
+            "/app/api/consent",
+            headers=_APP_HEADERS,
+            json={
+                "external_id": "482917",
+                "channel": "bot",
+                "consent_type": "pdn",
+                "action": "granted",
+            },
+        )
+    assert response.status_code == 401
+    mocked.assert_not_awaited()
+
+
+def test_app_consent_requires_app_key():
+    mapped_id = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+    with (
+        patch(
+            "app.api.api.consent_subjects.get_or_create_id",
+            new=AsyncMock(return_value=mapped_id),
+        ),
+        patch(
+            "app.api.api.consent_journal.record_consent",
+            new=AsyncMock(return_value={"id": "evt-app"}),
+        ) as mocked,
+    ):
+        response = client.post(
+            "/app/api/consent",
+            headers=_APP_HEADERS,
+            json={
+                "external_id": "install-1",
+                "channel": "app",
+                "consent_type": "pdn",
+                "action": "granted",
+            },
+        )
+    assert response.status_code == 200
+    mocked.assert_awaited_once()
+
+
+def test_site_consent_without_key_is_401():
+    with patch(
+        "app.api.api.consent_journal.record_consent",
+        new=AsyncMock(),
+    ) as mocked:
+        response = client.post("/app/api/consent", json=_RECORD)
+    assert response.status_code == 401
+    mocked.assert_not_awaited()
+
+
+def test_site_consent_rejects_app_key():
+    with patch(
+        "app.api.api.consent_journal.record_consent",
+        new=AsyncMock(),
+    ) as mocked:
+        response = client.post(
+            "/app/api/consent",
+            headers=_APP_HEADERS,
+            json=_RECORD,
+        )
+    assert response.status_code == 401
+    mocked.assert_not_awaited()

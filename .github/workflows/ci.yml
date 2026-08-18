@@ -64,6 +64,9 @@ jobs:
           CONSENT_JOURNAL_URL: http://consent.test
           CONSENT_JOURNAL_API_KEY: test-key
           CONSENT_PUBLIC_BASE: http://consent.test/t/test
+          API_KEY_BOT: test-bot-key
+          API_KEY_APP: test-app-key
+          API_KEY_SITE: test-site-key
         run: python -c "from app.main import app; print(app.title)"
 
   backend-tests:
@@ -86,4 +89,7 @@ jobs:
           CONSENT_JOURNAL_URL: http://consent.test
           CONSENT_JOURNAL_API_KEY: test-key
           CONSENT_PUBLIC_BASE: http://consent.test/t/test
+          API_KEY_BOT: test-bot-key
+          API_KEY_APP: test-app-key
+          API_KEY_SITE: test-site-key
         run: python -m pytest tests/ -q

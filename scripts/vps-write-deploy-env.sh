@@ -42,6 +42,9 @@ write_kv_compose() {
 : "${CONSENT_JOURNAL_URL:?}"
 : "${CONSENT_JOURNAL_API_KEY:?}"
 : "${CONSENT_PUBLIC_BASE:?}"
+: "${API_KEY_BOT:?}"
+: "${API_KEY_APP:?}"
+: "${API_KEY_SITE:?}"
 
 case "$AI_MODE" in
   stub|real) ;;
@@ -88,5 +91,8 @@ write_kv_compose YANDEX_FOLDER_ID "$YANDEX_FOLDER_ID"
 write_kv_compose CONSENT_JOURNAL_URL "$CONSENT_JOURNAL_URL"
 write_kv_compose CONSENT_JOURNAL_API_KEY "$CONSENT_JOURNAL_API_KEY"
 write_kv_compose CONSENT_PUBLIC_BASE "$CONSENT_PUBLIC_BASE"
+write_kv_compose API_KEY_BOT "$API_KEY_BOT"
+write_kv_compose API_KEY_APP "$API_KEY_APP"
+write_kv_compose API_KEY_SITE "$API_KEY_SITE"
 
 chmod 600 "$ENV_FILE"
