@@ -4,6 +4,8 @@ import asyncio
 
 from dotenv import load_dotenv
 
+load_dotenv()
+
 from aiogram import Dispatcher, Bot
 
 from aiogram.client.session.aiohttp import AiohttpSession
@@ -16,8 +18,6 @@ setup_logging()
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-
-load_dotenv()
 
 dp = Dispatcher()
 
