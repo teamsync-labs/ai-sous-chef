@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,7 +9,9 @@
   <link rel="apple-touch-icon" href="assets/app-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Sora:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <style>
     :root {
@@ -31,7 +34,11 @@
       --phone-h: 640px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: "Sora", system-ui, sans-serif;
@@ -65,7 +72,9 @@
     }
 
     @media (max-width: 900px) {
-      .hero { grid-template-columns: 1fr; }
+      .hero {
+        grid-template-columns: 1fr;
+      }
     }
 
     .section-intro {
@@ -77,7 +86,9 @@
     }
 
     @media (max-width: 900px) {
-      .section-intro { grid-template-columns: 1fr; }
+      .section-intro {
+        grid-template-columns: 1fr;
+      }
     }
 
     .section-intro .lede {
@@ -141,7 +152,10 @@
       font-size: 0.9rem;
     }
 
-    .legend li { margin: 6px 0; }
+    .legend li {
+      margin: 6px 0;
+    }
+
     .legend code {
       font-size: 0.82em;
       background: var(--surface-2);
@@ -222,7 +236,10 @@
     }
 
     @media (max-width: 860px) {
-      .prototype { grid-template-columns: 1fr; justify-items: center; }
+      .prototype {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
     }
 
     .phone {
@@ -295,7 +312,9 @@
       border: 1px solid var(--line);
     }
 
-    .app-header .mark-wrap { min-width: 0; }
+    .app-header .mark-wrap {
+      min-width: 0;
+    }
 
     .app-header .mark {
       font-family: "Instrument Serif", Georgia, serif;
@@ -386,7 +405,9 @@
       width: 100%;
     }
 
-    .withdraw-link:hover { color: var(--brand); }
+    .withdraw-link:hover {
+      color: var(--brand);
+    }
 
     .app-doc {
       flex: 1;
@@ -453,7 +474,10 @@
       transition: border-color 0.15s, background 0.15s;
     }
 
-    .mode-btn:hover { border-color: var(--brand); background: #e4efe1; }
+    .mode-btn:hover {
+      border-color: var(--brand);
+      background: #e4efe1;
+    }
 
     .mode-btn .label {
       font-weight: 600;
@@ -478,14 +502,19 @@
       transition: background 0.15s, color 0.15s, opacity 0.15s;
     }
 
-    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
 
     .btn-primary {
       background: var(--brand);
       color: #f7faf6;
     }
 
-    .btn-primary:hover:not(:disabled) { background: var(--brand-hover); }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--brand-hover);
+    }
 
     .btn-ghost {
       background: transparent;
@@ -509,7 +538,7 @@
       flex: 1;
       min-height: 0;
       background:
-        linear-gradient(180deg, rgba(26,36,25,0.15), rgba(26,36,25,0.45)),
+        linear-gradient(180deg, rgba(26, 36, 25, 0.15), rgba(26, 36, 25, 0.45)),
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='360' viewBox='0 0 280 360'%3E%3Crect fill='%23c8d6c0' width='280' height='360'/%3E%3Cellipse cx='70' cy='220' rx='40' ry='28' fill='%23c45c26'/%3E%3Cellipse cx='130' cy='200' rx='36' ry='30' fill='%23e8b84a'/%3E%3Cellipse cx='190' cy='230' rx='34' ry='26' fill='%237a9e4a'/%3E%3Ccircle cx='100' cy='160' r='22' fill='%23f2f2e8'/%3E%3Ccircle cx='160' cy='155' r='18' fill='%23f0ece0'/%3E%3Crect x='40' y='260' width='90' height='40' rx='8' fill='%23a67c52'/%3E%3C/svg%3E") center/cover;
       border: 1px solid var(--line);
       position: relative;
@@ -574,7 +603,11 @@
       animation: spin 0.8s linear infinite;
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
     .product-list {
       list-style: none;
@@ -616,7 +649,9 @@
       border-color: var(--brand);
     }
 
-    .field::placeholder { color: #9aa894; }
+    .field::placeholder {
+      color: #9aa894;
+    }
 
     .recipe-list {
       list-style: none;
@@ -641,7 +676,9 @@
       color: inherit;
     }
 
-    .recipe-item:hover { border-color: var(--brand); }
+    .recipe-item:hover {
+      border-color: var(--brand);
+    }
 
     .recipe-item .title {
       font-weight: 600;
@@ -717,7 +754,9 @@
       text-align: left;
     }
 
-    .back:hover { color: var(--brand); }
+    .back:hover {
+      color: var(--brand);
+    }
 
     .panel {
       background: var(--surface);
@@ -732,7 +771,8 @@
       margin-bottom: 10px;
     }
 
-    .panel p, .panel li {
+    .panel p,
+    .panel li {
       font-size: 0.88rem;
       color: var(--ink-soft);
     }
@@ -742,7 +782,19 @@
       margin: 8px 0 0;
     }
 
-    .panel li { margin: 4px 0; }
+    .panel li {
+      margin: 4px 0;
+    }
+
+    .panel-next {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .panel-next p {
+      margin-bottom: 10px;
+    }
 
     .specs {
       display: grid;
@@ -752,7 +804,9 @@
     }
 
     @media (max-width: 700px) {
-      .specs { grid-template-columns: 1fr; }
+      .specs {
+        grid-template-columns: 1fr;
+      }
     }
 
     .nav-dots {
@@ -772,7 +826,9 @@
       padding: 0;
     }
 
-    .nav-dots button.active { background: var(--brand); }
+    .nav-dots button.active {
+      background: var(--brand);
+    }
 
     .screen-label {
       text-align: center;
@@ -781,7 +837,9 @@
       color: var(--muted);
     }
 
-    .screen-label strong { color: var(--ink-soft); }
+    .screen-label strong {
+      color: var(--ink-soft);
+    }
 
     .phone-inner.is-splash .status-bar {
       background: var(--brand);
@@ -829,7 +887,9 @@
       margin: 0 auto;
     }
 
-    .app-header .mark-wrap { min-width: 0; }
+    .app-header .mark-wrap {
+      min-width: 0;
+    }
 
     .logo-gallery {
       display: grid;
@@ -957,7 +1017,9 @@
       min-height: 0;
     }
 
-    .tg-screen.active { display: flex; }
+    .tg-screen.active {
+      display: flex;
+    }
 
     .tg-inner.is-tg-doc .tg-header,
     .tg-inner.is-tg-doc .tg-attach-menu {
@@ -1034,8 +1096,13 @@
       max-width: 100%;
     }
 
-    .tg-row.bot { align-self: flex-start; }
-    .tg-row.user { align-self: flex-end; }
+    .tg-row.bot {
+      align-self: flex-start;
+    }
+
+    .tg-row.user {
+      align-self: flex-end;
+    }
 
     .tg-avatar {
       width: 28px;
@@ -1119,7 +1186,9 @@
       color: #8b9aab;
     }
 
-    .tg-bubble.user .tg-meta { color: #9ec0df; }
+    .tg-bubble.user .tg-meta {
+      color: #9ec0df;
+    }
 
     .tg-checks {
       letter-spacing: -0.12em;
@@ -1134,7 +1203,7 @@
       border-radius: 10px;
       overflow: hidden;
       background:
-        linear-gradient(180deg, rgba(26,36,25,0.12), rgba(26,36,25,0.35)),
+        linear-gradient(180deg, rgba(26, 36, 25, 0.12), rgba(26, 36, 25, 0.35)),
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='168' height='168' viewBox='0 0 168 168'%3E%3Crect fill='%23c8d6c0' width='168' height='168'/%3E%3Cellipse cx='48' cy='108' rx='28' ry='20' fill='%23c45c26'/%3E%3Cellipse cx='88' cy='96' rx='24' ry='22' fill='%23e8b84a'/%3E%3Cellipse cx='126' cy='112' rx='22' ry='18' fill='%237a9e4a'/%3E%3Ccircle cx='70' cy='70' r='16' fill='%23f2f2e8'/%3E%3Ccircle cx='108' cy='66' r='13' fill='%23f0ece0'/%3E%3C/svg%3E") center/cover;
     }
 
@@ -1237,7 +1306,12 @@
       margin-left: 34px;
     }
 
-    .tg-inline.row button { flex: 1; min-width: 0; }    .tg-products {
+    .tg-inline.row button {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tg-products {
       margin: 6px 0 2px;
       padding-left: 1.1rem;
       color: #e8eef4;
@@ -1288,10 +1362,15 @@
       font: inherit;
     }
 
-    .tg-composer button.send { color: #5bbb6a; font-size: 1.1rem; }
+    .tg-composer button.send {
+      color: #5bbb6a;
+      font-size: 1.1rem;
+    }
 
     .tg-composer button.attach:hover,
-    .tg-composer button.send:hover { color: #cfe6d4; }
+    .tg-composer button.send:hover {
+      color: #cfe6d4;
+    }
 
     .tg-composer .input {
       flex: 1;
@@ -1326,7 +1405,11 @@
       min-width: 160px;
     }
 
-    .tg-attach-menu.open { display: flex; flex-direction: column; gap: 2px; }
+    .tg-attach-menu.open {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
 
     .tg-attach-menu button {
       appearance: none;
@@ -1341,9 +1424,12 @@
       cursor: pointer;
     }
 
-    .tg-attach-menu button:hover { background: rgba(91, 187, 106, 0.15); }
+    .tg-attach-menu button:hover {
+      background: rgba(91, 187, 106, 0.15);
+    }
   </style>
 </head>
+
 <body>
   <div class="site-chrome">
     <nav class="site-nav" aria-label="Навигация">
@@ -1364,7 +1450,7 @@
       <div class="mockup-subnav-inner">
         <span class="label">На странице</span>
         <a href="#logos">Логотипы</a>
-        <a href="#mobile">Mobile app</a>
+        <a href="#mobile">Приложение</a>
         <a href="#telegram">Telegram-бот</a>
       </div>
     </nav>
@@ -1375,15 +1461,11 @@
       <div>
         <div class="brand">AI Sous-Chef<br /><em>макет MVP</em></div>
         <p class="lede">
-          Интерактивные макеты двух клиентов на общем API из
-          <code>docs/mvp.md</code>:
-          мобильное приложение и Telegram-бот.
-          Без авторизации, без чата, один запрос — один ответ.
+          Макеты приложения и бота. Один API, два клиента.
         </p>
         <div class="meta">
           <span class="chip">Mobile</span>
           <span class="chip">Telegram</span>
-          <span class="chip">Один API</span>
         </div>
       </div>
     </header>
@@ -1432,14 +1514,14 @@
     </div>
 
     <h2 class="section-title" id="mobile">
-      <span class="section-kind">Клиент · Mobile</span>
-      Интерактивный прототип
+      <span class="section-kind">Интерактивный прототип</span>
+      Клиент · Mobile
     </h2>
     <div class="section-intro">
       <div>
         <p class="lede">
-          Android-клиент того же API: две галочки согласия, затем фото или текст →
-          подтверждение продуктов → рецепты (или повтор при «Неверно»). Без чата.
+          Mobile-клиент: две галочки согласия, затем фото или текст →
+          подтверждение продуктов → рецепты. Без чата.
         </p>
         <div class="meta">
           <span class="chip">React Native</span>
@@ -1456,7 +1538,7 @@
           <li>Фото: камера → распознавание → подтверждение</li>
           <li>Текст: список продуктов → сразу рецепты</li>
           <li>Список рецептов → шаги</li>
-          <li>«Отозвать согласие» → снова галочки, камеры нет</li>
+          <li>«Отозвать согласие» → подтверждение; отозвать — снова галочки</li>
         </ol>
       </aside>
     </div>
@@ -1553,7 +1635,6 @@
             <section class="screen" data-screen="camera">
               <button class="back" data-go="home">← На главную</button>
               <h1 class="headline">Сфотографируйте продукты</h1>
-              <p class="hint">Держите кадр ровно, при хорошем свете. На фото не должно быть людей и документов. Только продукты.</p>
               <div class="camera-view">
                 <div class="frame"></div>
                 <div class="cap">Камера</div>
@@ -1569,7 +1650,6 @@
                   <strong style="color:var(--ink);display:block;margin-bottom:4px">Распознаём продукты</strong>
                   Обычно до 5 секунд
                 </div>
-                <button class="btn btn-primary" data-go="confirm" style="margin-top:8px">Показать результат</button>
               </div>
             </section>
 
@@ -1585,20 +1665,8 @@
                 <li>зелень</li>
               </ul>
               <div class="actions">
-                <div class="btn-row">
-                  <button class="btn btn-primary" data-go="loading-recipes">Верно</button>
-                  <button class="btn btn-danger" data-go="retry-photo">Неверно</button>
-                </div>
-              </div>
-            </section>
-
-            <!-- 6. Retry photo -->
-            <section class="screen" data-screen="retry-photo">
-              <h1 class="headline">Попробуйте ещё раз</h1>
-              <p class="hint">Попробуйте отправить фото ещё раз.</p>
-              <div class="actions">
-                <button class="btn btn-primary" data-go="camera">Сделать фото снова</button>
-                <button class="btn btn-ghost" data-go="home">На главную</button>
+                <button class="btn btn-primary" data-go="loading-recipes">Верно</button>
+                <button class="btn btn-danger" data-go="camera">Неверно, новое фото</button>
               </div>
             </section>
 
@@ -1607,7 +1675,8 @@
               <button class="back" data-go="home">← На главную</button>
               <h1 class="headline">Что есть на кухне?</h1>
               <p class="hint">Напишите продукты через запятую — например: курица, рис, лук.</p>
-              <textarea class="field" id="products-input" placeholder="например: курица, рис, лук">курица, рис, лук</textarea>
+              <textarea class="field" id="products-input"
+                placeholder="например: курица, рис, лук">курица, рис, лук</textarea>
               <div class="actions">
                 <button class="btn btn-primary" data-go="loading-recipes">Найти рецепты</button>
               </div>
@@ -1620,7 +1689,6 @@
                 <div>
                   <strong style="color:var(--ink);display:block;margin-bottom:4px">Подбираем рецепты</strong>
                 </div>
-                <button class="btn btn-primary" data-go="recipes" style="margin-top:8px">Показать рецепты</button>
               </div>
             </section>
 
@@ -1663,45 +1731,19 @@
 
             <!-- 11. Error -->
             <section class="screen" data-screen="error">
-              <h1 class="headline">Не получилось</h1>
-              <p class="hint">Не получилось подобрать рецепт. Попробуйте ещё раз.</p>
+              <h1 class="headline">Что-то пошло не так.</h1>
+              <p class="hint">Попробуйте ещё раз.</p>
               <div class="actions">
                 <button class="btn btn-primary" data-go="home">На главную</button>
               </div>
             </section>
 
-            <!-- 12. Не удалось подтвердить согласие -->
-            <section class="screen" data-screen="failed">
-              <h1 class="headline">Перед началом</h1>
-              <p class="hint">На фото не должно быть людей и документов. Только продукты.</p>
-              <div class="banner">Не получилось подтвердить согласие. Попробуйте ещё раз.</div>
-              <div class="check-list">
-                <div class="check-item">
-                  <label>
-                    <input type="checkbox" checked disabled />
-                    <span>Ознакомился с политикой</span>
-                  </label>
-                  <button type="button" class="doc-link" data-go="doc-policy">Политика конфиденциальности</button>
-                </div>
-                <div class="check-item">
-                  <label>
-                    <input type="checkbox" checked disabled />
-                    <span>Даю согласие на обработку персональных данных</span>
-                  </label>
-                  <button type="button" class="doc-link" data-go="doc-pdn">Согласие на обработку ПДн</button>
-                </div>
-              </div>
-              <div class="actions">
-                <button type="button" class="btn btn-primary" data-go="consent">Попробовать ещё раз</button>
-              </div>
-            </section>
-
-            <!-- 13. Отзыв согласия -->
+            <!-- 15. Отзыв согласия -->
             <section class="screen" data-screen="withdrawn">
-              <h1 class="headline">Согласие отозвано</h1>
-              <p class="hint">Чтобы снова пользоваться приложением, отметьте галочки.</p>
+              <h1 class="headline">Отозвать согласие?</h1>
               <div class="actions">
-                <button type="button" class="btn btn-primary" data-go="consent">К согласию</button>
+                <button type="button" class="btn btn-danger" data-go="consent">Отозвать</button>
+                <button type="button" class="btn btn-ghost" data-go="home">Продолжить пользоваться</button>
               </div>
             </section>
           </div>
@@ -1722,15 +1764,14 @@
     </div>
 
     <h2 class="section-title" id="telegram">
-      <span class="section-kind">Клиент · Telegram</span>
-      Интерактивный прототип
+      <span class="section-kind">Интерактивный прототип</span>
+      Клиент · Telegram
     </h2>
     <div class="section-intro">
       <div>
         <p class="lede">
-          Telegram-клиент того же API по <code>docs/mvp.md</code>:
-          два шага согласия, затем фото или текст → подтверждение продуктов → рецепты
-          (или повтор при «Неверно»). Без отдельного API для бота.
+          Telegram-клиент:
+          согласие ПДн, затем фото или текст → подтверждение продуктов → рецепты.
         </p>
         <div class="meta">
           <span class="chip">Telegram Bot API</span>
@@ -1768,7 +1809,7 @@
             </div>
 
             <div class="tg-attach-menu" id="tg-attach-menu" aria-label="Вложения">
-              <button type="button" data-tg-go="confirm-photo">Фото</button>
+              <button type="button">Фото</button>
             </div>
 
             <!-- 1. /start · политика -->
@@ -1786,7 +1827,8 @@
                   <div class="tg-bubble bot">
                     Привет! Я AI Sous-Chef — по фото или списку продуктов подберу рецепт.<br /><br />
                     На фото не должно быть людей и документов. Только продукты.<br /><br />
-                    Политика конфиденциальности — по кнопке ниже. Нажимая «Принимаю», вы подтверждаете, что ознакомились с политикой.
+                    Политика конфиденциальности — по кнопке ниже. Нажимая «Принимаю», вы подтверждаете, что ознакомились
+                    с политикой.
                     <div class="tg-meta"><span>12:36</span></div>
                   </div>
                 </div>
@@ -1797,9 +1839,9 @@
                 </div>
               </div>
               <div class="tg-composer">
-                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
-                <button type="button" class="input" data-tg-go="blocked">Сообщение</button>
-                <button type="button" class="send" data-tg-go="blocked" aria-label="Отправить">›</button>
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
               </div>
             </section>
 
@@ -1829,7 +1871,8 @@
                   <div class="tg-bubble bot">
                     Привет! Я AI Sous-Chef — по фото или списку продуктов подберу рецепт.<br /><br />
                     На фото не должно быть людей и документов. Только продукты.<br /><br />
-                    Политика конфиденциальности — по кнопке ниже. Нажимая «Принимаю», вы подтверждаете, что ознакомились с политикой.
+                    Политика конфиденциальности — по кнопке ниже. Нажимая «Принимаю», вы подтверждаете, что ознакомились
+                    с политикой.
                     <div class="tg-meta"><span>12:36</span></div>
                   </div>
                 </div>
@@ -1844,7 +1887,8 @@
                   <div class="tg-bubble bot">
                     И последний шаг перед началом.<br /><br />
                     Согласие на обработку персональных данных — текст по кнопке ниже.<br /><br />
-                    Нажимая «Даю согласие», вы даёте согласие на обработку персональных данных. Отозвать — <button type="button" class="tg-cmd" data-tg-go="delete">/delete</button>.
+                    Нажимая «Даю согласие», вы даёте согласие на обработку персональных данных. Отозвать — <button
+                      type="button" class="tg-cmd" data-tg-go="delete">/delete</button>.
                     <div class="tg-meta"><span>12:37</span></div>
                   </div>
                 </div>
@@ -1855,9 +1899,9 @@
                 </div>
               </div>
               <div class="tg-composer">
-                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
-                <button type="button" class="input" data-tg-go="blocked">Сообщение</button>
-                <button type="button" class="send" data-tg-go="blocked" aria-label="Отправить">›</button>
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
               </div>
             </section>
 
@@ -1883,15 +1927,11 @@
                     <div class="tg-meta"><span>12:37</span></div>
                   </div>
                 </div>
-                <div class="tg-inline">
-                  <button type="button" data-tg-go="confirm-photo">Отправить фото</button>
-                  <button type="button" data-tg-go="confirm-text">Написать текст</button>
-                </div>
               </div>
               <div class="tg-composer">
-                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
-                <button type="button" class="input" data-tg-go="confirm-text">Сообщение</button>
-                <button type="button" class="send" data-tg-go="confirm-text" aria-label="Отправить">›</button>
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
               </div>
             </section>
 
@@ -1908,15 +1948,17 @@
                 <div class="tg-row bot">
                   <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
                   <div class="tg-bubble bot">
-                    Для использования бота нужно дать согласие на обработку персональных данных в соответствии с политикой. Чтобы продолжить, нажмите <button type="button" class="tg-cmd" data-tg-go="start">/start</button>.
+                    Для использования бота нужно дать согласие на обработку персональных данных в соответствии с
+                    политикой. Чтобы продолжить, нажмите <button type="button" class="tg-cmd"
+                      data-tg-go="start">/start</button>.
                     <div class="tg-meta"><span>12:36</span></div>
                   </div>
                 </div>
               </div>
               <div class="tg-composer">
-                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
-                <button type="button" class="input" data-tg-go="start">Сообщение</button>
-                <button type="button" class="send" data-tg-go="start" aria-label="Отправить">›</button>
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
               </div>
             </section>
 
@@ -1933,19 +1975,21 @@
                 <div class="tg-row bot">
                   <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
                   <div class="tg-bubble bot">
-                    Для использования бота нужно дать согласие на обработку персональных данных в соответствии с политикой. Чтобы продолжить, нажмите <button type="button" class="tg-cmd" data-tg-go="start">/start</button>.
+                    Для использования бота нужно дать согласие на обработку персональных данных в соответствии с
+                    политикой. Чтобы продолжить, нажмите <button type="button" class="tg-cmd"
+                      data-tg-go="start">/start</button>.
                     <div class="tg-meta"><span>12:36</span></div>
                   </div>
                 </div>
               </div>
               <div class="tg-composer">
-                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
-                <button type="button" class="input" data-tg-go="start">Сообщение</button>
-                <button type="button" class="send" data-tg-go="start" aria-label="Отправить">›</button>
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
               </div>
             </section>
 
-            <!-- 6. Не удалось подтвердить согласие -->
+            <!-- 6. Общая ошибка -->
             <section class="tg-screen" data-tg-screen="failed">
               <div class="tg-chat">
                 <div class="tg-day">Сегодня</div>
@@ -1960,7 +2004,8 @@
                   <div class="tg-bubble bot">
                     Привет! Я AI Sous-Chef — по фото или списку продуктов подберу рецепт.<br /><br />
                     На фото не должно быть людей и документов. Только продукты.<br /><br />
-                    Политика конфиденциальности — по кнопке ниже. Нажимая «Принимаю», вы подтверждаете, что ознакомились с политикой.
+                    Политика конфиденциальности — по кнопке ниже. Нажимая «Принимаю», вы подтверждаете, что ознакомились
+                    с политикой.
                     <div class="tg-meta"><span>12:36</span></div>
                   </div>
                 </div>
@@ -1973,15 +2018,15 @@
                 <div class="tg-row bot">
                   <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
                   <div class="tg-bubble bot">
-                    Не получилось подтвердить согласие. Нажмите <button type="button" class="tg-cmd" data-tg-go="start">/start</button> и попробуйте ещё раз.
+                    Что-то пошло не так. Попробуйте ещё раз.
                     <div class="tg-meta"><span>12:36</span></div>
                   </div>
                 </div>
               </div>
               <div class="tg-composer">
-                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
-                <button type="button" class="input" data-tg-go="start">Сообщение</button>
-                <button type="button" class="send" data-tg-go="start" aria-label="Отправить">›</button>
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
               </div>
             </section>
 
@@ -1998,15 +2043,16 @@
                 <div class="tg-row bot">
                   <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
                   <div class="tg-bubble bot">
-                    Согласие отозвано. Чтобы снова пользоваться ботом, нажмите <button type="button" class="tg-cmd" data-tg-go="start">/start</button>.
+                    Согласие отозвано. Чтобы снова пользоваться ботом, нажмите <button type="button" class="tg-cmd"
+                      data-tg-go="start">/start</button>.
                     <div class="tg-meta"><span>12:40</span></div>
                   </div>
                 </div>
               </div>
               <div class="tg-composer">
-                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
-                <button type="button" class="input" data-tg-go="start">Сообщение</button>
-                <button type="button" class="send" data-tg-go="start" aria-label="Отправить">›</button>
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
               </div>
             </section>
 
@@ -2039,51 +2085,32 @@
                 </div>
                 <div class="tg-inline row">
                   <button type="button" data-tg-go="recipes">✅ Верно</button>
-                  <button type="button" data-tg-go="retry-photo">❌ Неверно</button>
+                  <button type="button" data-tg-go="retry-request">❌ Неверно</button>
                 </div>
               </div>
               <div class="tg-composer">
-                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
-                <button type="button" class="input" data-tg-go="confirm-text">Сообщение</button>
-                <button type="button" class="send" data-tg-go="confirm-text" aria-label="Отправить">›</button>
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
               </div>
             </section>
 
-            <!-- 3. Text → confirm -->
-            <section class="tg-screen" data-tg-screen="confirm-text">
+            <!-- 3. Повтор запроса -->
+            <section class="tg-screen" data-tg-screen="retry-request">
               <div class="tg-chat">
                 <div class="tg-day">Сегодня</div>
-                <div class="tg-row user">
-                  <div class="tg-bubble user">
-                    курица, рис, лук
-                    <div class="tg-meta"><span>12:36</span><span class="tg-checks">✓✓</span></div>
-                  </div>
-                </div>
                 <div class="tg-row bot">
                   <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
                   <div class="tg-bubble bot">
-                    <div class="tg-quote">
-                      <div class="q-title">курица, рис, лук</div>
-                      <div class="q-body">текстовое сообщение</div>
-                    </div>
-                    Продукты распознаны:
-                    <ul class="tg-products">
-                      <li>курица</li>
-                      <li>рис</li>
-                      <li>лук</li>
-                    </ul>
+                    В вашем запросе не обнаружили продукты. Попробуйте снова.
                     <div class="tg-meta"><span>12:36</span></div>
                   </div>
                 </div>
-                <div class="tg-inline row">
-                  <button type="button" data-tg-go="recipes">✅ Верно</button>
-                  <button type="button" data-tg-go="retry-text">❌ Неверно</button>
-                </div>
               </div>
               <div class="tg-composer">
-                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
-                <button type="button" class="input" data-tg-go="confirm-text">Сообщение</button>
-                <button type="button" class="send" data-tg-go="confirm-text" aria-label="Отправить">›</button>
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
               </div>
             </section>
 
@@ -2101,13 +2128,12 @@
                 <div class="tg-inline">
                   <button type="button" data-tg-go="recipe-detail" data-tg-recipe="0">Яичница</button>
                   <button type="button" data-tg-go="recipe-detail" data-tg-recipe="1">Яичница с сыром</button>
-                  <button type="button" data-tg-go="start">Новый запрос</button>
                 </div>
               </div>
               <div class="tg-composer">
-                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
-                <button type="button" class="input" data-tg-go="confirm-text">Сообщение</button>
-                <button type="button" class="send" data-tg-go="confirm-text" aria-label="Отправить">›</button>
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
               </div>
             </section>
 
@@ -2130,76 +2156,22 @@
                 </div>
                 <div class="tg-inline">
                   <button type="button" data-tg-go="recipes">К списку рецептов</button>
-                  <button type="button" data-tg-go="start">Новый запрос</button>
                 </div>
               </div>
               <div class="tg-composer">
-                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
-                <button type="button" class="input" data-tg-go="confirm-text">Сообщение</button>
-                <button type="button" class="send" data-tg-go="confirm-text" aria-label="Отправить">›</button>
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
               </div>
             </section>
 
-            <!-- 6. Retry photo -->
-            <section class="tg-screen" data-tg-screen="retry-photo">
-              <div class="tg-chat">
-                <div class="tg-day">Сегодня</div>
-                <div class="tg-row bot">
-                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
-                  <div class="tg-bubble bot">
-                    Попробуйте отправить фото ещё раз.
-                    <div class="tg-meta"><span>12:36</span></div>
-                  </div>
-                </div>
-                <div class="tg-inline">
-                  <button type="button" data-tg-go="confirm-photo">Отправить фото</button>
-                  <button type="button" data-tg-go="start">Новый запрос</button>
-                </div>
-              </div>
-              <div class="tg-composer">
-                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
-                <button type="button" class="input" data-tg-go="confirm-text">Сообщение</button>
-                <button type="button" class="send" data-tg-go="confirm-text" aria-label="Отправить">›</button>
-              </div>
-            </section>
-
-            <!-- 7. Retry text -->
-            <section class="tg-screen" data-tg-screen="retry-text">
-              <div class="tg-chat">
-                <div class="tg-day">Сегодня</div>
-                <div class="tg-row bot">
-                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
-                  <div class="tg-bubble bot">
-                    Попробуйте отправить текст ещё раз.
-                    <div class="tg-meta"><span>12:36</span></div>
-                  </div>
-                </div>
-                <div class="tg-inline">
-                  <button type="button" data-tg-go="confirm-text">Написать текст</button>
-                  <button type="button" data-tg-go="start">Новый запрос</button>
-                </div>
-              </div>
-              <div class="tg-composer">
-                <button type="button" class="attach" data-tg-attach aria-label="Вложение">+</button>
-                <button type="button" class="input" data-tg-go="confirm-text">Сообщение</button>
-                <button type="button" class="send" data-tg-go="confirm-text" aria-label="Отправить">›</button>
-              </div>
-            </section>
           </div>
         </div>
         <div class="nav-dots" id="tg-nav-dots"></div>
         <p class="screen-label">Сейчас: <strong id="tg-screen-name">/start · политика</strong></p>
       </div>
 
-      <div class="panel" id="tg-spec-panel">
-        <h3>/start · политика</h3>
-        <p>Первое из двух сообщений до фото. Кнопка открывает макет политики в телефоне. «Принимаю» срабатывает, только если шаг подтвердился.</p>
-        <ul>
-          <li>Документ — макет в телефоне, не внешняя ссылка</li>
-          <li>Принимаю → второе сообщение (согласие на ПДн)</li>
-          <li>Не принимаю → отказ, фото и текст не обрабатываются</li>
-        </ul>
-      </div>
+      <div class="panel" id="tg-spec-panel"></div>
     </div>
 
     <div class="specs">
@@ -2207,27 +2179,27 @@
         <h3>Карта экранов (mobile)</h3>
         <ul>
           <li><strong>Splash</strong> — логотип + название</li>
-          <li><strong>Consent</strong> — две галочки, обе обязательны; «Дальше» только если обе стоят и шаг подтвердился</li>
-          <li><strong>Home</strong> — фото / текст; внизу «Отозвать согласие»</li>
+          <li><strong>Consent</strong> — две галочки, обе обязательны; «Дальше» только если обе стоят и шаг подтвердился
+          </li>
+          <li><strong>Home</strong> — фото / текст; внизу «Отозвать согласие» → подтверждение</li>
           <li><strong>Camera</strong> — после согласия</li>
           <li><strong>Recognizing</strong> — лоадер, затем подтверждение</li>
-          <li><strong>Confirm</strong> — список + Верно / Неверно</li>
-          <li><strong>Retry</strong> — «отправьте фото ещё раз»</li>
+          <li><strong>Confirm</strong> — список + Верно / «Неверно, новое фото»</li>
           <li><strong>Text</strong> — поле + «Найти рецепты»</li>
           <li><strong>Recipes</strong> — список блюд</li>
           <li><strong>Detail</strong> — шаги</li>
-          <li><strong>Error</strong> — не получилось, на главную</li>
+          <li><strong>Error</strong> — общая ошибка, на главную</li>
         </ul>
       </div>
       <div class="panel">
-        <h3>Сознательно вне UI</h3>
+        <h3>Что отсутствует в первой версии</h3>
         <ul>
-          <li>Чат и диалог с ИИ</li>
-          <li>Правка списка продуктов вручную после фото</li>
-          <li>Авторизация / профиль</li>
+          <li>Чат с ИИ</li>
+          <li>Правка списка продуктов после фото</li>
+          <li>Вход и профиль</li>
           <li>История запросов</li>
           <li>Список покупок, калории, диеты</li>
-          <li>Соцфункции и умная техника</li>
+          <li>Соцсети и умная техника</li>
         </ul>
       </div>
       <div class="panel">
@@ -2262,22 +2234,22 @@
         blurb: "Один экран до камеры и текста. Две галочки, обе обязательны. Ссылки открывают макет документа в телефоне. «Дальше» — только если обе стоят и шаг подтвердился.",
         bullets: [
           "На фото не должно быть людей и документов. Только продукты.",
-          "Ознакомился с политикой + ссылка на макет",
-          "Даю согласие на обработку персональных данных + ссылка на макет",
+          "Ознакомился с политикой + ссылка",
+          "Даю согласие на обработку персональных данных + ссылка",
           "Нет подтверждения — камеру не открывать, экран оставить",
         ],
       },
       {
         id: "doc-policy",
         name: "Макет · политика",
-        blurb: "Заглушка документа в телефоне. В приложении откроется полный текст политики.",
-        bullets: ["Короткий текст: политика конфиденциальности", "Закрыть — назад к галочкам"],
+        blurb: "В приложении или в браузере откроется полный текст политики.",
+        bullets: ["Закрыть — назад к галочкам"],
       },
       {
         id: "doc-pdn",
         name: "Макет · согласие ПДн",
-        blurb: "Заглушка документа в телефоне. В приложении откроется полный текст согласия.",
-        bullets: ["Короткий текст: согласие на обработку персональных данных", "Закрыть — назад к галочкам"],
+        blurb: "В приложении или в браузере откроется полный текст согласия.",
+        bullets: ["Закрыть — назад к галочкам"],
       },
       {
         id: "home",
@@ -2285,35 +2257,24 @@
         blurb: "После обоих согласий. Две равнозначные точки входа — фото и текст. Внизу — отзыв.",
         bullets: [
           "Нет таббара, нет профиля, нет истории",
-          "«Отозвать согласие» — снова экран с галочками, камеры нет",
-          "«На главную» сбрасывает запрос, согласия не трогает",
+          "«Отозвать согласие» — экран подтверждения",
         ],
       },
-      { id: "camera", name: "Камера", blurb: "После согласия. Снимок сразу уходит на распознавание — без поля ввода.", bullets: ["Превью кадра", "Подсказка по свету и кадру", "Людей и документов в кадре быть не должно"] },
-      { id: "recognizing", name: "Распознавание", blurb: "Ожидание ответа. Обычно до 5 секунд. Затем подтверждение списка.", bullets: ["При ошибке → экран «Не получилось»", "Дальше — продукты распознаны"] },
-      { id: "confirm", name: "Подтверждение продуктов", blurb: "Список продуктов и две кнопки — как в боте. Поля ввода нет.", bullets: ["Верно → подбор рецептов", "Неверно → повтор фото"] },
-      { id: "retry-photo", name: "Повтор фото", blurb: "После «Неверно» — попробуйте отправить фото ещё раз. Без правки списка вручную.", bullets: ["Сделать фото снова", "Или На главную"] },
+      { id: "camera", name: "Камера", blurb: "После согласия. Снимок сразу уходит на распознавание — без поля ввода.", bullets: ["Превью кадра"] },
+      { id: "recognizing", name: "Распознавание", blurb: "Ожидание ответа. Обычно до 5 секунд. Затем подтверждение списка.", bullets: ["При ошибке → экран «Не получилось»", "Дальше — продукты распознаны"], next: "confirm", nextHint: "В приложении экран сменится сам, когда придёт ответ. Здесь — чтобы пройти макет дальше." },
+      { id: "confirm", name: "Подтверждение продуктов", blurb: "Список продуктов и две кнопки. Поля ввода нет.", bullets: ["Верно → подбор рецептов", "Неверно, новое фото → камера"] },
       { id: "text", name: "Текстовый ввод", blurb: "Поле и «Найти рецепты». Сразу к списку блюд — отдельного подтверждения списка нет.", bullets: ["Пример: курица, рис, лук", "Тоже только после согласия"] },
-      { id: "loading-recipes", name: "Подбор рецептов", blurb: "Ожидание после «Верно» или текстового запроса. Затем список.", bullets: ["Тот же лоадер из фото и текста", "Дальше — список рецептов"] },
+      { id: "loading-recipes", name: "Подбор рецептов", blurb: "Ожидание после «Верно» или текстового запроса. Затем список.", bullets: ["Тот же лоадер из фото и текста", "Дальше — список рецептов"], next: "recipes", nextHint: "В приложении экран сменится сам, когда придёт ответ. Здесь — чтобы пройти макет дальше." },
       { id: "recipes", name: "Список рецептов", blurb: "Вот что можно приготовить. Тап открывает шаги. «На главную» обязательна.", bullets: ["Минимум метаданных: число шагов", "Без рейтингов и картинок"] },
       { id: "recipe-detail", name: "Рецепт · шаги", blurb: "Пошаговые инструкции нумерованным списком.", bullets: ["К списку или на главную", "Без чата уточнений"] },
-      { id: "error", name: "Ошибка", blurb: "Не получилось подобрать рецепт. Возврат на главную.", bullets: ["Короткий текст", "Один CTA — На главную"] },
-      {
-        id: "failed",
-        name: "Не удалось подтвердить",
-        blurb: "На «Дальше» шаг не подтвердился. Камеру не открывать, экран согласия оставить.",
-        bullets: [
-          "Нет подтверждения — как будто согласия нет",
-          "Пользователю: попробовать ещё раз",
-        ],
-      },
+      { id: "error", name: "Ошибка", blurb: "Общая ошибка приложения: сеть, сервер или согласие не подтвердилось. Один экран, кнопка «На главную».", bullets: ["Короткий текст", "Один CTA — На главную"] },
       {
         id: "withdrawn",
         name: "Отзыв согласия",
-        blurb: "С главного экрана — «Отозвать согласие». Дальше снова галочки, камеры нет.",
+        blurb: "С главного экрана — «Отозвать согласие». Подтверждение: отозвать или продолжить.",
         bullets: [
-          "Историю запросов не ведём — стирать нечего",
-          "Снова экран с двумя галочками",
+          "Отозвать — снова галочки, камеры нет",
+          "Продолжить пользоваться — главный экран",
         ],
       },
     ];
@@ -2322,9 +2283,10 @@
       {
         id: "start",
         name: "/start · политика",
-        blurb: "Первое из двух сообщений до фото. Кнопка открывает макет политики в телефоне. «Принимаю» срабатывает, только если шаг подтвердился.",
+        blurb: "/start сначала проверяет согласия. Если их нет, бот показывает политику и первый шаг согласия.",
         bullets: [
-          "Документ — макет в телефоне, не внешняя ссылка",
+          "Документ — внешняя ссылка",
+          "Если согласия уже есть, бот сразу предлагает прислать фото или список продуктов",
           "Принимаю → второе сообщение (согласие на ПДн)",
           "Не принимаю → отказ",
           "Шаг не подтвердился — второе сообщение не показывать",
@@ -2333,15 +2295,15 @@
       {
         id: "doc-policy",
         name: "Макет · политика",
-        blurb: "Заглушка документа в телефоне. В боте откроется полный текст политики.",
-        bullets: ["Короткий текст: политика конфиденциальности", "Закрыть — назад к /start"],
+        blurb: "В боте откроется полный текст политики.",
+        bullets: ["Закрыть — назад к /start"],
       },
       {
         id: "consent-pdn",
         name: "Согласие на ПДн",
-        blurb: "Второе сообщение — только если шаг 1 подтверждён. Кнопка открывает макет согласия. Отозвать потом командой /delete.",
+        blurb: "Второе сообщение — только если шаг 1 подтверждён. Кнопка открывает согласие. Отозвать потом командой /delete.",
         bullets: [
-          "Документ — макет в телефоне, не внешняя ссылка",
+          "Документ — внешняя ссылка",
           "Даю согласие → можно слать фото или текст",
           "Не даю согласие → тот же отказ",
           "Шаг не подтвердился — фото не пускать",
@@ -2350,13 +2312,13 @@
       {
         id: "doc-pdn",
         name: "Макет · согласие ПДн",
-        blurb: "Заглушка документа в телефоне. В боте откроется полный текст согласия.",
-        bullets: ["Короткий текст: согласие на обработку персональных данных", "Закрыть — назад ко второму шагу"],
+        blurb: "В боте откроется полный текст согласия.",
+        bullets: ["Закрыть — назад ко второму шагу"],
       },
       {
         id: "ready",
-        name: "Можно слать запрос",
-        blurb: "Оба шага пройдены. Дальше фото или текст. /start снова начинается с политики.",
+        name: "Можно отправлять запрос",
+        blurb: "Если согласия уже выданы, /start проверяет их и сразу предлагает прислать фото или список продуктов.",
         bullets: [
           "Без обоих согласий распознавание не запускается",
           "Отозвать — /delete, не Telegram /stop",
@@ -2365,38 +2327,26 @@
       {
         id: "confirm-photo",
         name: "Фото · подтверждение",
-        blurb: "После снимка бот распознаёт продукты (до 5 с) и показывает список с кнопками Верно / Неверно.",
+        blurb: "После снимка бот распознаёт продукты и показывает список с кнопками Верно / Неверно.",
         bullets: ["POST /api/recognize", "Поле ввода не блокируется", "Верно → recipes, Неверно → повтор фото"],
       },
       {
-        id: "confirm-text",
-        name: "Текст · подтверждение",
-        blurb: "Пользователь пишет продукты (например «курица, рис, лук»). Бот показывает список и ждёт подтверждения.",
-        bullets: ["Пример из mvp.md", "Верно → подбор рецептов", "Неверно → «отправьте текст ещё раз»"],
+        id: "retry-request",
+        name: "Повтор запроса",
+        blurb: "Некорректный запрос при уже выданном согласии. Бот просит отправить сообщение или фото ещё раз.",
+        bullets: ["Если согласия нет, это не этот шаг, а отказ", "Без отдельной кнопки"],
       },
       {
         id: "recipes",
         name: "Список рецептов",
-        blurb: "После «Верно» бот отдаёт title[] inline-кнопками. Тап открывает шаги. Можно начать новый запрос.",
-        bullets: ["POST /api/recipes", "Без рейтингов и картинок в MVP", "Новый текстовый запрос = новый цикл"],
+        blurb: "После фото с «Верно» или корректного текстового запроса бот отдаёт рецепты inline-кнопками. Кнопки открывают  рецептов.",
+        bullets: ["POST /api/recipes", "Без картинок в MVP", "Новый запрос пользователь начинает обычным сообщением"],
       },
       {
         id: "recipe-detail",
         name: "Рецепт · шаги",
         blurb: "Пошаговая инструкция steps[] в одном сообщении. Успех MVP для Telegram-клиента.",
-        bullets: ["К списку или новый /start", "Без чата уточнений"],
-      },
-      {
-        id: "retry-photo",
-        name: "Повтор фото",
-        blurb: "После «Неверно» — сообщение из mvp.md: попробуйте отправить фото ещё раз.",
-        bullets: ["Без правки списка вручную", "Можно сразу новое фото или /start"],
-      },
-      {
-        id: "retry-text",
-        name: "Повтор текста",
-        blurb: "После «Неверно» по текстовому сценарию — попробуйте отправить текст ещё раз.",
-        bullets: ["Тот же паттерн, что у фото", "Ввод не блокируется"],
+        bullets: ["К списку рецептов", "Без чата уточнений"],
       },
       {
         id: "refuse",
@@ -2409,20 +2359,20 @@
       },
       {
         id: "blocked",
-        name: "Нет согласия → стоп",
-        blurb: "Фото или текст до обоих согласий — или после /delete. Распознавание не запускаем, тот же текст отказа.",
+        name: "Отказ",
+        blurb: "Если согласия нет, любой текст или фото получают тот же ответ, что и явный отказ.",
         bullets: [
-          "Сообщение как при отказе",
+          "Тот же текст, что у отказа",
           "Продолжить — /start",
         ],
       },
       {
         id: "failed",
-        name: "Не удалось подтвердить",
-        blurb: "На «Принимаю» или «Даю согласие» шаг не подтвердился. Второе сообщение не показывать, фото не пускать.",
+        name: "Ошибка",
+        blurb: "Ответ бота на любую внутреннюю ошибку.",
         bullets: [
-          "Нет подтверждения — как будто согласия нет",
-          "Пользователю: /start ещё раз",
+          "Короткое сообщение об ошибке",
+          "Пользователь пробует снова",
         ],
       },
       {
@@ -2517,7 +2467,11 @@
       const meta = SCREENS.find((s) => s.id === id);
       nameEl.textContent = meta ? meta.name : id;
       if (meta) {
-        panel.innerHTML = `<h3>${meta.name}</h3><p>${meta.blurb}</p><ul>${meta.bullets.map((b) => `<li>${b}</li>`).join("")}</ul>`;
+        let html = `<h3>${meta.name}</h3><p>${meta.blurb}</p><ul>${meta.bullets.map((b) => `<li>${b}</li>`).join("")}</ul>`;
+        if (meta.next) {
+          html += `<div class="panel-next"><p>${meta.nextHint}</p><button type="button" class="btn btn-primary" data-go="${meta.next}">Следующий шаг</button></div>`;
+        }
+        panel.innerHTML = html;
       }
     }
 
@@ -2538,10 +2492,6 @@
       document.querySelectorAll("#tg-flow-map .flow-card, #tg-nav-dots button").forEach((el) => {
         el.classList.toggle("active", el.dataset.tgGo === id);
       });
-      const attachGo = tgAttachMenu.querySelector("[data-tg-go]");
-      if (attachGo) {
-        attachGo.dataset.tgGo = TG_GATED.has(id) ? "blocked" : "confirm-photo";
-      }
       const meta = TG_SCREENS.find((s) => s.id === id);
       tgNameEl.textContent = meta ? meta.name : id;
       if (meta) {
@@ -2550,13 +2500,6 @@
     }
 
     document.body.addEventListener("click", (e) => {
-      const attachBtn = e.target.closest("[data-tg-attach]");
-      if (attachBtn) {
-        e.stopPropagation();
-        tgAttachMenu.classList.toggle("open");
-        return;
-      }
-
       const tgGo = e.target.closest("[data-tg-go]");
       if (tgGo) {
         if (tgGo.dataset.tgRecipe !== undefined) {
@@ -2568,7 +2511,7 @@
         return;
       }
 
-      if (!e.target.closest("#tg-attach-menu") && !e.target.closest("[data-tg-attach]")) {
+      if (!e.target.closest("#tg-attach-menu")) {
         closeTgAttach();
       }
 
@@ -2592,4 +2535,5 @@
   </script>
   <script src="cookie-notice.js" data-policy-href="https://consent.geek-tik.tech/t/ai-sous-chef/policy"></script>
 </body>
+
 </html>
