@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 from app.core.config import settings
 from openai import AsyncOpenAI
 from openai.types.chat import ChatCompletionSystemMessageParam, ChatCompletionUserMessageParam
+from openai.types.responses import EasyInputMessageParam, ResponseInputTextParam, ResponseInputImageParam
 from openai.types.shared_params import ResponseFormatJSONObject
 
 
@@ -96,46 +97,124 @@ class AIEngine(AIProtocol):
         )
 
     @staticmethod
-    async def _client_responses_create(prompt: str, input_type: str = "input_text"):
-        text = ""
-        input_key = ""
+    async def _client_responses_create(
+            prompt: str,
+            input_type: str = "input_text",
+    ):
+        system_prompt = """
+        Ты AI-помощник по нормализации продуктов.
+    
+        Твоя задача:
+        преобразовать сырой список/подписи с фото в короткий список названий продуктов на русском языке.
+    
+        Правила:
+        - оставь только названия продуктов (например: «яйца», «молоко», «сыр»);
+        - удали дубликаты;
+        - удали бренды, марки, магазины;
+        - удали мусорные слова: «упаковка», «стол», «фон», «на фото», «рядом», «лежит» и т. п.;
+        - не добавляй продукты, которых нет в исходнике;
+        - не придумывай категории или описания;
+        - язык: русский;
+        - ответь ТОЛЬКО валидным JSON без markdown‑обёрток (никаких ```json);
+        - игнорируй стоп-слова («купи», «срочно», «хочется»);
+        - если количество не указано, используй null;
+        - валидные единицы измерения: шт, кг, г, л, мл;
+        - лимит ответа ~500–800 токенов
+    
+        Формат ответа:
+        {"products":["название1","название2","название3"],"confidence":0.0-1.0}
+        
+        Пример того, что модель должна вернуть (после вызова LLM)
+        {"products":["яйца","молоко","сыр"],"confidence":1}
+        """
+
+        user_prompt = """
+        Извлеки продукты из текста и верни JSON по схеме:
+        {"products": [{"name": "string", "quantity": "number or null", "unit": "string or null"}]}
+        
+        Пример правильного ответа:
+        Вход: "яйца 10 шт, молоко и хлеб"
+        Выход: {"products": [{"name": "яйцо", "quantity": 10, "unit": "шт"}, 
+        {"name": "молоко", "quantity": null, "unit": null}, 
+        {"name": "хлеб", "quantity": null, "unit": null}]}
+        
+        Поле confidence:
+        - 1.0 — если все продукты однозначно распознаны;
+        - 0.5–0.9 — если есть сомнения в названии или неоднозначность;
+        - <0.5 — если входной текст почти нечитаем или содержит только мусор.
+    
+        Входные данные:
+        """
+
         if input_type == "input_text":
-            text = "Перечисли продукты/ингредиенты из текста списком. Только названия. Верни ответ в виде списка из продуктов в формате json, чтобы я в дальнейшем смог десериализовать в объект"
-            input_key = "text"
+            user_message = EasyInputMessageParam(
+                role="user",
+                content=[
+                    ResponseInputTextParam(
+                        type="input_text",
+                        text=user_prompt + prompt,
+                    )
+                ],
+            )
+
         elif input_type == "input_image":
-            text = "Перечисли продукты/ингредиенты на фото списком. Только названия. Верни ответ в виде списка из продуктов в формате json, чтобы я в дальнейшем смог десериализовать в объект"
-            input_key = "image_url"
+            user_message = EasyInputMessageParam(
+                role="user",
+                content=[
+                    ResponseInputTextParam(
+                        type="input_text",
+                        text=user_prompt,
+                    ),
+                    ResponseInputImageParam(
+                        type="input_image",
+                        image_url=prompt,
+                    ),
+                ],
+            )
+
+        else:
+            raise ValueError(
+                f"Unsupported input_type: {input_type}"
+            )
 
         client = AIEngine._build_client()
         try:
             response = await client.responses.create(
                 model=AIEngine.MODEL_FOR_CV,
+                instructions=system_prompt,
+                input=[user_message],
                 temperature=0.3,
                 max_output_tokens=4000,
-                input=[{
-                    "role": "user",
-                    "content": [
-                        {"type": "input_text", "text": text},
-                        {"type": input_type, input_key: prompt},
-                    ],
-                }]
             )
+
         except Exception as exc:
-            raise AIServiceUnavailableError()
+            raise AIServiceUnavailableError() from exc
 
-        products = AIEngine._parse_products(response.output_text)
-        print(products)
+        try:
+            output = response.output_text.strip()
+            data = json.loads(output)
+            result = RecognizeResult(
+                products=[
+                    product["name"]
+                    for product in data["products"]
+                ],
+                confidence=data["confidence"],
+            )
 
-        if len(products) == 0:
+        except Exception as exc:
+            raise ProductsNotFoundError() from exc
+
+        if not result.products:
             raise ProductsNotFoundError()
 
-        return products
+        return result.products
 
     @staticmethod
     async def recognize_products(recognize_input: RecognizeInput) -> RecognizeResult:
         if recognize_input.img_base64 is not None:
             products = await AIEngine._client_responses_create(
-                f"data:image/jpeg;base64,{base64.b64encode(recognize_input.img_base64).decode()}")
+                f"data:image/jpeg;base64,{base64.b64encode(recognize_input.img_base64).decode()}",
+                input_type="input_image")
             return RecognizeResult(products=products, confidence=1.0)
         if recognize_input.text is not None:
             products = await AIEngine._client_responses_create(recognize_input.text)
@@ -192,7 +271,6 @@ class AIEngine(AIProtocol):
             content = response.choices[0].message.content
             try:
                 recipes = json.loads(content)
-                print(recipes)
             except json.JSONDecodeError:
                 raise AIServiceError()
             return RecipesResult(recipes=recipes.get("recipes", []), confidence=1.0)
