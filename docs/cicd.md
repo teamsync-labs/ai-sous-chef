@@ -27,6 +27,12 @@
 | `POSTGRES_PASSWORD` | сырой пароль (можно со спецсимволами `$`, `!`, `@`, `#` …) |
 | `TG_TOKEN` | токен Telegram-бота (BotFather) |
 | `TG_PROXY_URL` | URL прокси до Telegram API |
+| `YANDEX_API_KEY` | API-ключ Yandex Cloud (нужен при `AI_MODE=real`) |
+| `YANDEX_FOLDER_ID` | ID каталога Yandex Cloud (нужен при `AI_MODE=real`) |
+| `CONSENT_JOURNAL_API_KEY` | ключ API журнала согласий |
+| `API_KEY_BOT` | ключ клиента API для бота (`X-Api-Key` на `/app/api`) |
+| `API_KEY_APP` | ключ клиента API для приложения (`X-Api-Key` на `/app/api`) |
+| `API_KEY_SITE` | ключ сайта для `channel=site` (в `cookie-notice.js`; не открывает recognize/recipes) |
 
 **Не нужен** `DATABASE_URL`: его собирает `scripts/vps-write-deploy-env.sh` из `POSTGRES_USER`/`POSTGRES_PASSWORD`/`POSTGRES_DB` с **URL-encode** пароля. Лишний secret `DATABASE_URL` в Environment лучше удалить, чтобы не путаться.
 
@@ -42,6 +48,9 @@
 | `NGINX_PORT` | `3101` |
 | `ACCESS_VIA_DOMAIN` | `false` до host nginx+TLS |
 | `APP_DOMAIN` | `ai-sous-chef.ru` |
+| `AI_MODE` | `stub` или `real` (по умолчанию в скрипте — `stub`) |
+| `CONSENT_JOURNAL_URL` | URL журнала согласий |
+| `CONSENT_PUBLIC_BASE` | публичный префикс документов согласий |
 
 Из Environment не используются (лишние — убрать): `NGINX_BIND`, `HEALTHCHECK_URL`, `APP_PUBLIC_URL`, `IMAGE_PREFIX`, `IMAGE_TAG`, `POSTGRES_USER`, `POSTGRES_DB`, `DATABASE_URL`.
 
@@ -69,6 +78,7 @@ apt-get update && apt-get install -y rsync
 | `NGINX_BIND` / `APP_PUBLIC_URL` / `HEALTHCHECK_URL` | `scripts/resolve-public-urls.sh` |
 | `DATABASE_URL` | из `POSTGRES_*` + URL-encode |
 | `REDIS_URL` | по умолчанию `redis://redis:6379/0` (secret не нужен) |
+| `AI_MODE` | из var `AI_MODE`, иначе `stub` |
 | `IMAGE_TAG` | короткий SHA |
 | `IMAGE_PREFIX` | `ai-sous-chef` |
 | `POSTGRES_USER` / `POSTGRES_DB` | `postgres` / `ai_sous_chef` |

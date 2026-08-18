@@ -11,32 +11,27 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <nav class="site-nav" aria-label="Навигация">
-    <div class="site-nav-inner">
-      <a class="brand-mark" href="index.html">
-        <img src="assets/app-icon.png" width="28" height="28" alt="" />
-        AI Sous-Chef
-      </a>
-      <a class="nav-link" href="index.html">О проекте</a>
-      <a class="nav-link" href="team.html" aria-current="page">Команда</a>
-      <a class="nav-link" href="https://github.com/teamsync-labs/ai-sous-chef-app">Приложение</a>
-      <a class="nav-link" href="#">Telegram-бот</a>
-    </div>
-  </nav>
+  <div class="site-chrome">
+    <nav class="site-nav" aria-label="Навигация">
+      <div class="site-nav-inner">
+        <a class="brand-mark" href="index.html">
+          <img src="assets/app-icon.png" width="28" height="28" alt="" />
+          AI Sous-Chef
+        </a>
+        <a class="nav-link" href="index.html">О проекте</a>
+        <a class="nav-link" href="team.html" aria-current="page">Команда</a>
+        <a class="nav-link" href="index.html#stack">Стек</a>
+        <a class="nav-link" href="index.html#app">Приложение</a>
+        <a class="nav-link" href="index.html#bot">Telegram-бот</a>
+        <a class="nav-link" href="mockup.html">Макет</a>
+      </div>
+    </nav>
+  </div>
 
   <main class="page">
     <header class="hero">
-      <div class="brand">Команда<br /><em>проекта</em></div>
-      <p class="lede">
-        Роли в AI Sous-Chef.
-      </p>
+      <div class="brand">Команда<br /><em>AI Sous-Chef</em></div>
     </header>
-
-    <h2 class="section-title">
-      <span class="section-kind">Участники</span>
-      Роли
-    </h2>
-    <p class="section-note">Кратко по зонам ответственности.</p>
 
     <ul class="team-list">
       <li class="member">
@@ -74,16 +69,8 @@
       <li class="member">
         <img src="avatars/placeholder.svg" width="56" height="56" alt="" />
         <div>
-          <div class="role">Frontend</div>
-          <div class="desc">Сайт проекта</div>
-          <div class="name">Имя: —</div>
-        </div>
-      </li>
-      <li class="member">
-        <img src="avatars/placeholder.svg" width="56" height="56" alt="" />
-        <div>
           <div class="role">AI-аналитик</div>
-          <div class="desc">Выбор моделей, промпты, тестирование</div>
+          <div class="desc">Какие модели берём, как формулируем запросы, как проверяем ответы</div>
           <div class="name">Имя: —</div>
         </div>
       </li>
@@ -97,7 +84,15 @@
       </li>
     </ul>
 
-    <p class="footer"><a href="index.html">← На главную</a></p>
+    <footer class="footer footer-legal">
+      <p><a href="index.html">← На главную</a></p>
+      <p>ИП Сардов Н.С. · ИНН 632304051711 · <a href="mailto:hello@geek-tik.tech">hello@geek-tik.tech</a></p>
+      <nav aria-label="Правовая информация">
+        <a href="https://consent.geek-tik.tech/t/ai-sous-chef/policy" target="_blank" rel="noopener">Политика конфиденциальности</a>
+        <a href="https://consent.geek-tik.tech/t/ai-sous-chef/pdn-consent" target="_blank" rel="noopener">Согласие на обработку ПДн</a>
+      </nav>
+    </footer>
   </main>
+  <script src="cookie-notice.js" data-policy-href="https://consent.geek-tik.tech/t/ai-sous-chef/policy"></script>
 </body>
 </html>

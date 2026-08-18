@@ -36,6 +36,23 @@ write_kv_compose() {
 : "${TG_PROXY_URL:?}"
 : "${API_BASE:=http://backend:8000/app/api}"
 : "${REDIS_URL:=redis://redis:6379/0}"
+: "${AI_MODE:=stub}"
+: "${YANDEX_API_KEY:=}"
+: "${YANDEX_FOLDER_ID:=}"
+: "${CONSENT_JOURNAL_URL:?}"
+: "${CONSENT_JOURNAL_API_KEY:?}"
+: "${CONSENT_PUBLIC_BASE:?}"
+: "${API_KEY_BOT:?}"
+: "${API_KEY_APP:?}"
+: "${API_KEY_SITE:?}"
+
+case "$AI_MODE" in
+  stub|real) ;;
+  *)
+    echo "AI_MODE must be 'stub' or 'real' (got: $AI_MODE)" >&2
+    exit 1
+    ;;
+esac
 
 # DATABASE_URL собираем сами: пароль URL-encode (спецсимволы @:#/?% и т.д.).
 # Отдельный secret DATABASE_URL не нужен — иначе легко разъехаться с POSTGRES_PASSWORD.
@@ -67,5 +84,15 @@ write_kv_compose DATA_PATH "$DATA_PATH"
 write_kv_compose TG_TOKEN "$TG_TOKEN"
 write_kv_compose TG_PROXY_URL "$TG_PROXY_URL"
 write_kv_compose API_BASE "$API_BASE"
+
+write_kv_compose AI_MODE "$AI_MODE"
+write_kv_compose YANDEX_API_KEY "$YANDEX_API_KEY"
+write_kv_compose YANDEX_FOLDER_ID "$YANDEX_FOLDER_ID"
+write_kv_compose CONSENT_JOURNAL_URL "$CONSENT_JOURNAL_URL"
+write_kv_compose CONSENT_JOURNAL_API_KEY "$CONSENT_JOURNAL_API_KEY"
+write_kv_compose CONSENT_PUBLIC_BASE "$CONSENT_PUBLIC_BASE"
+write_kv_compose API_KEY_BOT "$API_KEY_BOT"
+write_kv_compose API_KEY_APP "$API_KEY_APP"
+write_kv_compose API_KEY_SITE "$API_KEY_SITE"
 
 chmod 600 "$ENV_FILE"

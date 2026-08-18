@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,56 +8,324 @@
   <link rel="icon" href="assets/app-icon.png" type="image/png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Sora:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
-  <nav class="site-nav" aria-label="Навигация">
-    <div class="site-nav-inner">
-      <a class="brand-mark" href="index.html">
-        <img src="assets/app-icon.png" width="28" height="28" alt="" />
-        AI Sous-Chef
-      </a>
-      <a class="nav-link" href="index.html" aria-current="page">О проекте</a>
-      <a class="nav-link" href="team.html">Команда</a>
-      <a class="nav-link" href="https://github.com/teamsync-labs/ai-sous-chef-app">Приложение</a>
-      <a class="nav-link" href="#">Telegram-бот</a>
-    </div>
-  </nav>
+  <div class="site-chrome">
+    <nav class="site-nav" aria-label="Навигация">
+      <div class="site-nav-inner">
+        <a class="brand-mark" href="index.html">
+          <img src="assets/app-icon.png" width="28" height="28" alt="" />
+          AI Sous-Chef
+        </a>
+        <a class="nav-link" href="index.html" aria-current="page">О проекте</a>
+        <a class="nav-link" href="team.html">Команда</a>
+        <a class="nav-link" href="#stack">Стек</a>
+        <a class="nav-link" href="#app">Приложение</a>
+        <a class="nav-link" href="#bot">Telegram-бот</a>
+        <a class="nav-link" href="mockup.html">Макет</a>
+      </div>
+    </nav>
+  </div>
 
   <main class="page">
     <header class="hero">
       <div class="brand">AI Sous-Chef<br /><em>ИИ на кухне</em></div>
       <p class="lede">
-        Персональный ИИ-помощник, который отвечает на вопрос «Что приготовить?»:
-        по фото или списку продуктов подбирает рецепты и помогает с приготовлением.
+        По фото или списку продуктов подскажет, что приготовить, и покажет шаги рецепта.
       </p>
       <p class="lede">
-        Проект командной стажировки <a href="https://geek-tik.tech/teams/ai-sous-chef">geek-tik.tech</a>.
-        Клиенты — мобильное приложение и Telegram-бот; общая логика в одном backend.
+        Проект командной практики
+        <a href="https://geek-tik.tech/teams/ai-sous-chef">geek-tik.tech</a>:
+        мобильное приложение и бот в Telegram, общий API.
       </p>
       <div class="meta">
         <span class="chip">Mobile</span>
         <span class="chip">Telegram</span>
-        <span class="chip">Один API</span>
       </div>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="team.html">Команда</a>
-        <a class="btn btn-ghost" href="https://github.com/teamsync-labs/ai-sous-chef-app">Мобильное приложение</a>
-        <a class="btn btn-ghost" href="#">Telegram-бот</a>
-      </div>
+
     </header>
+
+    <section id="stack" class="product-section" aria-labelledby="stack-heading">
+      <h2 class="section-title" id="stack-heading">
+        Технологический стек
+      </h2>
+      <dl class="stack-list">
+        <div>
+          <dt>Клиенты</dt>
+          <dd class="meta">
+            <span class="chip">React Native</span>
+            <span class="chip">Android</span>
+            <span class="chip">Telegram Bot API</span>
+          </dd>
+        </div>
+        <div>
+          <dt>Backend</dt>
+          <dd class="meta">
+            <span class="chip">Python</span>
+            <span class="chip">FastAPI</span>
+            <span class="chip">PostgreSQL</span>
+            <span class="chip">Redis</span>
+          </dd>
+        </div>
+        <div>
+          <dt>ИИ</dt>
+          <dd class="meta">
+            <span class="chip">Yandex Vision</span>
+            <span class="chip">YandexGPT</span>
+          </dd>
+        </div>
+        <div>
+          <dt>Инфра</dt>
+          <dd class="meta">
+            <span class="chip">Docker</span>
+            <span class="chip">GitHub Actions</span>
+            <span class="chip">nginx</span>
+          </dd>
+        </div>
+      </dl>
+      <p class="section-note section-note-follow">
+        Код: <a href="https://github.com/teamsync-labs/ai-sous-chef">ai-sous-chef</a>
+        · приложение:
+        <a href="https://github.com/teamsync-labs/ai-sous-chef-app">ai-sous-chef-app</a>
+        · команда на
+        <a href="https://geek-tik.tech/teams/ai-sous-chef">geek-tik.tech</a>.
+      </p>
+    </section>
 
     <h2 class="section-title">
       <span class="section-kind">MVP</span>
-      Что уже задумано
+      Как это работает
     </h2>
     <p class="section-note">
-      Сфотографировать продукты или перечислить их текстом → получить варианты рецептов →
-      приготовить блюдо с подсказками ИИ. Без лишнего чата: один запрос — один ответ.
+      Сфотографировали продукты или написали список — получили варианты блюд и шаги приготовления.
     </p>
 
-    <p class="footer">Сайт в разработке · geek-tik.tech</p>
+    <section id="app" class="product-section" aria-labelledby="app-heading">
+      <h2 class="section-title" id="app-heading">
+        <span class="section-kind">Клиент · Mobile</span>
+        Мобильное приложение
+      </h2>
+      <p class="section-note">
+        Приложение для Android: снимок или текст, проверка списка, рецепты с шагами.
+      </p>
+      <div class="meta">
+        <span class="chip">React Native</span>
+        <span class="chip">Фото или текст</span>
+      </div>
+
+      <div class="screen-row" aria-label="Экраны мобильного приложения">
+        <figure class="phone-shot">
+          <div class="phone" aria-hidden="true">
+            <div class="phone-inner">
+              <div class="status-bar"><span>9:41</span><span>AI Sous-Chef</span></div>
+              <div class="shot-screen">
+                <div class="shot-back">← На главную</div>
+                <h3 class="shot-headline">Сфотографируйте продукты</h3>
+                <p class="shot-hint">Держите кадр ровно. В кадре — продукты из холодильника.</p>
+                <div class="shot-photo">
+                  <img src="assets/fridge-products.jpg" alt="Фото продуктов в холодильнике" width="240" height="135" />
+                </div>
+                <span class="shot-btn primary shot-btn-wide">Сделать фото</span>
+              </div>
+            </div>
+          </div>
+          <figcaption>Съёмка продуктов</figcaption>
+        </figure>
+
+        <figure class="phone-shot">
+          <div class="phone" aria-hidden="true">
+            <div class="phone-inner">
+              <div class="status-bar"><span>9:41</span><span>AI Sous-Chef</span></div>
+              <div class="shot-screen">
+                <div class="shot-back">← На главную</div>
+                <h3 class="shot-headline">Продукты распознаны</h3>
+                <p class="shot-hint">Проверьте список.</p>
+                <div class="shot-photo shot-photo-sm">
+                  <img src="assets/fridge-products.jpg" alt="" width="240" height="135" />
+                </div>
+                <ul class="product-chips">
+                  <li>лосось</li>
+                  <li>молоко</li>
+                  <li>сыр</li>
+                  <li>морковь</li>
+                  <li>помидоры</li>
+                  <li>перец</li>
+                  <li>огурцы</li>
+                  <li>салат</li>
+                </ul>
+                <div class="shot-actions">
+                  <span class="shot-btn primary">Верно</span>
+                  <span class="shot-btn danger">Неверно</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <figcaption>Подтверждение продуктов</figcaption>
+        </figure>
+
+        <figure class="phone-shot">
+          <div class="phone" aria-hidden="true">
+            <div class="phone-inner">
+              <div class="status-bar"><span>9:41</span><span>AI Sous-Chef</span></div>
+              <div class="shot-screen">
+                <div class="shot-back">← На главную</div>
+                <h3 class="shot-headline">Варианты блюд</h3>
+                <p class="shot-hint">Выберите рецепт, чтобы открыть шаги.</p>
+                <div class="recipe-card">
+                  <div class="title">Лосось с овощами</div>
+                  <div class="meta-line">5 шагов</div>
+                </div>
+                <div class="recipe-card">
+                  <div class="title">Овощной салат с сыром</div>
+                  <div class="meta-line">4 шага</div>
+                </div>
+                <div class="recipe-card">
+                  <div class="title">Лосось в сливочном соусе</div>
+                  <div class="meta-line">6 шагов</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <figcaption>Список рецептов</figcaption>
+        </figure>
+      </div>
+
+      <p class="section-note section-note-follow">
+        Все экраны — в <a href="mockup.html">макете</a>.
+        Код приложения: <a href="https://github.com/teamsync-labs/ai-sous-chef-app">ai-sous-chef-app</a>.
+      </p>
+    </section>
+
+    <section id="bot" class="product-section" aria-labelledby="bot-heading">
+      <h2 class="section-title" id="bot-heading">
+        <span class="section-kind">Клиент · Telegram</span>
+        Telegram-бот
+      </h2>
+      <p class="section-note">
+        Тот же путь в Telegram: фото или текст, кнопки Верно / Неверно, затем рецепты.
+      </p>
+      <div class="meta">
+        <span class="chip">Telegram Bot API</span>
+        <span class="chip">Фото или текст</span>
+        <span class="chip">Inline-кнопки</span>
+      </div>
+
+      <div class="screen-row" aria-label="Экраны Telegram-бота">
+        <figure class="phone-shot">
+          <div class="phone phone-tg" aria-hidden="true">
+            <div class="tg-inner">
+              <div class="tg-topbar"><span>12:36</span><span>LTE</span></div>
+              <div class="tg-header">
+                <img src="assets/app-icon.png" alt="" width="36" height="36" />
+                <div>
+                  <div class="name">AI Sous-Chef</div>
+                  <div class="status">бот</div>
+                </div>
+              </div>
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row user">
+                  <div class="tg-bubble user">/start</div>
+                </div>
+                <div class="tg-row bot">
+                  <div class="tg-bubble bot">
+                    Пришлите фото продуктов или список текстом.
+                  </div>
+                </div>
+                <div class="tg-row user">
+                  <div class="tg-bubble user tg-photo">
+                    <img src="assets/fridge-products.jpg" alt="Фото продуктов в холодильнике" width="200"
+                      height="112" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <figcaption>Фото в чат</figcaption>
+        </figure>
+
+        <figure class="phone-shot">
+          <div class="phone phone-tg" aria-hidden="true">
+            <div class="tg-inner">
+              <div class="tg-topbar"><span>12:37</span><span>LTE</span></div>
+              <div class="tg-header">
+                <img src="assets/app-icon.png" alt="" width="36" height="36" />
+                <div>
+                  <div class="name">AI Sous-Chef</div>
+                  <div class="status">бот</div>
+                </div>
+              </div>
+              <div class="tg-chat">
+                <div class="tg-row user">
+                  <div class="tg-bubble user tg-photo">
+                    <img src="assets/fridge-products.jpg" alt="" width="200" height="112" />
+                  </div>
+                </div>
+                <div class="tg-row bot">
+                  <div class="tg-bubble bot">
+                    Продукты распознаны:<br />
+                    лосось, молоко, сыр, морковь, помидоры, перец, огурцы, салат
+                    <div class="tg-inline">
+                      <span>Верно</span>
+                      <span>Неверно</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <figcaption>Подтверждение</figcaption>
+        </figure>
+
+        <figure class="phone-shot">
+          <div class="phone phone-tg" aria-hidden="true">
+            <div class="tg-inner">
+              <div class="tg-topbar"><span>12:38</span><span>LTE</span></div>
+              <div class="tg-header">
+                <img src="assets/app-icon.png" alt="" width="36" height="36" />
+                <div>
+                  <div class="name">AI Sous-Chef</div>
+                  <div class="status">бот</div>
+                </div>
+              </div>
+              <div class="tg-chat">
+                <div class="tg-row bot">
+                  <div class="tg-bubble bot">
+                    <strong>Лосось с овощами</strong>
+                    <ol>
+                      <li>Обсушить стейк лосося, посолить и поперчить</li>
+                      <li>Обжарить 3–4 минуты с каждой стороны</li>
+                      <li>Нарезать огурец, помидор и перец</li>
+                      <li>Смешать с листьями салата и морковью</li>
+                      <li>Подать лосось с салатом, сыр — по желанию</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <figcaption>Рецепт по фото</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <footer class="footer footer-legal">
+      <p>Проект команды AI Sous-Chef · <a href="https://geek-tik.tech/teams/ai-sous-chef">geek-tik.tech</a></p>
+      <p>ИП Сардов Н.С. · ИНН 632304051711 · <a href="mailto:hello@geek-tik.tech">hello@geek-tik.tech</a></p>
+      <nav aria-label="Правовая информация">
+        <a href="https://consent.geek-tik.tech/t/ai-sous-chef/policy" target="_blank" rel="noopener">Политика
+          конфиденциальности</a>
+        <a href="https://consent.geek-tik.tech/t/ai-sous-chef/pdn-consent" target="_blank" rel="noopener">Согласие на
+          обработку ПДн</a>
+      </nav>
+    </footer>
   </main>
+  <script src="cookie-notice.js" data-policy-href="https://consent.geek-tik.tech/t/ai-sous-chef/policy"></script>
 </body>
+
 </html>

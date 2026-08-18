@@ -1,4 +1,5 @@
 .git
-*.md
-Dockerfile
+.gitignore
 .dockerignore
+Dockerfile
+*.md
