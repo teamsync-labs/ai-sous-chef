@@ -36,33 +36,24 @@
     <header class="hero">
       <div class="brand">AI Sous-Chef<br /><em>ИИ на кухне</em></div>
       <p class="lede">
-        Персональный ИИ-помощник, который отвечает на вопрос «Что приготовить?»:
-        по фото или списку продуктов подбирает рецепты и помогает с приготовлением.
+        По фото или списку продуктов подскажет, что приготовить, и покажет шаги рецепта.
       </p>
       <p class="lede">
-        Проект командной стажировки <a href="https://geek-tik.tech/teams/ai-sous-chef">geek-tik.tech</a>.
-        Клиенты — мобильное приложение и Telegram-бот; общая логика в одном backend.
+        Проект командной практики
+        <a href="https://geek-tik.tech/teams/ai-sous-chef">geek-tik.tech</a>:
+        мобильное приложение и бот в Telegram, общий API.
       </p>
       <div class="meta">
         <span class="chip">Mobile</span>
         <span class="chip">Telegram</span>
-        <span class="chip">Один API</span>
       </div>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="team.html">Команда</a>
-        <a class="btn btn-ghost" href="#app">Мобильное приложение</a>
-        <a class="btn btn-ghost" href="#bot">Telegram-бот</a>
-      </div>
+
     </header>
 
     <section id="stack" class="product-section" aria-labelledby="stack-heading">
       <h2 class="section-title" id="stack-heading">
-        <span class="section-kind">Проект</span>
         Технологический стек
       </h2>
-      <p class="section-note">
-        Android и Telegram-бот ходят в один API.
-      </p>
       <dl class="stack-list">
         <div>
           <dt>Клиенты</dt>
@@ -108,11 +99,10 @@
 
     <h2 class="section-title">
       <span class="section-kind">MVP</span>
-      Один пользовательский сценарий
+      Как это работает
     </h2>
     <p class="section-note">
-      Сфотографировать продукты или перечислить их текстом → получить варианты рецептов →
-      приготовить блюдо с подсказками ИИ. Без лишнего чата: один запрос — один ответ.
+      Сфотографировали продукты или написали список — получили варианты блюд и шаги приготовления.
     </p>
 
     <section id="app" class="product-section" aria-labelledby="app-heading">
@@ -121,13 +111,11 @@
         Мобильное приложение
       </h2>
       <p class="section-note">
-        Android-клиент (React Native): фото или текст продуктов → подтверждение списка →
-        варианты рецептов с шагами. Без регистрации и без чата.
+        Приложение для Android: снимок или текст, проверка списка, рецепты с шагами.
       </p>
       <div class="meta">
         <span class="chip">React Native</span>
         <span class="chip">Фото или текст</span>
-        <span class="chip">Один API</span>
       </div>
 
       <div class="screen-row" aria-label="Экраны мобильного приложения">
@@ -156,7 +144,7 @@
               <div class="shot-screen">
                 <div class="shot-back">← На главную</div>
                 <h3 class="shot-headline">Продукты распознаны</h3>
-                <p class="shot-hint">Проверьте список перед подбором рецептов.</p>
+                <p class="shot-hint">Проверьте список.</p>
                 <div class="shot-photo shot-photo-sm">
                   <img src="assets/fridge-products.jpg" alt="" width="240" height="135" />
                 </div>
@@ -170,7 +158,6 @@
                   <li>огурцы</li>
                   <li>салат</li>
                 </ul>
-                <p class="shot-meta">confidence ≈ 0.85</p>
                 <div class="shot-actions">
                   <span class="shot-btn primary">Верно</span>
                   <span class="shot-btn danger">Неверно</span>
@@ -209,9 +196,8 @@
       </div>
 
       <p class="section-note section-note-follow">
-        Интерактивный прототип и полный поток экранов —
-        в <a href="mockup.html">интерактивном макете</a>.
-        Код клиента: <a href="https://github.com/teamsync-labs/ai-sous-chef-app">ai-sous-chef-app</a>.
+        Все экраны — в <a href="mockup.html">макете</a>.
+        Код приложения: <a href="https://github.com/teamsync-labs/ai-sous-chef-app">ai-sous-chef-app</a>.
       </p>
     </section>
 
@@ -221,8 +207,7 @@
         Telegram-бот
       </h2>
       <p class="section-note">
-        Тот же сценарий MVP в мессенджере: фото или текст → подтверждение продуктов
-        (Верно / Неверно) → рецепты. Отдельного API для бота нет — один backend.
+        Тот же путь в Telegram: фото или текст, кнопки Верно / Неверно, затем рецепты.
       </p>
       <div class="meta">
         <span class="chip">Telegram Bot API</span>
@@ -249,7 +234,7 @@
                 </div>
                 <div class="tg-row bot">
                   <div class="tg-bubble bot">
-                    Пришлите фото продуктов из холодильника — распознаю и подберу рецепт.
+                    Пришлите фото продуктов или список текстом.
                   </div>
                 </div>
                 <div class="tg-row user">
@@ -333,8 +318,10 @@
       <p>Проект команды AI Sous-Chef · <a href="https://geek-tik.tech/teams/ai-sous-chef">geek-tik.tech</a></p>
       <p>ИП Сардов Н.С. · ИНН 632304051711 · <a href="mailto:hello@geek-tik.tech">hello@geek-tik.tech</a></p>
       <nav aria-label="Правовая информация">
-        <a href="https://consent.geek-tik.tech/t/ai-sous-chef/policy" target="_blank" rel="noopener">Политика конфиденциальности</a>
-        <a href="https://consent.geek-tik.tech/t/ai-sous-chef/pdn-consent" target="_blank" rel="noopener">Согласие на обработку ПДн</a>
+        <a href="https://consent.geek-tik.tech/t/ai-sous-chef/policy" target="_blank" rel="noopener">Политика
+          конфиденциальности</a>
+        <a href="https://consent.geek-tik.tech/t/ai-sous-chef/pdn-consent" target="_blank" rel="noopener">Согласие на
+          обработку ПДн</a>
       </nav>
     </footer>
   </main>
