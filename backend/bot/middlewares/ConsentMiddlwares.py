@@ -22,18 +22,18 @@ class ConsentMiddleware(BaseMiddleware):
             logger.info("Consent middleware: user_id=%s consented (FSM cache), passing", user_id)
             return await handler(event, data)
 
+        logger.debug("Consent middleware: user_id=%s checking external consent (privacy, pdn)", user_id)
+        if await self.get_consent_info(user_id, "privacy") and await self.get_consent_info(user_id, "pdn"):
+            logger.info("Consent middleware: user_id=%s consented (external), caching and passing", user_id)
+            await state.set_data({"is_accept_consents": True})
+            return await handler(event, data)
+
         if self.is_command_start(event):
             logger.info("Consent middleware: user_id=%s /start, passing", user_id)
             return await handler(event, data)
 
         if isinstance(event, CallbackQuery):
             logger.info("Consent middleware: user_id=%s consent callback, passing", user_id)
-            return await handler(event, data)
-
-        logger.debug("Consent middleware: user_id=%s checking external consent (privacy, pdn)", user_id)
-        if await self.get_consent_info(user_id, "privacy") and await self.get_consent_info(user_id, "pdn"):
-            logger.info("Consent middleware: user_id=%s consented (external), caching and passing", user_id)
-            await state.set_data({"is_accept_consents": True})
             return await handler(event, data)
 
         logger.info("Consent middleware: user_id=%s not consented, blocking", user_id)
