@@ -1,11 +1,13 @@
 import os
 
 from aiogram import Router, F
+from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
 from aiogram.filters import CommandStart
 
 from keyboards.consent import keyboard_consent_builder, ConsentCallback
+from states.user_states import AcceptConsent
 
 router = Router()
 
@@ -44,24 +46,36 @@ async def send_second_consent_message(message: Message):
 
 
 @router.message(CommandStart())
-async def start_cmd(message: Message):
+async def start_cmd(message: Message, state: FSMContext):
+    user_data = await state.get_data()
+    if user_data.get("is_accept_consent"):
+        await message.reply(
+            "Вы уже прошли регистрацию. Для отзыва согласия на обработку персональных данных /delete")
+        return
+
+    await state.set_state(AcceptConsent.waiting_for_accept_first_consent)
     await send_first_consent_message(message)
 
 
-@router.callback_query(ConsentCallback.filter(F.question == 1))
-async def on_first_consent_callback(cb: CallbackQuery, callback_data: ConsentCallback):
-    if callback_data.consent:
-        await send_second_consent_message(cb.message)
-    else:
+@router.callback_query(ConsentCallback.filter(F.question == 1), AcceptConsent.waiting_for_accept_first_consent)
+async def on_first_consent_callback(cb: CallbackQuery, callback_data: ConsentCallback, state: FSMContext):
+    if not callback_data.consent:
         await cb.message.delete()
         await send_first_consent_message(cb.message)
+        return
+
+    await state.set_state(AcceptConsent.waiting_for_accept_second_consent)
+    await send_second_consent_message(cb.message)
 
 
-@router.callback_query(ConsentCallback.filter(F.question == 2))
-async def on_second_consent_callback(cb: CallbackQuery, callback_data: ConsentCallback):
-    if callback_data.consent:
-        await cb.message.answer(
-            "Ответ на второй вопрос зачтен")
-    else:
+@router.callback_query(ConsentCallback.filter(F.question == 2), AcceptConsent.waiting_for_accept_second_consent)
+async def on_second_consent_callback(cb: CallbackQuery, callback_data: ConsentCallback, state: FSMContext):
+    if not callback_data.consent:
         await cb.message.delete()
         await send_second_consent_message(cb.message)
+        return
+
+    await state.set_data({"is_accept_consent": True})
+    await state.set_state(None)
+    await cb.message.answer(
+        "Согласия приняты. Можете пользоваться ботом. Для этого отправьте фото/текст с продуктами")

@@ -2,6 +2,7 @@ import os
 import logging
 import asyncio
 
+from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -35,6 +36,7 @@ async def main():
     else:
         logger.info("TG_PROXY_URL не указан. Запуск без прокси")
 
+    storage = MemoryStorage()
     dp.include_routers(*routers)
     bot = Bot(token=token, session=session)
     await dp.start_polling(bot)
