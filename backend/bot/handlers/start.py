@@ -7,6 +7,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart
 
 from keyboards.consent import keyboard_consent_builder, ConsentCallback
+from services.api_client import record_consent
 from states.user_states import AcceptConsent
 
 router = Router()
@@ -64,6 +65,7 @@ async def on_first_consent_callback(cb: CallbackQuery, callback_data: ConsentCal
         await send_first_consent_message(cb.message)
         return
 
+    await record_consent(external_id=str(cb.from_user.id), consent_type="privacy", action="granted")
     await state.set_state(AcceptConsent.waiting_for_accept_second_consent)
     await send_second_consent_message(cb.message)
 
@@ -75,7 +77,8 @@ async def on_second_consent_callback(cb: CallbackQuery, callback_data: ConsentCa
         await send_second_consent_message(cb.message)
         return
 
-    await state.set_data({"is_accept_consent": True})
+    await record_consent(external_id=str(cb.from_user.id), consent_type="pdn", action="granted")
+    await state.set_data({"is_accept_consents": True})
     await state.set_state(None)
     await cb.message.answer(
         "Согласия приняты. Можете пользоваться ботом. Для этого отправьте фото/текст с продуктами")

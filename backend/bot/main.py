@@ -5,9 +5,9 @@ import asyncio
 from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
 
-from middlewares.ConsentMiddlwares import ConsentMiddleware
-
 load_dotenv()
+
+from middlewares.ConsentMiddlwares import ConsentMiddleware
 
 from aiogram import Dispatcher, Bot
 
