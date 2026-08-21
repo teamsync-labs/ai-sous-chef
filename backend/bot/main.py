@@ -5,6 +5,8 @@ import asyncio
 from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
 
+from middlewares.ConsentMiddlwares import ConsentMiddleware
+
 load_dotenv()
 
 from aiogram import Dispatcher, Bot
@@ -20,7 +22,10 @@ setup_logging()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-dp = Dispatcher()
+storage = MemoryStorage()
+dp = Dispatcher(storage=storage)
+dp.message.middleware(ConsentMiddleware())
+# dp.callback_query.middleware(ConsentMiddleware())
 
 
 async def main():
@@ -36,7 +41,6 @@ async def main():
     else:
         logger.info("TG_PROXY_URL не указан. Запуск без прокси")
 
-    storage = MemoryStorage()
     dp.include_routers(*routers)
     bot = Bot(token=token, session=session)
     await dp.start_polling(bot)
