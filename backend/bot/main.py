@@ -2,9 +2,12 @@ import os
 import logging
 import asyncio
 
+from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
 
 load_dotenv()
+
+from middlewares.ConsentMiddlwares import ConsentMiddleware
 
 from aiogram import Dispatcher, Bot
 
@@ -19,7 +22,10 @@ setup_logging()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-dp = Dispatcher()
+storage = MemoryStorage()
+dp = Dispatcher(storage=storage)
+dp.message.middleware(ConsentMiddleware())
+# dp.callback_query.middleware(ConsentMiddleware())
 
 
 async def main():
