@@ -49,7 +49,7 @@ async def send_second_consent_message(message: Message):
 @router.message(CommandStart())
 async def start_cmd(message: Message, state: FSMContext):
     user_data = await state.get_data()
-    if user_data.get("is_accept_consent"):
+    if user_data.get("is_accept_consents"):
         await message.reply(
             "Вы уже прошли регистрацию. Для отзыва согласия на обработку персональных данных /delete")
         return
