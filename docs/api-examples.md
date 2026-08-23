@@ -1,6 +1,30 @@
 # Curl-примеры API
 
-> Маршруты используют префикс `/app/api`, заданный в `APIRouter`.
+> Маршруты API используют префикс `/app/api`, заданный в `APIRouter`.
+> Health-check доступен без префикса: `GET /health`.
+> `/app/api/*` требует заголовок `X-Api-Key`: `API_KEY_BOT` или `API_KEY_APP`
+> для recognize/recipes/consent bot|app; `API_KEY_SITE` только для `channel=site`.
+> Без ключа — `401 unauthorized`.
+
+## Health-check
+
+## Health-check
+
+### `GET /health`
+
+Проверяет, что API запущено и есть ответ от БД.
+
+```bash
+curl http://localhost:8000/health
+```
+
+Пример успешного ответа:
+
+```json
+{"db": "ok"}
+```
+
+Если БД недоступна, сервер вернёт `503` и `{"db": "error"}`.
 
 ## Распознавание продуктов
 
@@ -11,6 +35,7 @@
 ```bash
 curl -X POST "http://127.0.0.1:8000/app/api/recognize" \
   -H "Content-Type: application/json" \
+  -H "X-Api-Key: $API_KEY_APP" \
   -d '{
     "text": "яйца, молоко, сыр"
   }'
@@ -29,21 +54,24 @@ curl -X POST "http://127.0.0.1:8000/app/api/recognize" \
 }
 ```
 
-Также эндпоинт принимает поле `image` вместо `text`:
+Также эндпоинт принимает поле `img_base64` вместо `text` (ровно одно из двух):
 
 ```bash
 curl -X POST "http://127.0.0.1:8000/app/api/recognize" \
   -H "Content-Type: application/json" \
+  -H "X-Api-Key: $API_KEY_APP" \
   -d '{
-    "image": "<строковое представление изображения>"
+    "img_base64": "<base64-строка изображения>"
   }'
 ```
 
-Точный формат значения `image` определяется моделью `RecognizeInput`.
+Формат `img_base64` задаётся моделью `RecognizeInput` (`Base64Bytes`).
 
 Возможные ошибки:
 
-- `400 missing_input` — не передано ни `image`, ни `text`;
+- `401 unauthorized` — нет или неверный `X-Api-Key`;
+- `422` — не передано ни `img_base64`, ни `text`, либо переданы оба поля;
+- `400 missing_input` — вход отклонён на уровне AI-обработчика;
 - `422 no_products_found` — продукты не удалось распознать;
 - `502 ai_service_error` — сервис CV или LLM недоступен либо вернул ошибку.
 
@@ -56,6 +84,7 @@ curl -X POST "http://127.0.0.1:8000/app/api/recognize" \
 ```bash
 curl -X POST "http://127.0.0.1:8000/app/api/recipes" \
   -H "Content-Type: application/json" \
+  -H "X-Api-Key: $API_KEY_APP" \
   -d '{
     "products": [
       "яйца",
@@ -103,12 +132,14 @@ curl -X POST "http://127.0.0.1:8000/app/api/recipes" \
 ```bash
 curl -X POST "http://127.0.0.1:8000/app/api/recognize" \
   -H "Content-Type: application/json" \
+  -H "X-Api-Key: $API_KEY_APP" \
   -d '{"text":"яйца, молоко, сыр"}'
 ```
 
 ```bash
 curl -X POST "http://127.0.0.1:8000/app/api/recipes" \
   -H "Content-Type: application/json" \
+  -H "X-Api-Key: $API_KEY_APP" \
   -d '{"products":["яйца","сыр","молоко"]}'
 ```
 
@@ -117,11 +148,13 @@ curl -X POST "http://127.0.0.1:8000/app/api/recipes" \
 Примеры для PowerShell:
 
 ```powershell
-Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8000/app/api/recognize" -ContentType "application/json; charset=utf-8" -Body (@{text="яйца, молоко, сыр"} | ConvertTo-Json -Compress)
+$headers = @{ "X-Api-Key" = $env:API_KEY_APP }
+Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8000/app/api/recognize" -Headers $headers -ContentType "application/json; charset=utf-8" -Body (@{text="яйца, молоко, сыр"} | ConvertTo-Json -Compress)
 ```
 
 ```powershell
-Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8000/app/api/recipes" -ContentType "application/json; charset=utf-8" -Body (@{products=@("яйца","сыр","молоко")} | ConvertTo-Json -Compress)
+$headers = @{ "X-Api-Key" = $env:API_KEY_APP }
+Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8000/app/api/recipes" -Headers $headers -ContentType "application/json; charset=utf-8" -Body (@{products=@("яйца","сыр","молоко")} | ConvertTo-Json -Compress)
 ```
 
 ## Swagger UI

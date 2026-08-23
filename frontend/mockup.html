@@ -1,0 +1,2539 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Sous-Chef — UI-макет MVP</title>
+  <link rel="icon" href="assets/app-icon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/app-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Sora:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    :root {
+      --bg: #e8efe6;
+      --bg-deep: #d4e0d1;
+      --ink: #1a2419;
+      --ink-soft: #4a5a47;
+      --muted: #6b7a68;
+      --surface: #f7faf6;
+      --surface-2: #eef4ec;
+      --line: #c5d4c1;
+      --brand: #1f5c3a;
+      --brand-hover: #174a2e;
+      --accent: #c45c26;
+      --danger: #8b2e2e;
+      --ok: #1f5c3a;
+      --shadow: 0 24px 60px rgba(26, 36, 25, 0.18);
+      --radius: 18px;
+      --phone-w: 320px;
+      --phone-h: 640px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Sora", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse 80% 50% at 10% 0%, #cfe0c8 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 90% 100%, #d9e6d4 0%, transparent 50%),
+        linear-gradient(165deg, #eef4ec 0%, #dce8d8 45%, #e8efe6 100%);
+      min-height: 100vh;
+      line-height: 1.45;
+    }
+
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 40px;
+      align-items: end;
+      margin-bottom: 48px;
+    }
+
+    .hero.solo {
+      grid-template-columns: 1fr;
+      align-items: start;
+      max-width: 40rem;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .section-intro {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: start;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 900px) {
+      .section-intro {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .section-intro .lede {
+      margin-top: 0;
+    }
+
+    .brand {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      letter-spacing: -0.02em;
+      line-height: 0.95;
+      color: var(--brand);
+    }
+
+    .brand em {
+      font-style: italic;
+      color: var(--ink);
+    }
+
+    .lede {
+      margin-top: 16px;
+      max-width: 36rem;
+      color: var(--ink-soft);
+      font-size: 1.05rem;
+    }
+
+    .meta {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: 1px solid var(--line);
+      background: rgba(247, 250, 246, 0.7);
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+    }
+
+    .legend {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 20px 22px;
+    }
+
+    .legend h2 {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 10px;
+    }
+
+    .legend ol {
+      padding-left: 1.2rem;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+    }
+
+    .legend li {
+      margin: 6px 0;
+    }
+
+    .legend code {
+      font-size: 0.82em;
+      background: var(--surface-2);
+      padding: 1px 5px;
+    }
+
+    .section-title {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: clamp(1.75rem, 3vw, 2.15rem);
+      font-weight: 400;
+      margin: 56px 0 18px;
+      padding-top: 40px;
+      border-top: 1px solid var(--line);
+      color: var(--ink);
+      scroll-margin-top: 112px;
+      letter-spacing: -0.01em;
+    }
+
+    .section-title .section-kind {
+      display: block;
+      font-family: "Sora", system-ui, sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand);
+      margin-bottom: 8px;
+    }
+
+    .section-note {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 24px;
+      max-width: 40rem;
+    }
+
+    .flow-map {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .flow-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+      width: 100%;
+    }
+
+    .flow-card:hover,
+    .flow-card.active {
+      border-color: var(--brand);
+      background: #f0f7ef;
+    }
+
+    .flow-card strong {
+      display: block;
+      font-size: 0.88rem;
+      margin-bottom: 4px;
+    }
+
+    .flow-card span {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .prototype {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 36px;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      .prototype {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+    }
+
+    .phone {
+      --phone-w: 320px;
+      --phone-h: 640px;
+      width: var(--phone-w);
+      min-width: var(--phone-w);
+      max-width: var(--phone-w);
+      height: var(--phone-h);
+      margin: 0;
+      background: #111;
+      border-radius: 36px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 112px;
+      flex-shrink: 0;
+    }
+
+    .phone-inner {
+      width: 100%;
+      min-width: 0;
+      height: 100%;
+      background: var(--surface);
+      border-radius: 26px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .status-bar {
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+      flex-shrink: 0;
+    }
+
+    .screen {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      min-height: 0;
+      padding: 8px 18px 20px;
+    }
+
+    .screen.active {
+      display: flex;
+      width: 100%;
+    }
+
+    .app-header {
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .app-header .app-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid var(--line);
+    }
+
+    .app-header .mark-wrap {
+      min-width: 0;
+    }
+
+    .app-header .mark {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 1.55rem;
+      color: var(--brand);
+      line-height: 1;
+    }
+
+    .app-header .sub {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .headline {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 1.65rem;
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+
+    .hint {
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      margin-bottom: 18px;
+    }
+
+    .check-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 18px;
+      overflow: auto;
+      min-height: 0;
+    }
+
+    .check-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+    }
+
+    .check-item label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.86rem;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .check-item input {
+      margin-top: 2px;
+      accent-color: var(--brand);
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .check-item .doc-link {
+      appearance: none;
+      border: 0;
+      background: none;
+      color: var(--brand);
+      font: inherit;
+      font-size: 0.8rem;
+      text-align: left;
+      cursor: pointer;
+      padding: 0 0 0 28px;
+      text-decoration: underline;
+    }
+
+    .withdraw-link {
+      appearance: none;
+      border: 0;
+      background: none;
+      color: var(--muted);
+      font: inherit;
+      font-size: 0.78rem;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 4px 0 0;
+      text-align: center;
+      width: 100%;
+    }
+
+    .withdraw-link:hover {
+      color: var(--brand);
+    }
+
+    .app-doc {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-doc-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 4px 14px;
+      flex-shrink: 0;
+    }
+
+    .app-doc-bar button {
+      appearance: none;
+      border: 0;
+      background: none;
+      color: var(--brand);
+      font: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+
+    .app-doc-bar .app-doc-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+    }
+
+    .app-doc-body {
+      flex: 1;
+      padding: 8px 0 12px;
+      color: var(--ink);
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+
+    .screen[data-screen="doc-policy"],
+    .screen[data-screen="doc-pdn"] {
+      padding-top: 8px;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: auto;
+    }
+
+    .mode-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      padding: 16px;
+      cursor: pointer;
+      font: inherit;
+      color: inherit;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .mode-btn:hover {
+      border-color: var(--brand);
+      background: #e4efe1;
+    }
+
+    .mode-btn .label {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .mode-btn .desc {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .btn {
+      appearance: none;
+      border: none;
+      font: inherit;
+      font-weight: 600;
+      font-size: 0.88rem;
+      padding: 14px 16px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.15s, color 0.15s, opacity 0.15s;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--brand);
+      color: #f7faf6;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--brand-hover);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink-soft);
+      border: 1px solid var(--line);
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid #e0b4b4;
+    }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .camera-view {
+      flex: 1;
+      min-height: 0;
+      background:
+        linear-gradient(180deg, rgba(26, 36, 25, 0.15), rgba(26, 36, 25, 0.45)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='360' viewBox='0 0 280 360'%3E%3Crect fill='%23c8d6c0' width='280' height='360'/%3E%3Cellipse cx='70' cy='220' rx='40' ry='28' fill='%23c45c26'/%3E%3Cellipse cx='130' cy='200' rx='36' ry='30' fill='%23e8b84a'/%3E%3Cellipse cx='190' cy='230' rx='34' ry='26' fill='%237a9e4a'/%3E%3Ccircle cx='100' cy='160' r='22' fill='%23f2f2e8'/%3E%3Ccircle cx='160' cy='155' r='18' fill='%23f0ece0'/%3E%3Crect x='40' y='260' width='90' height='40' rx='8' fill='%23a67c52'/%3E%3C/svg%3E") center/cover;
+      border: 1px solid var(--line);
+      position: relative;
+      margin-bottom: 14px;
+    }
+
+    .camera-view .frame {
+      position: absolute;
+      inset: 18px;
+      border: 1.5px solid rgba(247, 250, 246, 0.85);
+      pointer-events: none;
+    }
+
+    .camera-view .cap {
+      position: absolute;
+      left: 14px;
+      bottom: 14px;
+      color: #f7faf6;
+      font-size: 0.72rem;
+      background: rgba(26, 36, 25, 0.55);
+      padding: 6px 10px;
+    }
+
+    .shutter {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 3px solid var(--brand);
+      background: var(--surface);
+      margin: 0 auto 8px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    .shutter span {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--brand);
+      display: block;
+    }
+
+    .loading {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 14px;
+      color: var(--ink-soft);
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--line);
+      border-top-color: var(--brand);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .product-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 8px 0 20px;
+    }
+
+    .product-list li {
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      padding: 8px 12px;
+      font-size: 0.84rem;
+      font-weight: 500;
+    }
+
+    .conf {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .field {
+      width: 100%;
+      min-height: 110px;
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 12px 14px;
+      font: inherit;
+      font-size: 0.9rem;
+      color: var(--ink);
+      resize: none;
+      margin-bottom: 12px;
+    }
+
+    .field:focus {
+      outline: 2px solid rgba(31, 92, 58, 0.35);
+      border-color: var(--brand);
+    }
+
+    .field::placeholder {
+      color: #9aa894;
+    }
+
+    .recipe-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: auto;
+      flex: 1;
+      min-height: 0;
+      margin-bottom: 12px;
+      padding-right: 2px;
+    }
+
+    .recipe-item {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 14px;
+      cursor: pointer;
+      font: inherit;
+      color: inherit;
+    }
+
+    .recipe-item:hover {
+      border-color: var(--brand);
+    }
+
+    .recipe-item .title {
+      font-weight: 600;
+      font-size: 0.92rem;
+      margin-bottom: 4px;
+    }
+
+    .recipe-item .meta-line {
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+
+    .steps {
+      list-style: none;
+      counter-reset: step;
+      overflow: auto;
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      margin: 8px 0 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .steps li {
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      font-size: 0.86rem;
+      color: var(--ink-soft);
+    }
+
+    .steps li::before {
+      content: counter(step);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--brand);
+      color: #f7faf6;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: grid;
+      place-items: center;
+    }
+
+    .banner {
+      background: #f4e8e6;
+      border: 1px solid #e0b4b4;
+      color: var(--danger);
+      padding: 12px 14px;
+      font-size: 0.84rem;
+      margin-bottom: 16px;
+    }
+
+    .banner.ok {
+      background: #e6f0e8;
+      border-color: #a8c4ae;
+      color: var(--ok);
+    }
+
+    .back {
+      appearance: none;
+      border: none;
+      background: none;
+      color: var(--muted);
+      font: inherit;
+      font-size: 0.78rem;
+      cursor: pointer;
+      margin-bottom: 10px;
+      padding: 0;
+      text-align: left;
+    }
+
+    .back:hover {
+      color: var(--brand);
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 22px 24px;
+    }
+
+    .panel h3 {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 400;
+      margin-bottom: 10px;
+    }
+
+    .panel p,
+    .panel li {
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+    }
+
+    .panel ul {
+      padding-left: 1.1rem;
+      margin: 8px 0 0;
+    }
+
+    .panel li {
+      margin: 4px 0;
+    }
+
+    .panel-next {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .panel-next p {
+      margin-bottom: 10px;
+    }
+
+    .specs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 700px) {
+      .specs {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .nav-dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-top: 14px;
+    }
+
+    .nav-dots button {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: none;
+      background: var(--line);
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .nav-dots button.active {
+      background: var(--brand);
+    }
+
+    .screen-label {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .screen-label strong {
+      color: var(--ink-soft);
+    }
+
+    .phone-inner.is-splash .status-bar {
+      background: var(--brand);
+      color: rgba(247, 250, 246, 0.75);
+    }
+
+    .screen[data-screen="splash"] {
+      padding: 0;
+    }
+
+    .screen-splash {
+      background: var(--brand);
+      color: #f7faf6;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px 28px 36px;
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .screen-splash .splash-logo {
+      width: 112px;
+      height: 112px;
+      border-radius: 28px;
+      object-fit: cover;
+      display: block;
+      margin: 0 auto 18px;
+      border: 1px solid rgba(247, 250, 246, 0.18);
+    }
+
+    .screen-splash .splash-title {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 1.85rem;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .screen-splash .splash-sub {
+      font-size: 0.78rem;
+      opacity: 0.78;
+      max-width: 14rem;
+      margin: 0 auto;
+    }
+
+    .app-header .mark-wrap {
+      min-width: 0;
+    }
+
+    .logo-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 40px;
+    }
+
+    .logo-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 14px;
+      text-align: center;
+    }
+
+    .logo-card img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 28px;
+      display: block;
+      margin: 0 auto 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .logo-card img.preview-dark {
+      background: #1a2419;
+      border-color: #1a2419;
+    }
+
+    .logo-card strong {
+      display: block;
+      font-size: 0.86rem;
+      margin-bottom: 4px;
+    }
+
+    .logo-card span,
+    .logo-card code {
+      font-size: 0.72rem;
+      color: var(--muted);
+      word-break: break-all;
+    }
+
+    .logo-card .uses {
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: var(--ink-soft);
+    }
+
+    .tg-phone {
+      width: var(--phone-w);
+      height: var(--phone-h);
+      background: #0e1621;
+      border-radius: 36px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 112px;
+    }
+
+    .tg-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 26px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(ellipse 70% 40% at 50% 0%, rgba(31, 92, 58, 0.18), transparent 60%),
+        #182533;
+      position: relative;
+    }
+
+    .tg-topbar {
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #8b9aab;
+      background: #1f2c3a;
+      flex-shrink: 0;
+      z-index: 2;
+    }
+
+    .tg-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #1f2c3a;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      flex-shrink: 0;
+      z-index: 2;
+    }
+
+    .tg-header img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .tg-header .name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #f2f5f7;
+      line-height: 1.1;
+    }
+
+    .tg-header .status {
+      font-size: 0.68rem;
+      color: #7d8b9a;
+      margin-top: 2px;
+    }
+
+    .tg-screen {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .tg-screen.active {
+      display: flex;
+    }
+
+    .tg-inner.is-tg-doc .tg-header,
+    .tg-inner.is-tg-doc .tg-attach-menu {
+      display: none;
+    }
+
+    .tg-doc {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: #f4f1ea;
+    }
+
+    .tg-doc-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #1f2c3a;
+      flex-shrink: 0;
+    }
+
+    .tg-doc-bar button {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: #6ab3f3;
+      font: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+
+    .tg-doc-bar .tg-doc-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #f2f5f7;
+    }
+
+    .tg-doc-body {
+      flex: 1;
+      padding: 28px 20px;
+      color: #2c2a26;
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+
+    .tg-chat {
+      flex: 1;
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 14px 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tg-day {
+      align-self: center;
+      font-size: 0.68rem;
+      color: #9aa8b6;
+      background: rgba(15, 25, 36, 0.55);
+      padding: 4px 10px;
+      border-radius: 10px;
+      margin-bottom: 2px;
+    }
+
+    .tg-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      max-width: 100%;
+    }
+
+    .tg-row.bot {
+      align-self: flex-start;
+    }
+
+    .tg-row.user {
+      align-self: flex-end;
+    }
+
+    .tg-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .tg-bubble {
+      max-width: 220px;
+      border-radius: 14px;
+      padding: 8px 10px 6px;
+      font-size: 0.74rem;
+      line-height: 1.35;
+      position: relative;
+    }
+
+    .tg-bubble.bot {
+      background: #212e3c;
+      color: #e8eef4;
+      border-bottom-left-radius: 4px;
+    }
+
+    .tg-cmd {
+      appearance: none;
+      border: 0;
+      background: none;
+      padding: 0;
+      margin: 0;
+      font: inherit;
+      color: #6ab3f3;
+      cursor: pointer;
+    }
+
+    .tg-bubble.user {
+      background: #2b5278;
+      color: #f2f7fb;
+      border-bottom-right-radius: 4px;
+    }
+
+    .tg-quote {
+      border-left: 2px solid #5bbb6a;
+      padding: 2px 0 2px 8px;
+      margin-bottom: 6px;
+    }
+
+    .tg-quote .q-title {
+      color: #5bbb6a;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-bottom: 1px;
+    }
+
+    .tg-quote .q-body {
+      color: #9aa8b6;
+      font-size: 0.68rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tg-result {
+      word-break: break-word;
+    }
+
+    .tg-result code {
+      font-size: 0.68em;
+      color: #cfe6d4;
+      background: rgba(0, 0, 0, 0.22);
+      padding: 1px 4px;
+    }
+
+    .tg-meta {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+      font-size: 0.62rem;
+      color: #8b9aab;
+    }
+
+    .tg-bubble.user .tg-meta {
+      color: #9ec0df;
+    }
+
+    .tg-checks {
+      letter-spacing: -0.12em;
+      color: #6ec9ff;
+      font-size: 0.7rem;
+      line-height: 1;
+    }
+
+    .tg-photo {
+      width: 168px;
+      height: 168px;
+      border-radius: 10px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(26, 36, 25, 0.12), rgba(26, 36, 25, 0.35)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='168' height='168' viewBox='0 0 168 168'%3E%3Crect fill='%23c8d6c0' width='168' height='168'/%3E%3Cellipse cx='48' cy='108' rx='28' ry='20' fill='%23c45c26'/%3E%3Cellipse cx='88' cy='96' rx='24' ry='22' fill='%23e8b84a'/%3E%3Cellipse cx='126' cy='112' rx='22' ry='18' fill='%237a9e4a'/%3E%3Ccircle cx='70' cy='70' r='16' fill='%23f2f2e8'/%3E%3Ccircle cx='108' cy='66' r='13' fill='%23f0ece0'/%3E%3C/svg%3E") center/cover;
+    }
+
+    .tg-bubble.media {
+      padding: 4px;
+      background: #2b5278;
+    }
+
+    .tg-bubble.media .tg-meta {
+      position: absolute;
+      right: 8px;
+      bottom: 6px;
+      margin: 0;
+      padding: 2px 6px;
+      border-radius: 8px;
+      background: rgba(15, 25, 36, 0.45);
+      color: #e8eef4;
+    }
+
+    .tg-file {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 190px;
+    }
+
+    .tg-file-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #3d7eb8;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .tg-file-name {
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: #f2f7fb;
+      word-break: break-word;
+    }
+
+    .tg-file-size {
+      font-size: 0.66rem;
+      color: #9ec0df;
+      margin-top: 2px;
+    }
+
+    .tg-inline {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 4px;
+      width: calc(100% - 34px);
+      max-width: 232px;
+      box-sizing: border-box;
+      align-self: flex-start;
+      margin-left: 34px;
+    }
+
+    .tg-inline button,
+    .tg-inline a {
+      appearance: none;
+      border: none;
+      background: #2b3947;
+      color: #6ab3f3;
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 400;
+      line-height: 1.2;
+      padding: 9px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      box-sizing: border-box;
+      transition: background 0.12s, color 0.12s;
+      box-shadow: none;
+    }
+
+    .tg-inline button:hover,
+    .tg-inline a:hover {
+      background: #334455;
+      color: #7fc0f7;
+    }
+
+    .tg-inline button:active,
+    .tg-inline a:active {
+      background: #3a4d60;
+    }
+
+    .tg-inline.row {
+      flex-direction: row;
+      gap: 4px;
+      margin-left: 34px;
+    }
+
+    .tg-inline.row button {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tg-products {
+      margin: 6px 0 2px;
+      padding-left: 1.1rem;
+      color: #e8eef4;
+    }
+
+    .tg-products li {
+      margin: 2px 0;
+      font-size: 0.74rem;
+    }
+
+    .tg-steps {
+      margin: 6px 0 2px;
+      padding-left: 1.1rem;
+      color: #e8eef4;
+    }
+
+    .tg-steps li {
+      margin: 3px 0;
+      font-size: 0.74rem;
+    }
+
+    .tg-composer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px 10px;
+      background: #1f2c3a;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      flex-shrink: 0;
+    }
+
+    .tg-composer button.attach,
+    .tg-composer button.send {
+      appearance: none;
+      border: none;
+      background: transparent;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      line-height: 1;
+      color: #7d8b9a;
+      flex-shrink: 0;
+      cursor: pointer;
+      padding: 0;
+      font: inherit;
+    }
+
+    .tg-composer button.send {
+      color: #5bbb6a;
+      font-size: 1.1rem;
+    }
+
+    .tg-composer button.attach:hover,
+    .tg-composer button.send:hover {
+      color: #cfe6d4;
+    }
+
+    .tg-composer .input {
+      flex: 1;
+      background: #182533;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 7px 12px;
+      font-size: 0.72rem;
+      color: #7d8b9a;
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+      appearance: none;
+    }
+
+    .tg-composer .input:hover {
+      border-color: rgba(91, 187, 106, 0.35);
+      color: #9aa8b6;
+    }
+
+    .tg-attach-menu {
+      display: none;
+      position: absolute;
+      left: 12px;
+      bottom: 52px;
+      background: #212e3c;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 6px;
+      z-index: 5;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+      min-width: 160px;
+    }
+
+    .tg-attach-menu.open {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .tg-attach-menu button {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: #e8eef4;
+      font: inherit;
+      font-size: 0.78rem;
+      text-align: left;
+      padding: 9px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .tg-attach-menu button:hover {
+      background: rgba(91, 187, 106, 0.15);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="site-chrome">
+    <nav class="site-nav" aria-label="Навигация">
+      <div class="site-nav-inner">
+        <a class="brand-mark" href="index.html">
+          <img src="assets/app-icon.png" width="28" height="28" alt="" />
+          AI Sous-Chef
+        </a>
+        <a class="nav-link" href="index.html">О проекте</a>
+        <a class="nav-link" href="team.html">Команда</a>
+        <a class="nav-link" href="index.html#stack">Стек</a>
+        <a class="nav-link" href="index.html#app">Приложение</a>
+        <a class="nav-link" href="index.html#bot">Telegram-бот</a>
+        <a class="nav-link" href="mockup.html" aria-current="page">Макет</a>
+      </div>
+    </nav>
+    <nav class="mockup-subnav" aria-label="Разделы макета">
+      <div class="mockup-subnav-inner">
+        <span class="label">На странице</span>
+        <a href="#logos">Логотипы</a>
+        <a href="#mobile">Приложение</a>
+        <a href="#telegram">Telegram-бот</a>
+      </div>
+    </nav>
+  </div>
+
+  <div class="page">
+    <header class="hero solo">
+      <div>
+        <div class="brand">AI Sous-Chef<br /><em>макет MVP</em></div>
+        <p class="lede">
+          Макеты приложения и бота. Один API, два клиента.
+        </p>
+        <div class="meta">
+          <span class="chip">Mobile</span>
+          <span class="chip">Telegram</span>
+        </div>
+      </div>
+    </header>
+
+    <h2 class="section-title" id="logos">
+      <span class="section-kind">Брендинг</span>
+      Логотипы и иконки
+    </h2>
+    <div class="logo-gallery">
+      <figure class="logo-card">
+        <img src="assets/app-icon.png" alt="Базовый логотип AI Sous-Chef" width="120" height="120" />
+        <strong>Базовый</strong>
+        <code>assets/app-icon.png</code>
+        <p class="uses">Иконка приложения · аватар Telegram · splash</p>
+      </figure>
+      <figure class="logo-card">
+        <img src="assets/app-icon-no-accent.png" alt="Логотип без акцента" width="120" height="120" />
+        <strong>Без акцента</strong>
+        <code>assets/app-icon-no-accent.png</code>
+        <p class="uses">Когда нужен только green/white</p>
+      </figure>
+      <figure class="logo-card">
+        <img src="assets/app-icon-mono-light.png" alt="Светлый монохром" width="120" height="120" />
+        <strong>Mono light</strong>
+        <code>assets/app-icon-mono-light.png</code>
+        <p class="uses">Светлый splash / светлая тема</p>
+      </figure>
+      <figure class="logo-card">
+        <img src="assets/app-icon-mono-dark.png" alt="Тёмный монохром" width="120" height="120" />
+        <strong>Mono dark</strong>
+        <code>assets/app-icon-mono-dark.png</code>
+        <p class="uses">Тёмный splash</p>
+      </figure>
+      <figure class="logo-card">
+        <img src="assets/app-icon-sc.png" alt="Монограмма SC" width="120" height="120" />
+        <strong>Монограмма SC</strong>
+        <code>assets/app-icon-sc.png</code>
+        <p class="uses">Альтернатива аватару / иконке</p>
+      </figure>
+      <figure class="logo-card">
+        <img src="assets/app-icon-wordmark.png" alt="Вордмарк Sous Chef" width="120" height="120" />
+        <strong>Wordmark</strong>
+        <code>assets/app-icon-wordmark.png</code>
+        <p class="uses">Крупные поверхности; на мелком круге хуже</p>
+      </figure>
+    </div>
+
+    <h2 class="section-title" id="mobile">
+      <span class="section-kind">Интерактивный прототип</span>
+      Клиент · Mobile
+    </h2>
+    <div class="section-intro">
+      <div>
+        <p class="lede">
+          Mobile-клиент: две галочки согласия, затем фото или текст →
+          подтверждение продуктов → рецепты. Без чата.
+        </p>
+        <div class="meta">
+          <span class="chip">React Native</span>
+          <span class="chip">Политика и ПДн</span>
+          <span class="chip">Фото или текст</span>
+          <span class="chip">Отозвать согласие</span>
+        </div>
+      </div>
+      <aside class="legend">
+        <h2>Базовый путь</h2>
+        <ol>
+          <li>Splash → экран с двумя галочками</li>
+          <li>Обе стоят и шаг подтвердился → главный экран</li>
+          <li>Фото: камера → распознавание → подтверждение</li>
+          <li>Текст: список продуктов → сразу рецепты</li>
+          <li>Список рецептов → шаги</li>
+          <li>«Отозвать согласие» → подтверждение; отозвать — снова галочки</li>
+        </ol>
+      </aside>
+    </div>
+
+    <div class="flow-map" id="flow-map"></div>
+
+    <div class="prototype">
+      <div>
+        <div class="phone" aria-label="Макет телефона">
+          <div class="phone-inner is-splash" id="phone-inner">
+            <div class="status-bar"><span>9:41</span><span>AI Sous-Chef</span></div>
+
+            <!-- 0. Splash -->
+            <section class="screen active" data-screen="splash" data-go="consent" style="cursor:pointer">
+              <div class="screen-splash">
+                <img class="splash-logo" src="assets/app-icon.png" alt="" width="112" height="112" />
+                <div class="splash-title">AI Sous-Chef</div>
+                <p class="splash-sub">Что приготовить из того, что есть</p>
+              </div>
+            </section>
+
+            <!-- 1. Согласие: две галочки -->
+            <section class="screen" data-screen="consent">
+              <h1 class="headline">Перед началом</h1>
+              <p class="hint">На фото не должно быть людей и документов. Только продукты.</p>
+              <div class="check-list">
+                <div class="check-item">
+                  <label>
+                    <input type="checkbox" id="consent-policy" />
+                    <span>Ознакомился с политикой</span>
+                  </label>
+                  <button type="button" class="doc-link" data-go="doc-policy">Политика конфиденциальности</button>
+                </div>
+                <div class="check-item">
+                  <label>
+                    <input type="checkbox" id="consent-pdn" />
+                    <span>Даю согласие на обработку персональных данных</span>
+                  </label>
+                  <button type="button" class="doc-link" data-go="doc-pdn">Согласие на обработку ПДн</button>
+                </div>
+              </div>
+              <div class="actions">
+                <button type="button" class="btn btn-primary" id="consent-next" data-go="home" disabled>Дальше</button>
+              </div>
+            </section>
+
+            <!-- 1b. Макет политики -->
+            <section class="screen" data-screen="doc-policy">
+              <div class="app-doc">
+                <div class="app-doc-bar">
+                  <button type="button" data-go="consent">Закрыть</button>
+                  <span class="app-doc-title">Документ</span>
+                </div>
+                <div class="app-doc-body">Политика конфиденциальности</div>
+              </div>
+            </section>
+
+            <!-- 1c. Макет согласия ПДн -->
+            <section class="screen" data-screen="doc-pdn">
+              <div class="app-doc">
+                <div class="app-doc-bar">
+                  <button type="button" data-go="consent">Закрыть</button>
+                  <span class="app-doc-title">Документ</span>
+                </div>
+                <div class="app-doc-body">Согласие на обработку персональных данных</div>
+              </div>
+            </section>
+
+            <!-- 2. Home -->
+            <section class="screen" data-screen="home">
+              <div class="app-header">
+                <img class="app-logo" src="assets/app-icon.png" alt="" width="44" height="44" />
+                <div class="mark-wrap">
+                  <div class="mark">AI Sous-Chef</div>
+                  <div class="sub">Что приготовить из того, что есть?</div>
+                </div>
+              </div>
+              <h1 class="headline">Выберите способ</h1>
+              <p class="hint">Сфотографируйте продукты или напишите список текстом.</p>
+              <div class="actions">
+                <button class="mode-btn" data-go="camera">
+                  <div class="label">Фото продуктов</div>
+                  <div class="desc">Снимите продукты на столе или в холодильнике.</div>
+                </button>
+                <button class="mode-btn" data-go="text">
+                  <div class="label">Список текстом</div>
+                  <div class="desc">Напишите ингредиенты через запятую.</div>
+                </button>
+                <button type="button" class="withdraw-link" data-go="withdrawn">Отозвать согласие</button>
+              </div>
+            </section>
+
+            <!-- 3. Camera -->
+            <section class="screen" data-screen="camera">
+              <button class="back" data-go="home">← На главную</button>
+              <h1 class="headline">Сфотографируйте продукты</h1>
+              <div class="camera-view">
+                <div class="frame"></div>
+                <div class="cap">Камера</div>
+              </div>
+              <button class="shutter" data-go="recognizing" aria-label="Сделать фото"><span></span></button>
+            </section>
+
+            <!-- 4. Recognizing -->
+            <section class="screen" data-screen="recognizing">
+              <div class="loading">
+                <div class="spinner" aria-hidden="true"></div>
+                <div>
+                  <strong style="color:var(--ink);display:block;margin-bottom:4px">Распознаём продукты</strong>
+                  Обычно до 5 секунд
+                </div>
+              </div>
+            </section>
+
+            <!-- 5. Confirm -->
+            <section class="screen" data-screen="confirm">
+              <button class="back" data-go="home">← На главную</button>
+              <h1 class="headline">Продукты распознаны</h1>
+              <p class="hint">Проверьте список.</p>
+              <ul class="product-list">
+                <li>яйца</li>
+                <li>молоко</li>
+                <li>сыр</li>
+                <li>зелень</li>
+              </ul>
+              <div class="actions">
+                <button class="btn btn-primary" data-go="loading-recipes">Верно</button>
+                <button class="btn btn-danger" data-go="camera">Неверно, новое фото</button>
+              </div>
+            </section>
+
+            <!-- 7. Text input -->
+            <section class="screen" data-screen="text">
+              <button class="back" data-go="home">← На главную</button>
+              <h1 class="headline">Что есть на кухне?</h1>
+              <p class="hint">Напишите продукты через запятую — например: курица, рис, лук.</p>
+              <textarea class="field" id="products-input"
+                placeholder="например: курица, рис, лук">курица, рис, лук</textarea>
+              <div class="actions">
+                <button class="btn btn-primary" data-go="loading-recipes">Найти рецепты</button>
+              </div>
+            </section>
+
+            <!-- 8. Loading recipes -->
+            <section class="screen" data-screen="loading-recipes">
+              <div class="loading">
+                <div class="spinner" aria-hidden="true"></div>
+                <div>
+                  <strong style="color:var(--ink);display:block;margin-bottom:4px">Подбираем рецепты</strong>
+                </div>
+              </div>
+            </section>
+
+            <!-- 9. Recipes list -->
+            <section class="screen" data-screen="recipes">
+              <button class="back" data-go="home">← На главную</button>
+              <h1 class="headline">Вот что можно приготовить</h1>
+              <p class="hint">Выберите рецепт, чтобы открыть шаги.</p>
+              <ul class="recipe-list">
+                <li>
+                  <button class="recipe-item" data-go="recipe-detail" data-recipe="0">
+                    <div class="title">Яичница</div>
+                    <div class="meta-line">3 шага</div>
+                  </button>
+                </li>
+                <li>
+                  <button class="recipe-item" data-go="recipe-detail" data-recipe="1">
+                    <div class="title">Яичница с сыром</div>
+                    <div class="meta-line">4 шага</div>
+                  </button>
+                </li>
+              </ul>
+              <button class="btn btn-ghost" data-go="home">На главную</button>
+            </section>
+
+            <!-- 10. Recipe detail -->
+            <section class="screen" data-screen="recipe-detail">
+              <button class="back" data-go="recipes">← К списку</button>
+              <h1 class="headline" id="recipe-title">Яичница с сыром</h1>
+              <ol class="steps" id="recipe-steps">
+                <li>Разбить яйца</li>
+                <li>Добавить молоко</li>
+                <li>Добавить сыр</li>
+                <li>Разогреть на сковороде</li>
+              </ol>
+              <div class="actions">
+                <button class="btn btn-ghost" data-go="home">На главную</button>
+              </div>
+            </section>
+
+            <!-- 11. Error -->
+            <section class="screen" data-screen="error">
+              <h1 class="headline">Что-то пошло не так.</h1>
+              <p class="hint">Попробуйте ещё раз.</p>
+              <div class="actions">
+                <button class="btn btn-primary" data-go="home">На главную</button>
+              </div>
+            </section>
+
+            <!-- 15. Отзыв согласия -->
+            <section class="screen" data-screen="withdrawn">
+              <h1 class="headline">Отозвать согласие?</h1>
+              <div class="actions">
+                <button type="button" class="btn btn-danger" data-go="consent">Отозвать</button>
+                <button type="button" class="btn btn-ghost" data-go="home">Продолжить пользоваться</button>
+              </div>
+            </section>
+          </div>
+        </div>
+        <div class="nav-dots" id="nav-dots"></div>
+        <p class="screen-label">Сейчас: <strong id="screen-name">Splash</strong></p>
+      </div>
+
+      <div class="panel" id="spec-panel">
+        <h3>Splash</h3>
+        <p>Короткий брендовый экран при запуске. Логотип по центру, без лишнего UI.</p>
+        <ul>
+          <li>Иконка приложения по центру</li>
+          <li>Фон brand green</li>
+          <li>Дальше — экран согласия</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 class="section-title" id="telegram">
+      <span class="section-kind">Интерактивный прототип</span>
+      Клиент · Telegram
+    </h2>
+    <div class="section-intro">
+      <div>
+        <p class="lede">
+          Telegram-клиент:
+          согласие ПДн, затем фото или текст → подтверждение продуктов → рецепты.
+        </p>
+        <div class="meta">
+          <span class="chip">Telegram Bot API</span>
+          <span class="chip">Политика и ПДн</span>
+          <span class="chip">Фото или текст</span>
+          <span class="chip">/delete</span>
+        </div>
+      </div>
+      <aside class="legend">
+        <h2>Базовый путь</h2>
+        <ol>
+          <li>/start → политика: ссылка, Принимаю, Не принимаю</li>
+          <li>Принимаю → согласие на ПДн</li>
+          <li>Даю согласие → фото или текст</li>
+          <li>«Продукты распознаны» + Верно / Неверно</li>
+          <li>Верно → список рецептов → шаги</li>
+          <li>/delete → отзыв, снова /start</li>
+        </ol>
+      </aside>
+    </div>
+
+    <div class="flow-map" id="tg-flow-map"></div>
+
+    <div class="prototype">
+      <div>
+        <div class="tg-phone" aria-label="Макет Telegram-бота">
+          <div class="tg-inner" id="tg-inner">
+            <div class="tg-topbar"><span>12:36</span><span>LTE</span></div>
+            <div class="tg-header">
+              <img src="assets/app-icon.png" alt="" width="36" height="36" />
+              <div>
+                <div class="name">AI Sous-Chef</div>
+                <div class="status">бот</div>
+              </div>
+            </div>
+
+            <div class="tg-attach-menu" id="tg-attach-menu" aria-label="Вложения">
+              <button type="button">Фото</button>
+            </div>
+
+            <!-- 1. /start · политика -->
+            <section class="tg-screen active" data-tg-screen="start">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row user">
+                  <div class="tg-bubble user">
+                    /start
+                    <div class="tg-meta"><span>12:36</span><span class="tg-checks">✓✓</span></div>
+                  </div>
+                </div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    Привет! Я AI Sous-Chef — по фото или списку продуктов подберу рецепт.<br /><br />
+                    На фото не должно быть людей и документов. Только продукты.<br /><br />
+                    Политика конфиденциальности — по кнопке ниже. Нажимая «Принимаю», вы подтверждаете, что ознакомились
+                    с политикой.
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+                <div class="tg-inline">
+                  <button type="button" data-tg-go="doc-policy">Политика конфиденциальности</button>
+                  <button type="button" data-tg-go="consent-pdn">Принимаю</button>
+                  <button type="button" data-tg-go="refuse">Не принимаю</button>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- 1b. Макет политики -->
+            <section class="tg-screen" data-tg-screen="doc-policy">
+              <div class="tg-doc">
+                <div class="tg-doc-bar">
+                  <button type="button" data-tg-go="start">Закрыть</button>
+                  <span class="tg-doc-title">Документ</span>
+                </div>
+                <div class="tg-doc-body">Политика конфиденциальности</div>
+              </div>
+            </section>
+
+            <!-- 2. Согласие на ПДн -->
+            <section class="tg-screen" data-tg-screen="consent-pdn">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row user">
+                  <div class="tg-bubble user">
+                    /start
+                    <div class="tg-meta"><span>12:36</span><span class="tg-checks">✓✓</span></div>
+                  </div>
+                </div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    Привет! Я AI Sous-Chef — по фото или списку продуктов подберу рецепт.<br /><br />
+                    На фото не должно быть людей и документов. Только продукты.<br /><br />
+                    Политика конфиденциальности — по кнопке ниже. Нажимая «Принимаю», вы подтверждаете, что ознакомились
+                    с политикой.
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+                <div class="tg-row user">
+                  <div class="tg-bubble user">
+                    Принимаю
+                    <div class="tg-meta"><span>12:36</span><span class="tg-checks">✓✓</span></div>
+                  </div>
+                </div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    И последний шаг перед началом.<br /><br />
+                    Согласие на обработку персональных данных — текст по кнопке ниже.<br /><br />
+                    Нажимая «Даю согласие», вы даёте согласие на обработку персональных данных. Отозвать — <button
+                      type="button" class="tg-cmd" data-tg-go="delete">/delete</button>.
+                    <div class="tg-meta"><span>12:37</span></div>
+                  </div>
+                </div>
+                <div class="tg-inline">
+                  <button type="button" data-tg-go="doc-pdn">Согласие на обработку ПДн</button>
+                  <button type="button" data-tg-go="ready">Даю согласие</button>
+                  <button type="button" data-tg-go="refuse">Не даю согласие</button>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- 2b. Макет согласия ПДн -->
+            <section class="tg-screen" data-tg-screen="doc-pdn">
+              <div class="tg-doc">
+                <div class="tg-doc-bar">
+                  <button type="button" data-tg-go="consent-pdn">Закрыть</button>
+                  <span class="tg-doc-title">Документ</span>
+                </div>
+                <div class="tg-doc-body">Согласие на обработку персональных данных</div>
+              </div>
+            </section>
+
+            <!-- 3. Можно слать фото/текст -->
+            <section class="tg-screen" data-tg-screen="ready">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    Пришлите фото продуктов или список текстом.
+                    <div class="tg-meta"><span>12:37</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- 4. Отказ -->
+            <section class="tg-screen" data-tg-screen="refuse">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row user">
+                  <div class="tg-bubble user">
+                    Не принимаю
+                    <div class="tg-meta"><span>12:36</span><span class="tg-checks">✓✓</span></div>
+                  </div>
+                </div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    Для использования бота нужно дать согласие на обработку персональных данных в соответствии с
+                    политикой. Чтобы продолжить, нажмите <button type="button" class="tg-cmd"
+                      data-tg-go="start">/start</button>.
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- 5. Фото/текст без согласия -->
+            <section class="tg-screen" data-tg-screen="blocked">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row user">
+                  <div class="tg-bubble user media">
+                    <div class="tg-photo" role="img" aria-label="Фото продуктов"></div>
+                    <div class="tg-meta"><span>12:36</span><span class="tg-checks">✓✓</span></div>
+                  </div>
+                </div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    Для использования бота нужно дать согласие на обработку персональных данных в соответствии с
+                    политикой. Чтобы продолжить, нажмите <button type="button" class="tg-cmd"
+                      data-tg-go="start">/start</button>.
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- 6. Общая ошибка -->
+            <section class="tg-screen" data-tg-screen="failed">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row user">
+                  <div class="tg-bubble user">
+                    /start
+                    <div class="tg-meta"><span>12:36</span><span class="tg-checks">✓✓</span></div>
+                  </div>
+                </div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    Привет! Я AI Sous-Chef — по фото или списку продуктов подберу рецепт.<br /><br />
+                    На фото не должно быть людей и документов. Только продукты.<br /><br />
+                    Политика конфиденциальности — по кнопке ниже. Нажимая «Принимаю», вы подтверждаете, что ознакомились
+                    с политикой.
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+                <div class="tg-row user">
+                  <div class="tg-bubble user">
+                    Принимаю
+                    <div class="tg-meta"><span>12:36</span><span class="tg-checks">✓✓</span></div>
+                  </div>
+                </div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    Что-то пошло не так. Попробуйте ещё раз.
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- 7. /delete -->
+            <section class="tg-screen" data-tg-screen="delete">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row user">
+                  <div class="tg-bubble user">
+                    /delete
+                    <div class="tg-meta"><span>12:40</span><span class="tg-checks">✓✓</span></div>
+                  </div>
+                </div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    Согласие отозвано. Чтобы снова пользоваться ботом, нажмите <button type="button" class="tg-cmd"
+                      data-tg-go="start">/start</button>.
+                    <div class="tg-meta"><span>12:40</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- 8. Photo → confirm -->
+            <section class="tg-screen" data-tg-screen="confirm-photo">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row user">
+                  <div class="tg-bubble user media">
+                    <div class="tg-photo" role="img" aria-label="Фото продуктов"></div>
+                    <div class="tg-meta"><span>12:36</span><span class="tg-checks">✓✓</span></div>
+                  </div>
+                </div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    <div class="tg-quote">
+                      <div class="q-title">Фотография</div>
+                      <div class="q-body">фото продуктов</div>
+                    </div>
+                    Продукты распознаны:
+                    <ul class="tg-products">
+                      <li>яйца</li>
+                      <li>молоко</li>
+                      <li>сыр</li>
+                      <li>зелень</li>
+                    </ul>
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+                <div class="tg-inline row">
+                  <button type="button" data-tg-go="recipes">✅ Верно</button>
+                  <button type="button" data-tg-go="retry-request">❌ Неверно</button>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- 3. Повтор запроса -->
+            <section class="tg-screen" data-tg-screen="retry-request">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    В вашем запросе не обнаружили продукты. Попробуйте снова.
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- 4. Recipes -->
+            <section class="tg-screen" data-tg-screen="recipes">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    Вот что можно приготовить. Выберите рецепт, чтобы открыть шаги.
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+                <div class="tg-inline">
+                  <button type="button" data-tg-go="recipe-detail" data-tg-recipe="0">Яичница</button>
+                  <button type="button" data-tg-go="recipe-detail" data-tg-recipe="1">Яичница с сыром</button>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- 5. Recipe detail -->
+            <section class="tg-screen" data-tg-screen="recipe-detail">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    <strong id="tg-recipe-title">Яичница с сыром</strong>
+                    <ol class="tg-steps" id="tg-recipe-steps">
+                      <li>Разбить яйца</li>
+                      <li>Добавить молоко</li>
+                      <li>Добавить сыр</li>
+                      <li>Разогреть на сковороде</li>
+                    </ol>
+                    <div class="tg-meta"><span>12:36</span></div>
+                  </div>
+                </div>
+                <div class="tg-inline">
+                  <button type="button" data-tg-go="recipes">К списку рецептов</button>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+          </div>
+        </div>
+        <div class="nav-dots" id="tg-nav-dots"></div>
+        <p class="screen-label">Сейчас: <strong id="tg-screen-name">/start · политика</strong></p>
+      </div>
+
+      <div class="panel" id="tg-spec-panel"></div>
+    </div>
+
+    <div class="specs">
+      <div class="panel">
+        <h3>Карта экранов (mobile)</h3>
+        <ul>
+          <li><strong>Splash</strong> — логотип + название</li>
+          <li><strong>Consent</strong> — две галочки, обе обязательны; «Дальше» только если обе стоят и шаг подтвердился
+          </li>
+          <li><strong>Home</strong> — фото / текст; внизу «Отозвать согласие» → подтверждение</li>
+          <li><strong>Camera</strong> — после согласия</li>
+          <li><strong>Recognizing</strong> — лоадер, затем подтверждение</li>
+          <li><strong>Confirm</strong> — список + Верно / «Неверно, новое фото»</li>
+          <li><strong>Text</strong> — поле + «Найти рецепты»</li>
+          <li><strong>Recipes</strong> — список блюд</li>
+          <li><strong>Detail</strong> — шаги</li>
+          <li><strong>Error</strong> — общая ошибка, на главную</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Что отсутствует в первой версии</h3>
+        <ul>
+          <li>Чат с ИИ</li>
+          <li>Правка списка продуктов после фото</li>
+          <li>Вход и профиль</li>
+          <li>История запросов</li>
+          <li>Список покупок, калории, диеты</li>
+          <li>Соцсети и умная техника</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Визуальное направление</h3>
+        <ul>
+          <li>Кухонный «sage/forest» — зелёный акцент, светлая поверхность</li>
+          <li>Шрифты: Instrument Serif (бренд) + Sora (UI)</li>
+          <li>Минимум карточек: только интерактивные блоки (режимы, рецепты)</li>
+          <li>Один job на экран — без дашборда и вторичных виджетов</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Telegram (параллельный клиент)</h3>
+        <ul>
+          <li>/start → политика, затем согласие на ПДн; без обоих шагов фото и текст не распознаются</li>
+          <li>кнопки документов открывают макет в телефоне, не внешнюю ссылку</li>
+          <li>отказ или сбой подтверждения — стоп, снова /start</li>
+          <li>/delete → отзыв согласий; /stop отзывом не является</li>
+          <li>фото/текст → «Продукты распознаны» + inline Верно / Неверно</li>
+          <li>Верно → список рецептов → шаги; тот же backend</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SCREENS = [
+      { id: "splash", name: "Splash", blurb: "Короткий брендовый экран при запуске. Логотип по центру, без лишнего UI.", bullets: ["Иконка приложения по центру", "Фон brand green", "Дальше — экран согласия"] },
+      {
+        id: "consent",
+        name: "Согласие",
+        blurb: "Один экран до камеры и текста. Две галочки, обе обязательны. Ссылки открывают макет документа в телефоне. «Дальше» — только если обе стоят и шаг подтвердился.",
+        bullets: [
+          "На фото не должно быть людей и документов. Только продукты.",
+          "Ознакомился с политикой + ссылка",
+          "Даю согласие на обработку персональных данных + ссылка",
+          "Нет подтверждения — камеру не открывать, экран оставить",
+        ],
+      },
+      {
+        id: "doc-policy",
+        name: "Макет · политика",
+        blurb: "В приложении или в браузере откроется полный текст политики.",
+        bullets: ["Закрыть — назад к галочкам"],
+      },
+      {
+        id: "doc-pdn",
+        name: "Макет · согласие ПДн",
+        blurb: "В приложении или в браузере откроется полный текст согласия.",
+        bullets: ["Закрыть — назад к галочкам"],
+      },
+      {
+        id: "home",
+        name: "Главный экран",
+        blurb: "После обоих согласий. Две равнозначные точки входа — фото и текст. Внизу — отзыв.",
+        bullets: [
+          "Нет таббара, нет профиля, нет истории",
+          "«Отозвать согласие» — экран подтверждения",
+        ],
+      },
+      { id: "camera", name: "Камера", blurb: "После согласия. Снимок сразу уходит на распознавание — без поля ввода.", bullets: ["Превью кадра"] },
+      { id: "recognizing", name: "Распознавание", blurb: "Ожидание ответа. Обычно до 5 секунд. Затем подтверждение списка.", bullets: ["При ошибке → экран «Не получилось»", "Дальше — продукты распознаны"], next: "confirm", nextHint: "В приложении экран сменится сам, когда придёт ответ. Здесь — чтобы пройти макет дальше." },
+      { id: "confirm", name: "Подтверждение продуктов", blurb: "Список продуктов и две кнопки. Поля ввода нет.", bullets: ["Верно → подбор рецептов", "Неверно, новое фото → камера"] },
+      { id: "text", name: "Текстовый ввод", blurb: "Поле и «Найти рецепты». Сразу к списку блюд — отдельного подтверждения списка нет.", bullets: ["Пример: курица, рис, лук", "Тоже только после согласия"] },
+      { id: "loading-recipes", name: "Подбор рецептов", blurb: "Ожидание после «Верно» или текстового запроса. Затем список.", bullets: ["Тот же лоадер из фото и текста", "Дальше — список рецептов"], next: "recipes", nextHint: "В приложении экран сменится сам, когда придёт ответ. Здесь — чтобы пройти макет дальше." },
+      { id: "recipes", name: "Список рецептов", blurb: "Вот что можно приготовить. Тап открывает шаги. «На главную» обязательна.", bullets: ["Минимум метаданных: число шагов", "Без рейтингов и картинок"] },
+      { id: "recipe-detail", name: "Рецепт · шаги", blurb: "Пошаговые инструкции нумерованным списком.", bullets: ["К списку или на главную", "Без чата уточнений"] },
+      { id: "error", name: "Ошибка", blurb: "Общая ошибка приложения: сеть, сервер или согласие не подтвердилось. Один экран, кнопка «На главную».", bullets: ["Короткий текст", "Один CTA — На главную"] },
+      {
+        id: "withdrawn",
+        name: "Отзыв согласия",
+        blurb: "С главного экрана — «Отозвать согласие». Подтверждение: отозвать или продолжить.",
+        bullets: [
+          "Отозвать — снова галочки, камеры нет",
+          "Продолжить пользоваться — главный экран",
+        ],
+      },
+    ];
+
+    const TG_SCREENS = [
+      {
+        id: "start",
+        name: "/start · политика",
+        blurb: "/start сначала проверяет согласия. Если их нет, бот показывает политику и первый шаг согласия.",
+        bullets: [
+          "Документ — внешняя ссылка",
+          "Если согласия уже есть, бот сразу предлагает прислать фото или список продуктов",
+          "Принимаю → второе сообщение (согласие на ПДн)",
+          "Не принимаю → отказ",
+          "Шаг не подтвердился — второе сообщение не показывать",
+        ],
+      },
+      {
+        id: "doc-policy",
+        name: "Макет · политика",
+        blurb: "В боте откроется полный текст политики.",
+        bullets: ["Закрыть — назад к /start"],
+      },
+      {
+        id: "consent-pdn",
+        name: "Согласие на ПДн",
+        blurb: "Второе сообщение — только если шаг 1 подтверждён. Кнопка открывает согласие. Отозвать потом командой /delete.",
+        bullets: [
+          "Документ — внешняя ссылка",
+          "Даю согласие → можно слать фото или текст",
+          "Не даю согласие → тот же отказ",
+          "Шаг не подтвердился — фото не пускать",
+        ],
+      },
+      {
+        id: "doc-pdn",
+        name: "Макет · согласие ПДн",
+        blurb: "В боте откроется полный текст согласия.",
+        bullets: ["Закрыть — назад ко второму шагу"],
+      },
+      {
+        id: "ready",
+        name: "Можно отправлять запрос",
+        blurb: "Если согласия уже выданы, /start проверяет их и сразу предлагает прислать фото или список продуктов.",
+        bullets: [
+          "Без обоих согласий распознавание не запускается",
+          "Отозвать — /delete, не Telegram /stop",
+        ],
+      },
+      {
+        id: "confirm-photo",
+        name: "Фото · подтверждение",
+        blurb: "После снимка бот распознаёт продукты и показывает список с кнопками Верно / Неверно.",
+        bullets: ["POST /api/recognize", "Поле ввода не блокируется", "Верно → recipes, Неверно → повтор фото"],
+      },
+      {
+        id: "retry-request",
+        name: "Повтор запроса",
+        blurb: "Некорректный запрос при уже выданном согласии. Бот просит отправить сообщение или фото ещё раз.",
+        bullets: ["Если согласия нет, это не этот шаг, а отказ", "Без отдельной кнопки"],
+      },
+      {
+        id: "recipes",
+        name: "Список рецептов",
+        blurb: "После фото с «Верно» или корректного текстового запроса бот отдаёт рецепты inline-кнопками. Кнопки открывают  рецептов.",
+        bullets: ["POST /api/recipes", "Без картинок в MVP", "Новый запрос пользователь начинает обычным сообщением"],
+      },
+      {
+        id: "recipe-detail",
+        name: "Рецепт · шаги",
+        blurb: "Пошаговая инструкция steps[] в одном сообщении. Успех MVP для Telegram-клиента.",
+        bullets: ["К списку рецептов", "Без чата уточнений"],
+      },
+      {
+        id: "refuse",
+        name: "Отказ",
+        blurb: "«Не принимаю» или «Не даю согласие». Тот же текст, без кнопок.",
+        bullets: [
+          "Фото и текст не обрабатываются",
+          "Продолжить — только /start",
+        ],
+      },
+      {
+        id: "blocked",
+        name: "Отказ",
+        blurb: "Если согласия нет, любой текст или фото получают тот же ответ, что и явный отказ.",
+        bullets: [
+          "Тот же текст, что у отказа",
+          "Продолжить — /start",
+        ],
+      },
+      {
+        id: "failed",
+        name: "Ошибка",
+        blurb: "Ответ бота на любую внутреннюю ошибку.",
+        bullets: [
+          "Короткое сообщение об ошибке",
+          "Пользователь пробует снова",
+        ],
+      },
+      {
+        id: "delete",
+        name: "/delete",
+        blurb: "Отзыв обоих согласий. Дальше фото снова не распознаётся. Не путать с /stop.",
+        bullets: [
+          "Историю чата Telegram не стираем",
+          "Снова /start — с политики",
+        ],
+      },
+    ];
+
+    const RECIPES = [
+      { title: "Яичница", steps: ["Разбить яйца", "Добавить молоко", "Разогреть на сковороде"] },
+      { title: "Яичница с сыром", steps: ["Разбить яйца", "Добавить молоко", "Добавить сыр", "Разогреть на сковороде"] },
+    ];
+
+    let current = "splash";
+    let tgCurrent = "start";
+
+    const map = document.getElementById("flow-map");
+    const dots = document.getElementById("nav-dots");
+    const nameEl = document.getElementById("screen-name");
+    const panel = document.getElementById("spec-panel");
+    const phoneInner = document.getElementById("phone-inner");
+
+    const tgMap = document.getElementById("tg-flow-map");
+    const tgDots = document.getElementById("tg-nav-dots");
+    const tgNameEl = document.getElementById("tg-screen-name");
+    const tgPanel = document.getElementById("tg-spec-panel");
+    const tgAttachMenu = document.getElementById("tg-attach-menu");
+
+    SCREENS.forEach((s, i) => {
+      const btn = document.createElement("button");
+      btn.className = "flow-card" + (i === 0 ? " active" : "");
+      btn.dataset.go = s.id;
+      btn.innerHTML = `<strong>${i + 1}. ${s.name}</strong><span>${s.id}</span>`;
+      map.appendChild(btn);
+
+      const dot = document.createElement("button");
+      dot.dataset.go = s.id;
+      if (i === 0) dot.classList.add("active");
+      dots.appendChild(dot);
+    });
+
+    TG_SCREENS.forEach((s, i) => {
+      const btn = document.createElement("button");
+      btn.className = "flow-card" + (i === 0 ? " active" : "");
+      btn.dataset.tgGo = s.id;
+      btn.innerHTML = `<strong>${i + 1}. ${s.name}</strong><span>${s.id}</span>`;
+      tgMap.appendChild(btn);
+
+      const dot = document.createElement("button");
+      dot.dataset.tgGo = s.id;
+      if (i === 0) dot.classList.add("active");
+      tgDots.appendChild(dot);
+    });
+
+    const APP_DOCS = new Set(["doc-policy", "doc-pdn"]);
+
+    function syncConsentNext() {
+      const policy = document.getElementById("consent-policy");
+      const pdn = document.getElementById("consent-pdn");
+      const next = document.getElementById("consent-next");
+      if (policy && pdn && next) {
+        next.disabled = !(policy.checked && pdn.checked);
+      }
+    }
+
+    function resetConsentChecks() {
+      const policy = document.getElementById("consent-policy");
+      const pdn = document.getElementById("consent-pdn");
+      if (policy) policy.checked = false;
+      if (pdn) pdn.checked = false;
+      syncConsentNext();
+    }
+
+    function show(id) {
+      const fromDoc = APP_DOCS.has(current);
+      current = id;
+      document.querySelectorAll("#phone-inner .screen").forEach((el) => {
+        el.classList.toggle("active", el.dataset.screen === id);
+      });
+      document.querySelectorAll("#flow-map .flow-card, #nav-dots button").forEach((el) => {
+        el.classList.toggle("active", el.dataset.go === id);
+      });
+      phoneInner.classList.toggle("is-splash", id === "splash");
+      if (id === "consent" && !fromDoc) {
+        resetConsentChecks();
+      }
+      const meta = SCREENS.find((s) => s.id === id);
+      nameEl.textContent = meta ? meta.name : id;
+      if (meta) {
+        let html = `<h3>${meta.name}</h3><p>${meta.blurb}</p><ul>${meta.bullets.map((b) => `<li>${b}</li>`).join("")}</ul>`;
+        if (meta.next) {
+          html += `<div class="panel-next"><p>${meta.nextHint}</p><button type="button" class="btn btn-primary" data-go="${meta.next}">Следующий шаг</button></div>`;
+        }
+        panel.innerHTML = html;
+      }
+    }
+
+    function closeTgAttach() {
+      tgAttachMenu.classList.remove("open");
+    }
+
+    const TG_DOC = new Set(["doc-policy", "doc-pdn"]);
+    const TG_GATED = new Set(["start", "consent-pdn", "refuse", "blocked", "failed", "delete"]);
+
+    function showTg(id) {
+      tgCurrent = id;
+      closeTgAttach();
+      document.getElementById("tg-inner").classList.toggle("is-tg-doc", TG_DOC.has(id));
+      document.querySelectorAll("#tg-inner .tg-screen").forEach((el) => {
+        el.classList.toggle("active", el.dataset.tgScreen === id);
+      });
+      document.querySelectorAll("#tg-flow-map .flow-card, #tg-nav-dots button").forEach((el) => {
+        el.classList.toggle("active", el.dataset.tgGo === id);
+      });
+      const meta = TG_SCREENS.find((s) => s.id === id);
+      tgNameEl.textContent = meta ? meta.name : id;
+      if (meta) {
+        tgPanel.innerHTML = `<h3>${meta.name}</h3><p>${meta.blurb}</p><ul>${meta.bullets.map((b) => `<li>${b}</li>`).join("")}</ul>`;
+      }
+    }
+
+    document.body.addEventListener("click", (e) => {
+      const tgGo = e.target.closest("[data-tg-go]");
+      if (tgGo) {
+        if (tgGo.dataset.tgRecipe !== undefined) {
+          const r = RECIPES[Number(tgGo.dataset.tgRecipe)] || RECIPES[1];
+          document.getElementById("tg-recipe-title").textContent = r.title;
+          document.getElementById("tg-recipe-steps").innerHTML = r.steps.map((s) => `<li>${s}</li>`).join("");
+        }
+        showTg(tgGo.dataset.tgGo);
+        return;
+      }
+
+      if (!e.target.closest("#tg-attach-menu")) {
+        closeTgAttach();
+      }
+
+      const go = e.target.closest("[data-go]");
+      if (!go) return;
+      if (go.disabled) return;
+      const id = go.dataset.go;
+      if (go.dataset.recipe !== undefined) {
+        const r = RECIPES[Number(go.dataset.recipe)] || RECIPES[1];
+        document.getElementById("recipe-title").textContent = r.title;
+        document.getElementById("recipe-steps").innerHTML = r.steps.map((s) => `<li>${s}</li>`).join("");
+      }
+      show(id);
+    });
+
+    show("splash");
+    showTg("start");
+
+    document.getElementById("consent-policy").addEventListener("change", syncConsentNext);
+    document.getElementById("consent-pdn").addEventListener("change", syncConsentNext);
+  </script>
+  <script src="cookie-notice.js" data-policy-href="https://consent.geek-tik.tech/t/ai-sous-chef/policy"></script>
+</body>
+
+</html>

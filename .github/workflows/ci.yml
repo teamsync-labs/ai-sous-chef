@@ -61,4 +61,35 @@ jobs:
       - name: Import app
         env:
           DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/ai_sous_chef
+          CONSENT_JOURNAL_URL: http://consent.test
+          CONSENT_JOURNAL_API_KEY: test-key
+          CONSENT_PUBLIC_BASE: http://consent.test/t/test
+          API_KEY_BOT: test-bot-key
+          API_KEY_APP: test-app-key
+          API_KEY_SITE: test-site-key
         run: python -c "from app.main import app; print(app.title)"
+
+  backend-tests:
+    name: Backend pytest
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: pip install -r app/requirements.txt
+      - name: Run pytest
+        env:
+          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/ai_sous_chef
+          CONSENT_JOURNAL_URL: http://consent.test
+          CONSENT_JOURNAL_API_KEY: test-key
+          CONSENT_PUBLIC_BASE: http://consent.test/t/test
+          API_KEY_BOT: test-bot-key
+          API_KEY_APP: test-app-key
+          API_KEY_SITE: test-site-key
+        run: python -m pytest tests/ -q
