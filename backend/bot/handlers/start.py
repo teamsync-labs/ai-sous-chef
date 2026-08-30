@@ -8,7 +8,7 @@ from aiogram.filters import CommandStart
 
 from keyboards.consent import keyboard_consent_builder, ConsentCallback
 from services.api_client import record_consent
-from states.user_states import AcceptConsent
+from states.accept_states import AcceptConsent
 
 router = Router()
 
