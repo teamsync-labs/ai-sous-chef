@@ -77,20 +77,22 @@ async def latest_consent(
 async def withdraw_consent(
     *,
     external_id: str,
-    consent_type: str,
+    consent_type: str | None = None,
     channel: str = "bot",
     erase: bool = True,
 ) -> dict:
+    payload: dict = {
+        "channel": channel,
+        "external_id": external_id,
+        "erase": erase,
+    }
+    if consent_type:
+        payload["consent_type"] = consent_type
     async with httpx.AsyncClient(timeout=10) as client:
         response = await client.post(
             f"{API_BASE}/consent/withdraw",
             headers=_api_headers(),
-            json={
-                "channel": channel,
-                "external_id": external_id,
-                "consent_type": consent_type,
-                "erase": erase,
-            },
+            json=payload,
         )
         response.raise_for_status()
         return response.json()
