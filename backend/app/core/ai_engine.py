@@ -8,6 +8,7 @@ from openai import AsyncOpenAI, OpenAIError
 from ..api.api_models import RecipesResult, RecognizeResult, RecipesInput, RecognizeInput
 
 from ..core.config import settings
+from ..core.prompts_loader import load_prompt_pair
 from openai import AsyncOpenAI
 from openai.types.chat import ChatCompletionSystemMessageParam, ChatCompletionUserMessageParam
 from openai.types.responses import EasyInputMessageParam, ResponseInputTextParam, ResponseInputImageParam
@@ -121,50 +122,10 @@ class AIEngine(AIProtocol):
             prompt: str,
             input_type: str = "input_text",
     ):
-        system_prompt = """
-        Ты AI-помощник по нормализации продуктов.
-    
-        Твоя задача:
-        преобразовать сырой список/подписи с фото в короткий список названий продуктов на русском языке.
-    
-        Правила:
-        - оставь только названия продуктов (например: «яйца», «молоко», «сыр»);
-        - удали дубликаты;
-        - удали бренды, марки, магазины;
-        - удали мусорные слова: «упаковка», «стол», «фон», «на фото», «рядом», «лежит» и т. п.;
-        - не добавляй продукты, которых нет в исходнике;
-        - не придумывай категории или описания;
-        - язык: русский;
-        - ответь ТОЛЬКО валидным JSON без markdown‑обёрток (никаких ```json);
-        - игнорируй стоп-слова («купи», «срочно», «хочется»);
-        - если количество не указано, используй null;
-        - валидные единицы измерения: шт, кг, г, л, мл;
-        - лимит ответа ~500–800 токенов
-    
-        Формат ответа:
-        {"products":["название1","название2","название3"],"confidence":0.0-1.0}
-        
-        Пример того, что модель должна вернуть (после вызова LLM)
-        {"products":["яйца","молоко","сыр"],"confidence":1}
-        """
-
-        user_prompt = """
-        Извлеки продукты из текста и верни JSON по схеме:
-        {"products": [{"name": "string", "quantity": "number or null", "unit": "string or null"}]}
-        
-        Пример правильного ответа:
-        Вход: "яйца 10 шт, молоко и хлеб"
-        Выход: {"products": [{"name": "яйцо", "quantity": 10, "unit": "шт"}, 
-        {"name": "молоко", "quantity": null, "unit": null}, 
-        {"name": "хлеб", "quantity": null, "unit": null}]}
-        
-        Поле confidence:
-        - 1.0 — если все продукты однозначно распознаны;
-        - 0.5–0.9 — если есть сомнения в названии или неоднозначность;
-        - <0.5 — если входной текст почти нечитаем или содержит только мусор.
-    
-        Входные данные:
-        """
+        version, system_prompt, user_prompt = load_prompt_pair(
+            "recognize",
+            input=prompt if input_type == "input_text" else "",
+        )
 
         if input_type == "input_text":
             user_message = EasyInputMessageParam(
@@ -172,12 +133,13 @@ class AIEngine(AIProtocol):
                 content=[
                     ResponseInputTextParam(
                         type="input_text",
-                        text=user_prompt + prompt,
+                        text=user_prompt,
                     )
                 ],
             )
 
         elif input_type == "input_image":
+            # Для фото вход в user.md пустой ({{ input }} → ""); картинка отдельным блоком.
             user_message = EasyInputMessageParam(
                 role="user",
                 content=[
@@ -199,7 +161,12 @@ class AIEngine(AIProtocol):
 
         client = AIEngine._build_client()
         try:
-            logger.info("CV request: model=%s input_type=%s", AIEngine.MODEL_FOR_CV, input_type)
+            logger.info(
+                "CV request: model=%s prompt=recognize/%s input_type=%s",
+                AIEngine.MODEL_FOR_CV,
+                version,
+                input_type,
+            )
             response = await client.responses.create(
                 model=AIEngine.MODEL_FOR_CV,
                 instructions=system_prompt,
@@ -256,36 +223,17 @@ class AIEngine(AIProtocol):
     async def generate_recipes(recipes_input: RecipesInput) -> RecipesResult:
         if recipes_input.products is not None:
             client = AIEngine._build_client()
-            system_prompt = (
-                f"Ты — помощник на кухне AI Sous-Chef. По списку продуктов: {', '.join(recipes_input.products)} "
-                "предложи 2–3 простых рецепта. Правила:\n"
-                "- используй в основном переданные продукты;\n"
-                "- если добавляешь базу (соль, масло, вода) — укажи это явно;\n"
-                "- не выдумывай редкие ингредиенты, которых нет в списке;\n"
-                "- шаги конкретные: время, температура или визуальный признак готовности;\n"
-                "- язык: русский;\n"
-                r"- ответь ТОЛЬКО валидным JSON без markdown-обёрток (никаких ```json);\n"
-                "- лимит ответа ~1200–1500 токенов"
-            )
-
-            user_message = (
-                "Верни ответ в формате:\n"
-                "{\n"
-                '  "recipes": [\n'
-                "    {\n"
-                '      "title": "Название рецепта",\n'
-                '      "steps": ["Шаг 1", "Шаг 2", "Шаг 3"]\n'
-                "    }\n"
-                "  ]\n"
-                "}\n\n"
-                "Требования:\n"
-                "- строго валидный JSON\n"
-                "- без markdown-обёрток\n"
-                "- лимит ответа: ~1200–1500 токенов\n"
-                "- каждый шаг — конкретное действие с параметром готовности"
+            version, system_prompt, user_message = load_prompt_pair(
+                "recipes",
+                products=", ".join(recipes_input.products),
             )
             try:
-                logger.info("LLM request: model=%s products=%d", AIEngine.MODEL_FOR_CV, len(recipes_input.products))
+                logger.info(
+                    "LLM request: model=%s prompt=recipes/%s products=%d",
+                    AIEngine.MODEL_FOR_LLM,
+                    version,
+                    len(recipes_input.products),
+                )
                 response = await client.chat.completions.create(
                     model=AIEngine.MODEL_FOR_LLM,
                     temperature=0.3,
@@ -297,9 +245,9 @@ class AIEngine(AIProtocol):
                     reasoning_effort="none",
                     response_format=ResponseFormatJSONObject(type="json_object")
                 )
-                logger.info("Recipes generated by LLM model: model=%s", AIEngine.MODEL_FOR_CV)
+                logger.info("Recipes generated by LLM model: model=%s prompt=recipes/%s", AIEngine.MODEL_FOR_LLM, version)
             except Exception as exc:
-                logger.error("LLM request failed: model=%s: %s", AIEngine.MODEL_FOR_CV, exc, exc_info=True)
+                logger.error("LLM request failed: model=%s: %s", AIEngine.MODEL_FOR_LLM, exc, exc_info=True)
                 raise AIServiceUnavailableError(exc) from exc
             content = response.choices[0].message.content
             try:
@@ -311,8 +259,6 @@ class AIEngine(AIProtocol):
             return RecipesResult(recipes=recipes.get("recipes", []))
         logger.warning("Invalid recipes input: products is None")
         raise ValueError("Invalid input")
-
-    # endregion
 
 
 class AIEngineStub(AIProtocol):

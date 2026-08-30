@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v5
       - name: Build backend image
         run: |
-          docker build -t ai-sous-chef-backend:ci ./backend
+          docker build -f backend/Dockerfile -t ai-sous-chef-backend:ci .
 
   bot-image:
     name: Bot image
