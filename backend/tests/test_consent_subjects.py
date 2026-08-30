@@ -277,3 +277,24 @@ def test_get_or_create_handles_insert_race():
     got = _run(get_or_create_id(session, "bot", _TELEGRAM_ID))
     assert got == winner.id
     session.rollback.assert_awaited_once()
+
+
+def test_get_id_returns_none_when_missing():
+    from app.services.consent_subjects import get_id
+
+    session = _session_mock()
+    result = MagicMock()
+    result.scalar_one_or_none.return_value = None
+    session.execute = AsyncMock(return_value=result)
+    assert _run(get_id(session, "bot", _TELEGRAM_ID)) is None
+
+
+def test_delete_by_channel_external_commits():
+    from app.services.consent_subjects import delete_by_channel_external
+
+    session = _session_mock()
+    result = MagicMock()
+    result.rowcount = 1
+    session.execute = AsyncMock(return_value=result)
+    assert _run(delete_by_channel_external(session, "bot", _TELEGRAM_ID)) is True
+    session.commit.assert_awaited_once()
