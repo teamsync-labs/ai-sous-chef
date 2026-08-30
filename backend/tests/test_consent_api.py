@@ -121,13 +121,17 @@ def test_withdraw_with_erase():
     withdrawn = {"withdrawn": [{"id": "evt-2"}]}
     with (
         patch(
-            "app.api.api.consent_subjects.get_or_create_id",
+            "app.api.api.consent_subjects.get_id",
             new=AsyncMock(return_value=mapped_id),
         ),
         patch(
             "app.api.api.consent_journal.withdraw_consent",
             new=AsyncMock(return_value=withdrawn),
         ) as mocked,
+        patch(
+            "app.api.api.consent_subjects.delete_by_channel_external",
+            new=AsyncMock(return_value=True),
+        ) as deleted,
     ):
         response = client.post(
             "/app/api/consent/withdraw",
@@ -143,6 +147,38 @@ def test_withdraw_with_erase():
     assert response.json()["journal"] == withdrawn
     assert mocked.await_args.kwargs["erase"] is True
     assert mocked.await_args.kwargs["subject_id"] == mapped_id
+    deleted.assert_awaited_once()
+    assert deleted.await_args.args[1:] == ("bot", "482917")
+
+
+def test_withdraw_without_mapping_is_ok_and_skips_journal():
+    with (
+        patch(
+            "app.api.api.consent_subjects.get_id",
+            new=AsyncMock(return_value=None),
+        ),
+        patch(
+            "app.api.api.consent_journal.withdraw_consent",
+            new=AsyncMock(),
+        ) as mocked,
+        patch(
+            "app.api.api.consent_subjects.delete_by_channel_external",
+            new=AsyncMock(),
+        ) as deleted,
+    ):
+        response = client.post(
+            "/app/api/consent/withdraw",
+            headers=_BOT_HEADERS,
+            json={
+                "external_id": "482917",
+                "channel": "bot",
+                "erase": True,
+            },
+        )
+    assert response.status_code == 200
+    assert response.json() == {"ok": True, "journal": {"withdrawn": []}}
+    mocked.assert_not_awaited()
+    deleted.assert_not_awaited()
 
 
 def test_journal_error_returns_502():
