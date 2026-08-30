@@ -9,10 +9,11 @@ RUN apt-get update \
         netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
-COPY app/requirements.txt .
+COPY backend/app/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY backend/ .
+COPY prompts/ /app/prompts/
 
 RUN chmod +x /app/entrypoint.sh
 
