@@ -180,9 +180,11 @@ async def _journal_subject_id(
     channel: str | None,
     subject_id: str | None,
     external_id: str | None,
-) -> str:
+    *,
+    create: bool = True,
+) -> str | None:
     return await consent_subjects.resolve_journal_subject_id(
-        db, channel, subject_id, external_id
+        db, channel, subject_id, external_id, create=create
     )
 
 
@@ -245,9 +247,15 @@ async def withdraw_consent(
 ):
     _require_channel_api_key(body.channel, x_api_key)
     subject_id = await _journal_subject_id(
-        db, body.channel, body.subject_id, body.external_id
+        db,
+        body.channel,
+        body.subject_id,
+        body.external_id,
+        create=False,
     )
-    return await _call_journal(
+    if not subject_id:
+        return ConsentProxyResult(ok=True, journal={"withdrawn": []})
+    result = await _call_journal(
         consent_journal.withdraw_consent,
         subject_id=subject_id,
         consent_type=body.consent_type,
@@ -256,3 +264,8 @@ async def withdraw_consent(
         ip=_client_ip(request),
         user_agent=request.headers.get("user-agent"),
     )
+    if body.channel in {"bot", "app"} and body.external_id:
+        await consent_subjects.delete_by_channel_external(
+            db, body.channel, body.external_id
+        )
+    return result
