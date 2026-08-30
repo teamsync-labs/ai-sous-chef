@@ -7,6 +7,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY main.py .
 COPY handlers ./handlers
+COPY middlewares ./middlewares
+COPY keyboards ./keyboards
+COPY states ./states
 COPY services ./services
 COPY utils ./utils
 
