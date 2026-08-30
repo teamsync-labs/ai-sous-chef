@@ -64,7 +64,7 @@ jobs:
         run: |
           docker build --build-arg API_KEY_SITE="${API_KEY_SITE:-local-site-key}" \
             -t "${{ steps.meta.outputs.frontend }}" ./frontend
-          docker build -t "${{ steps.meta.outputs.backend }}" ./backend
+          docker build -f backend/Dockerfile -t "${{ steps.meta.outputs.backend }}" .
           docker build -t "${{ steps.meta.outputs.bot }}" ./backend/bot
 
       - name: Save images
