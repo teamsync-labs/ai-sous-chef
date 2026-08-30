@@ -51,8 +51,8 @@ services:
 
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
     image: ${IMAGE_PREFIX:-ai-sous-chef}-backend:${IMAGE_TAG:-latest}
     expose:
       - "8000"
