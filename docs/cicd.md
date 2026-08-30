@@ -2,6 +2,8 @@
 
 Модель: сборка образов на GitHub Actions runner → `docker save` → scp → `docker load` на VPS → `compose up` **без** `--build`. Registry нет.
 
+Backend-образ: `docker build -f backend/Dockerfile … .` (context — корень репо), внутрь копируется `prompts/` (`pin.json` + версии).
+
 Образы: `frontend`, `backend`, `bot`. Telegram-бот — сервис в том же compose (`API_BASE=http://backend:8000/app/api`), secret `TG_TOKEN`.
 
 ## Workflows
