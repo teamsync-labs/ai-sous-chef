@@ -12,15 +12,8 @@ from states.recognize_states import RecognizeState
 router = Router()
 
 
-@router.message(F.photo)
-async def get_recognize_photo_cmd(message: Message, state: FSMContext):
-    photo = message.photo[-1]
-
-    file_info = await message.bot.get_file(photo.file_id)
-
-    file_bytes = await message.bot.download_file(file_info.file_path)
-    image_b64 = base64.b64encode(file_bytes.read()).decode('utf-8')
-    result = (await api_client.recognize(base64=image_b64)).get("products", [])
+async def handle_recognize(message: Message, state: FSMContext, params: dict):
+    result = (await api_client.recognize(**params)).get("products", [])
 
     if len(result) == 0:
         await message.reply("Не удалось распознать список продуктов. Попробуй еще раз")
@@ -31,6 +24,18 @@ async def get_recognize_photo_cmd(message: Message, state: FSMContext):
 
     await message.reply(f"Мы распознали такие продукты. {', '.join(result)}\n"
                         f"Всё верно?", reply_markup=keyboard_approve_products_builder())
+
+
+@router.message(F.photo)
+async def get_recognize_photo_cmd(message: Message, state: FSMContext):
+    photo = message.photo[-1]
+
+    file_info = await message.bot.get_file(photo.file_id)
+
+    file_bytes = await message.bot.download_file(file_info.file_path)
+    image_b64 = base64.b64encode(file_bytes.read()).decode('utf-8')
+
+    await handle_recognize(message, state, {"base64": image_b64})
 
 
 @router.message(F.document)
@@ -45,32 +50,13 @@ async def get_recognize_document_cmd(message: Message, state: FSMContext):
 
     file_bytes = await message.bot.download_file(file_info.file_path)
     image_b64 = base64.b64encode(file_bytes.read()).decode("utf-8")
-    result = (await api_client.recognize(base64=image_b64)).get("products", [])
 
-    if len(result) == 0:
-        await message.reply("Не удалось распознать список продуктов. Попробуй еще раз")
-        return
-
-    await state.set_state(RecognizeState.waiting_for_product_list_approval)
-    await state.update_data({"products": result})
-
-    await message.reply(f"Мы распознали такие продукты. {', '.join(result)}\n"
-                        f"Всё верно?", reply_markup=keyboard_approve_products_builder())
+    await handle_recognize(message, state, {"base64": image_b64})
 
 
 @router.message(F.text & ~F.text.startswith("/"))
 async def get_recognize_text_cmd(message: Message, state: FSMContext):
-    result = (await api_client.recognize(text=message.text)).get("products", [])
-
-    if len(result) == 0:
-        await message.reply("Не удалось распознать список продуктов. Попробуй еще раз")
-        return
-
-    await state.set_state(RecognizeState.waiting_for_product_list_approval)
-    await state.update_data({"products": result})
-
-    await message.reply(f"Мы распознали такие продукты. {', '.join(result)}\n"
-                        f"Всё верно?", reply_markup=keyboard_approve_products_builder())
+    await handle_recognize(message, state, {"text": message.text})
 
 
 @router.callback_query(RecognizeState.waiting_for_product_list_approval, ProductListCallback.filter(F.approve == False))
