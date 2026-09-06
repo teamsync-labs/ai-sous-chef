@@ -1,8 +1,11 @@
 import base64
+import json
 
+import httpx
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
+from httpx import HTTPStatusError
 
 from keyboards.product_list import ProductListCallback, keyboard_approve_products_builder
 from keyboards.recipes_list import keyboard_recipes_builder, RecipesListCallback, keyboard_recipe_back_builder
@@ -13,10 +16,20 @@ router = Router()
 
 
 async def handle_recognize(message: Message, state: FSMContext, params: dict):
-    result = (await api_client.recognize(**params)).get("products", [])
+    try:
+        result = (await api_client.recognize(**params)).get("products", [])
+    except HTTPStatusError:
+        await message.reply("Не удалось распознать список продуктов. Попробуй еще раз список/фото товаров")
+        return
+    except httpx.HTTPError:
+        await message.reply("Не удалось распознать список продуктов. Попробуй еще раз список/фото товаров")
+        return
+    except json.JSONDecodeError:
+        await message.reply("Не удалось распознать список продуктов. Попробуй еще раз список/фото товаров")
+        return
 
     if len(result) == 0:
-        await message.reply("Не удалось распознать список продуктов. Попробуй еще раз")
+        await message.reply("Не удалось распознать список продуктов. Попробуй еще раз список/фото товаров")
         return
 
     await state.set_state(RecognizeState.waiting_for_product_list_approval)
