@@ -486,6 +486,11 @@ a:hover {
   margin: -8px 0 24px;
 }
 
+.product-section > .cta-row {
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+
 .stack-list {
   display: grid;
   gap: 16px;

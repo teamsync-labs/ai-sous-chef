@@ -1777,7 +1777,7 @@
           <span class="chip">Telegram Bot API</span>
           <span class="chip">Политика и ПДн</span>
           <span class="chip">Фото или текст</span>
-          <span class="chip">/delete</span>
+          <span class="chip">/start · /help · /delete</span>
         </div>
       </div>
       <aside class="legend">
@@ -1786,6 +1786,7 @@
           <li>/start → политика: ссылка, Принимаю, Не принимаю</li>
           <li>Принимаю → согласие на ПДн</li>
           <li>Даю согласие → фото или текст</li>
+          <li>/help — справка по командам и способам ввода</li>
           <li>«Продукты распознаны» + Верно / Неверно</li>
           <li>Верно → список рецептов → шаги</li>
           <li>/delete → отзыв, снова /start</li>
@@ -1923,8 +1924,45 @@
                 <div class="tg-row bot">
                   <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
                   <div class="tg-bubble bot">
-                    Пришлите фото продуктов или список текстом.
+                    Пришлите фото продуктов или список текстом.<br /><br />
+                    Справка — <button type="button" class="tg-cmd" data-tg-go="help">/help</button>.
                     <div class="tg-meta"><span>12:37</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tg-composer">
+                <button type="button" class="attach" aria-label="Вложение">+</button>
+                <button type="button" class="input">Сообщение</button>
+                <button type="button" class="send" aria-label="Отправить">›</button>
+              </div>
+            </section>
+
+            <!-- /help -->
+            <section class="tg-screen" data-tg-screen="help">
+              <div class="tg-chat">
+                <div class="tg-day">Сегодня</div>
+                <div class="tg-row user">
+                  <div class="tg-bubble user">
+                    /help
+                    <div class="tg-meta"><span>12:38</span><span class="tg-checks">✓✓</span></div>
+                  </div>
+                </div>
+                <div class="tg-row bot">
+                  <img class="tg-avatar" src="assets/app-icon.png" alt="" width="28" height="28" />
+                  <div class="tg-bubble bot">
+                    <strong>📖 Как пользоваться</strong><br /><br />
+                    AI Sous-Chef — идеи блюд по фото или списку продуктов.<br /><br />
+                    <strong>Команды</strong><br />
+                    <button type="button" class="tg-cmd" data-tg-go="start">/start</button> — перезапустить бота и сбросить диалог<br />
+                    <button type="button" class="tg-cmd" data-tg-go="help">/help</button> — эта справка<br />
+                    <button type="button" class="tg-cmd" data-tg-go="delete">/delete</button> — отозвать согласие на ПДн<br /><br />
+                    <strong>Как отправить продукты</strong><br /><br />
+                    📸 <strong>По фото</strong><br />
+                    Сфотографируйте продукты и отправьте снимок. Держите их отдельно и хорошо видно.<br /><br />
+                    ✍️ <strong>Текстом</strong><br />
+                    Список обычным сообщением.<br />
+                    Пример: курица, картошка, лук, сметана, сыр
+                    <div class="tg-meta"><span>12:38</span></div>
                   </div>
                 </div>
               </div>
@@ -2215,6 +2253,7 @@
         <h3>Telegram (параллельный клиент)</h3>
         <ul>
           <li>/start → политика, затем согласие на ПДн; без обоих шагов фото и текст не распознаются</li>
+          <li>/help — справка: команды и способы отправить продукты</li>
           <li>кнопки документов открывают макет в телефоне, не внешнюю ссылку</li>
           <li>отказ или сбой подтверждения — стоп, снова /start</li>
           <li>/delete → отзыв согласий; /stop отзывом не является</li>
@@ -2321,7 +2360,18 @@
         blurb: "Если согласия уже выданы, /start проверяет их и сразу предлагает прислать фото или список продуктов.",
         bullets: [
           "Без обоих согласий распознавание не запускается",
+          "Справка — /help",
           "Отозвать — /delete, не Telegram /stop",
+        ],
+      },
+      {
+        id: "help",
+        name: "/help",
+        blurb: "Справка: команды бота и два способа отправить продукты — фото или текст.",
+        bullets: [
+          "Команды: /start, /help, /delete",
+          "Фото: продукты отдельно и хорошо видно",
+          "Текст: список через запятую",
         ],
       },
       {
@@ -2359,7 +2409,7 @@
       },
       {
         id: "blocked",
-        name: "Отказ",
+        name: "Без согласия",
         blurb: "Если согласия нет, любой текст или фото получают тот же ответ, что и явный отказ.",
         bullets: [
           "Тот же текст, что у отказа",
