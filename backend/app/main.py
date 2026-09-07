@@ -91,7 +91,7 @@ async def health(db: Annotated[AsyncSession, Depends(get_db)]):
     try:
         result = await db.execute(select(1))
         if result.scalar() == 1:
-            logger.info("Успешный запрос на /health")
+            # Успешный ответ не логируем в INFO, чтобы не засорять логи
             return JSONResponse({"db": "ok"})
         else:
             logger.warning("Ошибочный запрос на /health: ответ от БД отличается от 1")
