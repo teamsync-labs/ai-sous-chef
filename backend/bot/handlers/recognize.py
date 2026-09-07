@@ -78,7 +78,7 @@ async def get_not_approval_product_list(cb: CallbackQuery, callback_data: Produc
     await state.update_data({"products": None})
 
     await cb.message.answer(
-        "К сожалению, распознать продукты у нас не получилось. Попробуйте еще раз отправить список продуктов/список продуктов")
+        "К сожалению, распознать продукты у нас не получилось. Попробуйте еще раз отправить список/фото продуктов")
     await cb.message.delete()
 
 
@@ -119,7 +119,7 @@ async def get_recipe_callback(cb: CallbackQuery, callback_data: RecipesListCallb
     recipes = await state.get_value("recipes")
     if not recipes or not isinstance(recipes, list) or len(recipes) == 0 or len(
             recipes[recipe_num].get("steps", [])) == 0:
-        await cb.message.answer("Что-то пошло не так. Попробуйте еще раз")
+        await cb.message.answer("Что-то пошло не так. Попробуйте еще раз выбрать рецепт, либо отправить список/фото товаров")
         return
 
     text = ""
