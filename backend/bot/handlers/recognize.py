@@ -88,7 +88,15 @@ async def get_approval_product_list(cb: CallbackQuery, callback_data: ProductLis
     await state.set_state(RecognizeState.waiting_for_choose_recipe)
     products = await state.get_value("products", [])
 
-    result = (await api_client.get_recipes(products)).get("recipes", [])
+    try:
+        result = (await api_client.get_recipes(products)).get("recipes", [])
+    except httpx.HTTPError:
+        await cb.message.reply("Не удалось сгенерировать список рецептов. Попробуйте еще раз отправить список/фото продуктов")
+        return
+    except json.JSONDecodeError:
+        await cb.message.reply("Не удалось сгенерировать список рецептов. Попробуйте еще раз отправить список/фото продуктов")
+        return
+
     await state.update_data({"recipes": result})
 
     recipes_for_kb = [(recipe.get("title"), i) for i, recipe in enumerate(result)]
