@@ -81,9 +81,8 @@ async def get_not_approval_product_list(cb: CallbackQuery, callback_data: Produc
     await state.set_state(None)
     await state.update_data({"products": None})
 
-    await cb.message.answer(
+    await cb.message.edit_text(
         "К сожалению, распознать продукты у нас не получилось. Попробуйте еще раз отправить список/фото продуктов")
-    await cb.message.delete()
 
 
 @router.callback_query(RecognizeState.waiting_for_product_list_approval, ProductListCallback.filter(F.approve))
@@ -112,8 +111,7 @@ async def get_approval_product_list(cb: CallbackQuery, callback_data: ProductLis
 
     recipes_for_kb = [(recipe.get("title"), i) for i, recipe in enumerate(result)]
 
-    await cb.message.answer("Список рецептов: ", reply_markup=keyboard_recipes_builder(recipes_for_kb))
-    await cb.message.delete()
+    await cb.message.edit_text("Список рецептов: ", reply_markup=keyboard_recipes_builder(recipes_for_kb))
 
 
 @router.callback_query(RecognizeState.waiting_for_choose_recipe, RecipesListCallback.filter())
@@ -124,8 +122,7 @@ async def get_recipe_callback(cb: CallbackQuery, callback_data: RecipesListCallb
         result = await state.get_value("recipes", [])
         recipes_for_kb = [(recipe.get("title"), i) for i, recipe in enumerate(result)]
 
-        await cb.message.answer("Список рецептов: ", reply_markup=keyboard_recipes_builder(recipes_for_kb))
-        await cb.message.delete()
+        await cb.message.edit_text("Список рецептов: ", reply_markup=keyboard_recipes_builder(recipes_for_kb))
         return
 
     recipe_num = callback_data.recipe_num
@@ -140,8 +137,7 @@ async def get_recipe_callback(cb: CallbackQuery, callback_data: RecipesListCallb
         text += f"Шаг {i + 1}. {recipe}\n"
     text = '\n'.join(f"Шаг {i + 1}. {recipe}" for i, recipe in enumerate(recipes[recipe_num].get("steps", [])))
 
-    await cb.message.answer(text, reply_markup=keyboard_recipe_back_builder())
-    await cb.message.delete()
+    await cb.message.edit_text(text, reply_markup=keyboard_recipe_back_builder())
 
 
 @router.callback_query(ProductListCallback.filter())
