@@ -66,6 +66,7 @@ async def on_first_consent_callback(cb: CallbackQuery, callback_data: ConsentCal
         return
 
     await record_consent(external_id=str(cb.from_user.id), consent_type="privacy", action="granted")
+    await state.set_data({"is_accept_first_consent": True})
     await state.set_state(AcceptConsent.waiting_for_accept_second_consent)
     await send_second_consent_message(cb.message)
 
