@@ -19,25 +19,31 @@ logger = logging.getLogger(__name__)
 async def handle_recognize(message: Message, state: FSMContext, params: dict):
     user_id = message.from_user.id if message.from_user else None
 
+    answer_message = await message.reply("В обработке...")
+
     try:
         result = (await api_client.recognize(**params)).get("products", [])
     except httpx.HTTPError as exc:
         logger.warning("handle_recognize: user_id=%s recognize HTTP error: %s", user_id, exc)
-        await message.reply("Не удалось распознать список продуктов. Попробуй еще раз отправить список/фото продуктов")
+        await answer_message.edit_text(
+            "Не удалось распознать список продуктов. Попробуй еще раз отправить список/фото продуктов")
         return
     except json.JSONDecodeError as exc:
         logger.warning("handle_recognize: user_id=%s recognize JSON decode error: %s", user_id, exc)
-        await message.reply("Не удалось распознать список продуктов. Попробуй еще раз отправить список/фото продуктов")
+        await answer_message.edit_text(
+            "Не удалось распознать список продуктов. Попробуй еще раз отправить список/фото продуктов")
         return
 
     if len(result) == 0:
         logger.warning("handle_recognize: user_id=%s no products recognized", user_id)
-        await message.reply("Не удалось распознать список продуктов. Попробуй еще раз отправить список/фото продуктов")
+        await answer_message.edit_text(
+            "Не удалось распознать список продуктов. Попробуй еще раз отправить список/фото продуктов")
         return
 
     if not all(isinstance(r, str) for r in result):
         logger.warning("handle_recognize: user_id=%s invalid products structure: %r", user_id, result)
-        await message.reply("Не удалось распознать список продуктов. Попробуй еще раз отправить список/фото продуктов")
+        await answer_message.edit_text(
+            "Не удалось распознать список продуктов. Попробуй еще раз отправить список/фото продуктов")
         return
 
     logger.info("handle_recognize: user_id=%s products recognized, count=%d", user_id, len(result))
@@ -45,8 +51,8 @@ async def handle_recognize(message: Message, state: FSMContext, params: dict):
     await state.set_state(RecognizeState.waiting_for_product_list_approval)
     await state.update_data({"products": result})
 
-    await message.reply(f"Мы распознали такие продукты. {', '.join(result)}\n"
-                        f"Всё верно?", reply_markup=keyboard_approve_products_builder())
+    await answer_message.edit_text(f"Мы распознали такие продукты. {', '.join(result)}\n"
+                                   f"Всё верно?", reply_markup=keyboard_approve_products_builder())
 
 
 @router.message(F.photo)
@@ -104,7 +110,7 @@ async def get_not_approval_product_list(cb: CallbackQuery, callback_data: Produc
 @router.callback_query(RecognizeState.waiting_for_product_list_approval, ProductListCallback.filter(F.approve))
 async def get_approval_product_list(cb: CallbackQuery, callback_data: ProductListCallback, state: FSMContext):
     user_id = cb.from_user.id if cb.from_user else None
-    await cb.answer("Генерируем рецепты...")
+    await cb.message.edit_text("Генерируем рецепты...", reply_markup=None)
     await state.set_state(RecognizeState.waiting_for_choose_recipe)
     products = await state.get_value("products", [])
     logger.info("get_approval_product_list: user_id=%s generating recipes for %d products", user_id, len(products))
@@ -152,7 +158,8 @@ async def get_recipe_callback(cb: CallbackQuery, callback_data: RecipesListCallb
             "Что-то пошло не так. Попробуйте еще раз выбрать рецепт, либо отправить список/фото продуктов")
         return
 
-    text = '\n'.join(f"Шаг {i + 1}. {recipe}" for i, recipe in enumerate(recipes[recipe_num].get("steps", [])))
+    text = recipes[recipe_num].get("title", "Тут должно быть название рецепта") + "\n\n"
+    text += '\n'.join(f"Шаг {i + 1}. {recipe}" for i, recipe in enumerate(recipes[recipe_num].get("steps", [])))
     logger.info("get_recipe_callback: user_id=%s opened recipe num=%d", user_id, recipe_num)
 
     await cb.message.edit_text(text, reply_markup=keyboard_recipe_back_builder())
