@@ -163,7 +163,8 @@ class AIEngine(AIProtocol):
         client = AIEngine._build_client()
         try:
             logger.info(
-                "CV request: model=%s prompt=recognize/%s input_type=%s",
+                "Recognize %s request: model=%s prompt=recognize/%s input_type=%s",
+                "image" if input_type == "input_image" else "text",
                 AIEngine.MODEL_FOR_CV,
                 version,
                 input_type,
@@ -178,7 +179,9 @@ class AIEngine(AIProtocol):
             )
 
         except Exception as exc:
-            logger.error("CV request failed: model=%s input_type=%s: %s", AIEngine.MODEL_FOR_CV, input_type, exc,
+            logger.error("Recognize %s request failed: model=%s input_type=%s: %s",
+                         "image" if input_type == "input_image" else "text",
+                         AIEngine.MODEL_FOR_CV, input_type, exc,
                          exc_info=True)
             raise AIServiceUnavailableError(exc) from exc
 
@@ -194,11 +197,15 @@ class AIEngine(AIProtocol):
             )
 
         except Exception as exc:
-            logger.warning("No products in CV response: input_type=%s", input_type)
+            logger.warning("No products in recognize %s response: input_type=%s",
+                           "image" if input_type == "input_image" else "text",
+                           input_type)
             raise ProductsNotFoundError() from exc
 
         if not result.products:
-            logger.warning("No products in CV response: input_type=%s", input_type)
+            logger.warning("No products in recognize %s response: input_type=%s",
+                           "image" if input_type == "input_image" else "text",
+                           input_type)
             raise ProductsNotFoundError()
 
         return result.products
