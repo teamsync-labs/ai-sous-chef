@@ -60,6 +60,6 @@ class ConsentMiddleware(BaseMiddleware):
         await event.answer(message)
 
     def is_command_start(self, event: Message | CallbackQuery):
-        if isinstance(event, Message) and event.text.startswith("/start"):
+        if isinstance(event, Message) and (event.text.startswith("/start") or event.text.startswith("/delete")):
             return True
         return False
