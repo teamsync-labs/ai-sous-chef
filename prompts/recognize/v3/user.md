@@ -1,10 +1,10 @@
-# ФОРМАТ ОТВЕТА
+# Формат ответа
 Верни ТОЛЬКО валидный JSON без markdown-обёрток (никаких ```json).
 Схема — строго одна, без вариаций:
 
 {"products": [{"name": "string", "quantity": number|null, "unit": "шт"|"кг"|"г"|"л"|"мл"|null}], "confidence": 0.0-1.0}
 
-# ПРИМЕР ПРАВИЛЬНОГО ОТВЕТА
+# Пример правильного ответа
 {"products": [{"name": "яйца", "quantity": null, "unit": null}, {"name": "молоко", "quantity": 1, "unit": "л"}, {"name": "сыр", "quantity": null, "unit": null}], "confidence": 1}
 
 Поле confidence:
