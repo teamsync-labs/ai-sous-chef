@@ -3,7 +3,7 @@
 {"products":[{"name":"...","quantity":null,"unit":null}],"confidence":0.0-1.0}
 
 ПРИМЕР
-Вход: "купи молоко 1л, сыр, яйца, яйца"
+Вход: "молоко, сыр, яйца"
 Выход: {"products":[{"name":"молоко","quantity":1,"unit":"л"},{"name":"сыр","quantity":null,"unit":null},{"name":"яйца","quantity":null,"unit":null}],"confidence":1}
 
 Поле confidence:
