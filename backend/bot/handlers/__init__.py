@@ -6,8 +6,8 @@ from .help import router as help_router
 
 
 routers = [
-    start_router,
     delete_router,
+    start_router,
     help_router,
     recognize_router,
     other_router
