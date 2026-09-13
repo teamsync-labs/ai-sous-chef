@@ -1,10 +1,11 @@
+# ФОРМАТ ОТВЕТА
+Верни ТОЛЬКО валидный JSON без markdown-обёрток (никаких ```json).
+Схема — строго одна, без вариаций:
 
-ФОРМАТ ОТВЕТА (единственный)
-{"products":[{"name":"...","quantity":null,"unit":null}],"confidence":0.0-1.0}
+{"products": [{"name": "string", "quantity": number|null, "unit": "шт"|"кг"|"г"|"л"|"мл"|null}], "confidence": 0.0-1.0}
 
-ПРИМЕР
-Вход: "молоко, сыр, яйца"
-Выход: {"products":[{"name":"молоко","quantity":1,"unit":"л"},{"name":"сыр","quantity":null,"unit":null},{"name":"яйца","quantity":null,"unit":null}],"confidence":1}
+# ПРИМЕР ПРАВИЛЬНОГО ОТВЕТА
+{"products": [{"name": "яйца", "quantity": null, "unit": null}, {"name": "молоко", "quantity": 1, "unit": "л"}, {"name": "сыр", "quantity": null, "unit": null}], "confidence": 1}
 
 Поле confidence:
 - 1.0 — если все продукты однозначно распознаны;
@@ -13,3 +14,4 @@
 
 Входные данные:
 {{ input }}
+
