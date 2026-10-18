@@ -7,7 +7,7 @@ from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from keyboards.product_list import ProductListCallback, keyboard_approve_products_builder
+from keyboards.product_list import ProductListCallback, keyboard_approve_products_builder, ProductListAction
 from keyboards.recipes_list import keyboard_recipes_builder, RecipesListCallback, keyboard_recipe_back_builder
 from services import api_client
 from states.recognize_states import RecognizeState
@@ -96,7 +96,7 @@ async def get_recognize_text_cmd(message: Message, state: FSMContext):
     await handle_recognize(message, state, {"text": message.text})
 
 
-@router.callback_query(RecognizeState.waiting_for_product_list_approval, ProductListCallback.filter(F.approve == False))
+@router.callback_query(RecognizeState.waiting_for_product_list_approval, ProductListCallback.filter(F.action == ProductListAction.REJECT))
 async def get_not_approval_product_list(cb: CallbackQuery, callback_data: ProductListCallback, state: FSMContext):
     user_id = cb.from_user.id if cb.from_user else None
     logger.info("get_not_approval_product_list: user_id=%s products not approved", user_id)
@@ -107,7 +107,7 @@ async def get_not_approval_product_list(cb: CallbackQuery, callback_data: Produc
         "К сожалению, распознать продукты у нас не получилось. Попробуйте еще раз отправить список/фото продуктов")
 
 
-@router.callback_query(RecognizeState.waiting_for_product_list_approval, ProductListCallback.filter(F.approve))
+@router.callback_query(RecognizeState.waiting_for_product_list_approval, ProductListCallback.filter(F.action == ProductListAction.APPROVE))
 async def get_approval_product_list(cb: CallbackQuery, callback_data: ProductListCallback, state: FSMContext):
     user_id = cb.from_user.id if cb.from_user else None
     await cb.message.edit_text("Генерируем рецепты...", reply_markup=None)
