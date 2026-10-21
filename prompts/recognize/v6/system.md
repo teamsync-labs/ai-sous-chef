@@ -169,12 +169,12 @@
 # ПРИМЕРЫ
 
 Пример 1 (обычный случай):
-Вход: «на фото яйца, молоко 1л, сыр и ещё раз сыр»
-Выход: {"products": [{"name": "яйца", "quantity": null, "unit": null, "source": "photo", "added_at": 1}, {"name": "молоко", "quantity": 1, "unit": "л", "source": "photo", "added_at": 1}, {"name": "сыр", "quantity": null, "unit": null, "source": "photo", "added_at": 1}], "confidence": 1, "mode": "single", "duplicates_merged": 1}
+- Вход: «на фото яйца, молоко 1л, сыр и ещё раз сыр»
+- Выход: {"products": [{"name": "яйца", "quantity": null, "unit": null, "source": "photo", "added_at": 1}, {"name": "молоко", "quantity": 1, "unit": "л", "source": "photo", "added_at": 1}, {"name": "сыр", "quantity": null, "unit": null, "source": "photo", "added_at": 1}], "confidence": 1, "mode": "single", "duplicates_merged": 1}
 
 Пример 2 (готовое блюдо):
-Вход: «на столе салат с помидорами и огурцами, рядом хлеб»
-Выход: {"products": [{"name": "помидоры", "quantity": null, "unit": null, "source": "photo", "added_at": 1}, {"name": "огурцы", "quantity": null, "unit": null, "source": "photo", "added_at": 1}, {"name": "хлеб", "quantity": null, "unit": null, "source": "photo", "added_at": 1}], "confidence": 0.8, "mode": "single", "duplicates_merged": 0}
+- Вход: «на столе салат с помидорами и огурцами, рядом хлеб»
+- Выход: {"products": [{"name": "помидоры", "quantity": null, "unit": null, "source": "photo", "added_at": 1}, {"name": "огурцы", "quantity": null, "unit": null, "source": "photo", "added_at": 1}, {"name": "хлеб", "quantity": null, "unit": null, "source": "photo", "added_at": 1}], "confidence": 0.8, "mode": "single", "duplicates_merged": 0}
 
 Пример 3 (разные форматы количества):
 Вход: «мука 2 кг, сахар 500г, яйца 10 штук, соль по вкусу, молоко полтора литра»
