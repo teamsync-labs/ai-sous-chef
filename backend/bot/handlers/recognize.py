@@ -7,7 +7,8 @@ from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from keyboards.product_list import ProductListCallback, keyboard_approve_products_builder, ProductListAction
+from keyboards.product_list import ProductListCallback, keyboard_approve_products_builder, ProductListAction, \
+    keyboard_edit_products_builder, EditProductListPagination, EditProductListAction
 from keyboards.recipes_list import keyboard_recipes_builder, RecipesListCallback, keyboard_recipe_back_builder
 from services import api_client
 from states.recognize_states import RecognizeState
@@ -53,6 +54,24 @@ async def handle_recognize(message: Message, state: FSMContext, params: dict):
 
     await answer_message.edit_text(f"Мы распознали такие продукты. {', '.join(result)}\n"
                                    f"Всё верно?", reply_markup=keyboard_approve_products_builder())
+
+
+@router.message(RecognizeState.waiting_for_editing_product_list, F.text)
+async def get_new_product(msg: Message, state: FSMContext):
+    user_id = msg.from_user.id if msg.from_user else None
+    msg_id = await state.get_value("editing_message_id")
+    if not msg_id:
+        await msg.answer("Ошибка. Продукт не был добавлен. Попробуйте еще раз")
+        return
+
+    products = (await state.get_value("products", [])) + [msg.text]
+    await state.update_data({"products": products})
+    await msg.bot.edit_message_text(
+        message_id=msg_id,
+        chat_id=msg.chat.id,
+        text="Выберите продукты для удаления, либо напишите, какие продукты добавить",
+        reply_markup=keyboard_edit_products_builder(products))
+    logger.info("get_new_product: user_id=%s editing %d products", user_id, len(products))
 
 
 @router.message(F.photo)
@@ -107,8 +126,58 @@ async def get_not_approval_product_list(cb: CallbackQuery, callback_data: Produc
         "К сожалению, распознать продукты у нас не получилось. Попробуйте еще раз отправить список/фото продуктов")
 
 
-@router.callback_query(RecognizeState.waiting_for_product_list_approval, ProductListCallback.filter(F.action == ProductListAction.APPROVE))
-async def get_approval_product_list(cb: CallbackQuery, callback_data: ProductListCallback, state: FSMContext):
+@router.callback_query(RecognizeState.waiting_for_product_list_approval,
+                       ProductListCallback.filter(F.action == ProductListAction.EDIT))
+async def get_editing_product_list(cb: CallbackQuery, callback_data: ProductListCallback, state: FSMContext):
+    user_id = cb.from_user.id if cb.from_user else None
+    products = await state.get_value("products", [])
+    msg = await cb.message.edit_text("Выберите продукты для удаления, либо напишите, какие продукты добавить",
+                                     reply_markup=keyboard_edit_products_builder(products))
+    await state.update_data({"editing_message_id": msg.message_id})
+    print(msg.message_id)
+    await state.set_state(RecognizeState.waiting_for_editing_product_list)
+    logger.info("get_editing_product_list: user_id=%s editing %d products", user_id, len(products))
+
+
+@router.callback_query(RecognizeState.waiting_for_editing_product_list,
+                       EditProductListPagination.filter(
+                           F.action.in_([EditProductListAction.PREV, EditProductListAction.NEXT])))
+async def get_pagination_product_list(cb: CallbackQuery, callback_data: EditProductListPagination, state: FSMContext):
+    user_id = cb.from_user.id if cb.from_user else None
+    products = await state.get_value("products", [])
+    await cb.message.edit_text("Выберите продукты для удаления, либо напишите, какие продукты добавить",
+                               reply_markup=keyboard_edit_products_builder(products, page=callback_data.page))
+    await state.set_state(RecognizeState.waiting_for_editing_product_list)
+    logger.info("get_editing_product_list: user_id=%s editing %d products", user_id, len(products))
+
+
+@router.callback_query(RecognizeState.waiting_for_editing_product_list,
+                       EditProductListPagination.filter(F.action == EditProductListAction.SELECT))
+async def get_remove_product_from_list(cb: CallbackQuery, callback_data: EditProductListPagination, state: FSMContext):
+    user_id = cb.from_user.id if cb.from_user else None
+    products: list = await state.get_value("products", [])
+    if not (0 <= callback_data.index < len(products)):
+        print("ошибка")
+        return
+
+    del products[callback_data.index]
+    if len(products) == 0:
+        # TODO: Что делать, если продукты удалены? Но что если добавят позже?
+        ...
+
+    await state.update_data({"products": products})
+    await cb.message.edit_text("Выберите продукты для удаления, либо напишите, какие продукты добавить",
+                               reply_markup=keyboard_edit_products_builder(products, page=callback_data.page))
+    await state.set_state(RecognizeState.waiting_for_editing_product_list)
+    logger.info("get_editing_product_list: user_id=%s editing %d products", user_id, len(products))
+
+
+@router.callback_query(RecognizeState.waiting_for_editing_product_list,
+                       EditProductListPagination.filter(F.action == EditProductListAction.FINISH))
+@router.callback_query(RecognizeState.waiting_for_product_list_approval,
+                       ProductListCallback.filter(F.action == ProductListAction.APPROVE))
+async def get_approval_product_list(cb: CallbackQuery, callback_data: ProductListCallback | EditProductListPagination,
+                                    state: FSMContext):
     user_id = cb.from_user.id if cb.from_user else None
     await cb.message.edit_text("Генерируем рецепты...", reply_markup=None)
     await state.set_state(RecognizeState.waiting_for_choose_recipe)
