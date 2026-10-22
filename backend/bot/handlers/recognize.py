@@ -148,7 +148,7 @@ async def get_pagination_product_list(cb: CallbackQuery, callback_data: EditProd
     await cb.message.edit_text("Выберите продукты для удаления, либо напишите, какие продукты добавить",
                                reply_markup=keyboard_edit_products_builder(products, page=callback_data.page))
     await state.set_state(RecognizeState.waiting_for_editing_product_list)
-    logger.info("get_editing_product_list: user_id=%s editing %d products", user_id, len(products))
+    logger.info("get_pagination_product_list: user_id=%s editing %d products", user_id, len(products))
 
 
 @router.callback_query(RecognizeState.waiting_for_editing_product_list,
@@ -157,13 +157,16 @@ async def get_remove_product_from_list(cb: CallbackQuery, callback_data: EditPro
     user_id = cb.from_user.id if cb.from_user else None
     products: list = await state.get_value("products", [])
     if not (0 <= callback_data.index < len(products)):
-        print("ошибка")
+        await cb.message.edit_text("Что-то пошло не так, попробуйте еще раз, либо завершите работу с редактированием списка товаров")
         return
 
     del products[callback_data.index]
     if len(products) == 0:
-        # TODO: Что делать, если продукты удалены? Но что если добавят позже?
-        ...
+        await cb.message.edit_text(
+            "Список продуктов пуст. Напишите новый продукт текстом или завершите редактирование.",
+            reply_markup=keyboard_edit_products_builder(products, page=0)
+        )
+        return
 
     await state.update_data({"products": products})
     await cb.message.edit_text("Выберите продукты для удаления, либо напишите, какие продукты добавить",
