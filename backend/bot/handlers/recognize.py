@@ -81,14 +81,16 @@ async def download_file_as_base64(bot: Bot, file_id: str) -> str:
 
 @router.message(RecognizeState.waiting_for_editing_product_list, F.text)
 async def get_new_product(msg: Message, state: FSMContext):
-    user_id = msg.from_user.id if msg.from_user else None
+    user_id = msg.from_user.id
     msg_id = await state.get_value("editing_message_id")
     if not msg_id:
+        logger.warning("get_new_product: user_id=%s editing_message_id is missing", user_id)
         await msg.answer("Ошибка. Продукт не был добавлен. Попробуйте еще раз")
         return
 
     product = msg.text.strip()
     if not product:
+        logger.warning("get_new_product: user_id=%s empty product text", user_id)
         await msg.answer("Ошибка. Продукт не был добавлен. Попробуйте еще раз")
         return
 
@@ -99,7 +101,7 @@ async def get_new_product(msg: Message, state: FSMContext):
         chat_id=msg.chat.id,
         text=CHOOSE_PRODUCT,
         reply_markup=keyboard_edit_products_builder(products))
-    logger.info("get_new_product: user_id=%s editing %d products (add new product '%s'", user_id, len(products), product)
+    logger.info("get_new_product: user_id=%s editing %d products (added '%s')", user_id, len(products), product)
 
 
 @router.message(F.photo)
@@ -146,8 +148,8 @@ async def get_recognize_text_cmd(message: Message, state: FSMContext):
 @router.callback_query(RecognizeState.waiting_for_product_list_approval,
                        ProductListCallback.filter(F.action == ProductListAction.REJECT))
 async def get_not_approval_product_list(cb: CallbackQuery, callback_data: ProductListCallback, state: FSMContext):
-    user_id = cb.from_user.id if cb.from_user else None
-    logger.info("get_not_approval_product_list: user_id=%s products not approved", user_id)
+    user_id = cb.from_user.id
+    logger.info("get_not_approval_product_list: user_id=%s rejected products, state reset", user_id)
     await state.set_state(None)
     await state.update_data({"products": None})
 
@@ -158,7 +160,7 @@ async def get_not_approval_product_list(cb: CallbackQuery, callback_data: Produc
 @router.callback_query(RecognizeState.waiting_for_product_list_approval,
                        ProductListCallback.filter(F.action == ProductListAction.EDIT))
 async def get_editing_product_list(cb: CallbackQuery, callback_data: ProductListCallback, state: FSMContext):
-    user_id = cb.from_user.id if cb.from_user else None
+    user_id = cb.from_user.id
     products = await state.get_value("products", [])
     msg = await cb.message.edit_text(CHOOSE_PRODUCT,
                                      reply_markup=keyboard_edit_products_builder(products))
@@ -172,7 +174,7 @@ async def get_editing_product_list(cb: CallbackQuery, callback_data: ProductList
                        EditProductListPagination.filter(
                            F.action.in_([EditProductListAction.PREV, EditProductListAction.NEXT])))
 async def get_pagination_product_list(cb: CallbackQuery, callback_data: EditProductListPagination, state: FSMContext):
-    user_id = cb.from_user.id if cb.from_user else None
+    user_id = cb.from_user.id
     products = await state.get_value("products", [])
     await cb.message.edit_text(CHOOSE_PRODUCT,
                                reply_markup=keyboard_edit_products_builder(products, page=callback_data.page))
@@ -183,9 +185,14 @@ async def get_pagination_product_list(cb: CallbackQuery, callback_data: EditProd
 @router.callback_query(RecognizeState.waiting_for_editing_product_list,
                        EditProductListPagination.filter(F.action == EditProductListAction.SELECT))
 async def get_remove_product_from_list(cb: CallbackQuery, callback_data: EditProductListPagination, state: FSMContext):
-    user_id = cb.from_user.id if cb.from_user else None
+    user_id = cb.from_user.id
     products: list = await state.get_value("products", [])
+    if len(products) == 0:
+        logger.info("get_remove_product_from_list: user_id=%s product list emptied", user_id)
+
     if not (0 <= callback_data.index < len(products)):
+        logger.warning("get_remove_product_from_list: user_id=%s index=%d out of range for %d products", user_id,
+                       callback_data.index, len(products))
         await cb.message.edit_text(
             "Что-то пошло не так, попробуйте еще раз, либо завершите работу с редактированием списка товаров")
         return
@@ -212,11 +219,12 @@ async def get_remove_product_from_list(cb: CallbackQuery, callback_data: EditPro
                        ProductListCallback.filter(F.action == ProductListAction.APPROVE))
 async def get_approval_product_list(cb: CallbackQuery, callback_data: ProductListCallback | EditProductListPagination,
                                     state: FSMContext):
-    user_id = cb.from_user.id if cb.from_user else None
+    user_id = cb.from_user.id
     await cb.message.edit_text("Генерируем рецепты...", reply_markup=None)
     await state.set_state(RecognizeState.waiting_for_choose_recipe)
     products = await state.get_value("products", [])
-    logger.info("get_approval_product_list: user_id=%s generating recipes for %d products", user_id, len(products))
+    logger.info("get_approval_product_list: user_id=%s generating recipes for %d products from %s state", user_id,
+                len(products), (await state.get_state()))
 
     try:
         result = (await api_client.get_recipes(products)).get("recipes", [])
@@ -243,7 +251,7 @@ async def get_approval_product_list(cb: CallbackQuery, callback_data: ProductLis
 @answer_callback_once
 @router.callback_query(RecognizeState.waiting_for_choose_recipe, RecipesListCallback.filter())
 async def get_recipe_callback(cb: CallbackQuery, callback_data: RecipesListCallback, state: FSMContext):
-    user_id = cb.from_user.id if cb.from_user else None
+    user_id = cb.from_user.id
 
     if callback_data.back:
         result = await state.get_value("recipes", [])
@@ -271,7 +279,7 @@ async def get_recipe_callback(cb: CallbackQuery, callback_data: RecipesListCallb
 
 @router.callback_query(ProductListCallback.filter())
 async def reset_approval_product_list(cb: CallbackQuery, callback_data: ProductListCallback, state: FSMContext):
-    user_id = cb.from_user.id if cb.from_user else None
+    user_id = cb.from_user.id
     logger.info("reset_approval_product_list: user_id=%s stale approval button pressed", user_id)
     await state.set_state(None)
     await state.update_data({"products": [],
