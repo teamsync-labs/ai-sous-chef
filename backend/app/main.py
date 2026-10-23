@@ -6,15 +6,16 @@ from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import JSONResponse
-from sqlalchemy import select
 
+from .api import api
+from .api.consent import router as consent_router
 from .api.error_handlers import log_request_validation_error
 from .core.config import settings
 from .core.logging import setup_logging
 from .database.database import get_db
-from .api import api
 
 setup_logging(settings.LOG_LEVEL)
 
@@ -26,7 +27,7 @@ _docs_basic = HTTPBasic(auto_error=True)
 
 
 def _require_docs_basic(
-    credentials: Annotated[HTTPBasicCredentials, Depends(_docs_basic)],
+        credentials: Annotated[HTTPBasicCredentials, Depends(_docs_basic)],
 ) -> None:
     try:
         user_ok = hmac.compare_digest(credentials.username, _DOCS_USER)
@@ -51,6 +52,7 @@ app = FastAPI(
     openapi_url=None,
 )
 app.include_router(api.router)
+app.include_router(consent_router, prefix="/app/api")
 app.add_exception_handler(
     RequestValidationError,
     log_request_validation_error,
@@ -82,9 +84,9 @@ async def openapi_schema(_: Annotated[None, Depends(_require_docs_basic)]):
     "/health",
     summary="Проверка состояния сервиса",
     description=(
-        "Эндпоинт для проверки работоспособности API и доступности БД. "
-        "Используется для мониторинга и health-проверок "
-        "(например, Docker/Kubernetes)."
+            "Эндпоинт для проверки работоспособности API и доступности БД. "
+            "Используется для мониторинга и health-проверок "
+            "(например, Docker/Kubernetes)."
     ),
 )
 async def health(db: Annotated[AsyncSession, Depends(get_db)]):
