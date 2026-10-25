@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import JSONResponse
 
 from .api import api
-from .api.consent import router as consent_router
+from .api.consent.router import router as consent_router
 from .api.error_handlers import log_request_validation_error
 from .core.config import settings
 from .core.logging import setup_logging

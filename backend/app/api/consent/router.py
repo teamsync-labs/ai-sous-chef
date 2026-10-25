@@ -4,18 +4,18 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Request, Header, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .api_models import (
+from .models import (
     ConsentChannel,
     ConsentProxyResult,
     ConsentRecordInput,
     ConsentWithdrawInput,
     validate_consent_identity,
 )
-from .deps import api_key_matches
-from ..core.config import settings
-from ..database.database import get_db
-from ..services import consent_journal
-from ..services import consent_subjects
+from ..deps import api_key_matches
+from ...core.config import settings
+from ...database.database import get_db
+from ...services import consent_journal
+from ...services import consent_subjects
 
 router = APIRouter(prefix="/consent", tags=["Consent"])
 
