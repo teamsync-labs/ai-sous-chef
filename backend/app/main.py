@@ -13,6 +13,7 @@ from starlette.responses import JSONResponse
 from .api import api
 from .api.consent.router import router as consent_router
 from .api.error_handlers import log_request_validation_error
+from .api.v2.api import router as v2_router
 from .core.config import settings
 from .core.logging import setup_logging
 from .database.database import get_db
@@ -52,6 +53,7 @@ app = FastAPI(
     openapi_url=None,
 )
 app.include_router(api.router)
+app.include_router(v2_router)
 app.include_router(consent_router, prefix="/app/api")
 app.add_exception_handler(
     RequestValidationError,
