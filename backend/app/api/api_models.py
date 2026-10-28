@@ -34,4 +34,4 @@ class RecipesInput(BaseAPIModel):
 
 
 class RecipesResult(BaseAPIModel):
-    recipes: List[dict[str, str | list[str]]]
+    recipes: List[dict[str, str | list[str]]] = Field(default_factory=list)

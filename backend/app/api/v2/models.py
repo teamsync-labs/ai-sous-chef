@@ -57,4 +57,4 @@ class RecipeInput(BaseAPIModel):
 
 
 class RecipesResult(BaseAPIModel):
-    recipes: list[RecipeInput]
+    recipes: list[RecipeInput] = Field(default_factory=list)
