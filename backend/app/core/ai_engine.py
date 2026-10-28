@@ -32,26 +32,26 @@ class ProductsNotFoundError(AIServiceError):
 
 
 class AIProtocolV1(ABC):
-    @staticmethod
+    @classmethod
     @abstractmethod
-    async def recognize_products(recognize_input: RecognizeInput) -> RecognizeResult:
+    async def recognize_products(cls, recognize_input: RecognizeInput) -> RecognizeResult:
         pass
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    async def generate_recipes(recipes_input: RecipesInput) -> RecipesResult:
+    async def generate_recipes(cls, recipes_input: RecipesInput) -> RecipesResult:
         pass
 
 
 class AIProtocolV2(ABC):
-    @staticmethod
+    @classmethod
     @abstractmethod
-    async def recognize_products(recognize_input: RecognizeInputV2) -> RecognizeResultV2:
+    async def recognize_products(cls, recognize_input: RecognizeInputV2) -> RecognizeResultV2:
         pass
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    async def generate_recipes(recipes_input: RecipesInputV2) -> RecipesResultV2:
+    async def generate_recipes(cls, recipes_input: RecipesInputV2) -> RecipesResultV2:
         pass
 
 
@@ -62,11 +62,7 @@ def get_ai_engine(version="1"):
     return AIEngineV1 if version == "1" else AIEngineV2
 
 
-class AIEngineV1(AIProtocolV1):
-    """
-    TODO здесь должно выбрасываться исключение AIServiceUnavailableError в случае ошибки внешнего ИИ сервиса и ProductsNotFoundError,
-    если продукты не распознаны - ProductsNotFoundError
-    """
+class BaseAIEngine:
     AI_API_URL = "https://ai.api.cloud.yandex.net/v1"
 
     YANDEX_API_KEY = settings.YANDEX_API_KEY
@@ -75,13 +71,13 @@ class AIEngineV1(AIProtocolV1):
     MODEL_FOR_CV = f"gpt://{YANDEX_FOLDER_ID}/qwen3.6-35b-a3b/latest"
     MODEL_FOR_LLM = f"gpt://{YANDEX_FOLDER_ID}/yandexgpt/latest"
 
-    @staticmethod
-    def _build_client():
+    @classmethod
+    def _build_client(cls):
         try:
             client = AsyncOpenAI(
-                api_key=AIEngineV1.YANDEX_API_KEY,
-                base_url=AIEngineV1.AI_API_URL,
-                project=AIEngineV1.YANDEX_FOLDER_ID,
+                api_key=cls.YANDEX_API_KEY,
+                base_url=cls.AI_API_URL,
+                project=cls.YANDEX_FOLDER_ID,
             )
         except OpenAIError as exc:
             logger.error("Failed to build OpenAI client (OpenAIError): %s", exc, exc_info=True)
@@ -91,8 +87,16 @@ class AIEngineV1(AIProtocolV1):
             raise AIServiceUnavailableError(exc) from exc
         return client
 
-    @staticmethod
+
+class AIEngineV1(BaseAIEngine, AIProtocolV1):
+    """
+    TODO здесь должно выбрасываться исключение AIServiceUnavailableError в случае ошибки внешнего ИИ сервиса и ProductsNotFoundError,
+    если продукты не распознаны - ProductsNotFoundError
+    """
+
+    @classmethod
     async def _client_responses_create(
+            cls,
             prompt: str,
             input_type: str = "input_text",
     ):
@@ -113,7 +117,6 @@ class AIEngineV1(AIProtocolV1):
             )
 
         elif input_type == "input_image":
-            # Для фото вход в user.md пустой ({{ input }} → ""); картинка отдельным блоком.
             user_message = EasyInputMessageParam(
                 role="user",
                 content=[
@@ -133,17 +136,17 @@ class AIEngineV1(AIProtocolV1):
                 f"Unsupported input_type: {input_type}"
             )
 
-        client = AIEngineV1._build_client()
+        client = cls._build_client()
         try:
             logger.info(
                 "Recognize %s request: model=%s prompt=recognize/%s input_type=%s",
                 "image" if input_type == "input_image" else "text",
-                AIEngineV1.MODEL_FOR_CV,
+                cls.MODEL_FOR_CV,
                 version,
                 input_type,
             )
             response = await client.responses.create(
-                model=AIEngineV1.MODEL_FOR_CV,
+                model=cls.MODEL_FOR_CV,
                 instructions=system_prompt,
                 input=[user_message],
                 temperature=0.3,
@@ -154,7 +157,7 @@ class AIEngineV1(AIProtocolV1):
         except Exception as exc:
             logger.error("Recognize %s request failed: model=%s input_type=%s: %s",
                          "image" if input_type == "input_image" else "text",
-                         AIEngineV1.MODEL_FOR_CV, input_type, exc,
+                         cls.MODEL_FOR_CV, input_type, exc,
                          exc_info=True)
             raise AIServiceUnavailableError(exc) from exc
 
@@ -183,28 +186,27 @@ class AIEngineV1(AIProtocolV1):
 
         return result.products
 
-    @staticmethod
-    async def recognize_products(recognize_input: RecognizeInput) -> RecognizeResult:
+    @classmethod
+    async def recognize_products(cls, recognize_input: RecognizeInput) -> RecognizeResult:
         if recognize_input.img_base64 is not None:
             logger.info("Recognize request: input_type=image img_bytes=%d", len(recognize_input.img_base64))
-            products = await AIEngineV1._client_responses_create(
+            products = await cls._client_responses_create(
                 f"data:image/jpeg;base64,{base64.b64encode(recognize_input.img_base64).decode()}",
                 input_type="input_image")
             logger.info("Products recognized from image: count=%d", len(products))
             return RecognizeResult(products=products, confidence=1.0)
         if recognize_input.text is not None:
             logger.info("Recognize request: input_type=text text_len=%d", len(recognize_input.text))
-            products = await AIEngineV1._client_responses_create(recognize_input.text)
+            products = await cls._client_responses_create(recognize_input.text)
             logger.info("Products recognized from text: count=%d", len(products))
             return RecognizeResult(products=products, confidence=1.0)
         logger.warning("Invalid recognize input: neither image nor text provided")
         raise ValueError("Invalid input")
 
-    # TODO здесь должно выбрасываться исключение AIServiceUnavailableError в случае ошибки внешнего ИИ сервиса
-    @staticmethod
-    async def generate_recipes(recipes_input: RecipesInput) -> RecipesResult:
+    @classmethod
+    async def generate_recipes(cls, recipes_input: RecipesInput) -> RecipesResult:
         if recipes_input.products is not None:
-            client = AIEngineV1._build_client()
+            client = cls._build_client()
             version, system_prompt, user_message = load_prompt_pair(
                 "recipes",
                 products=", ".join(recipes_input.products),
@@ -212,12 +214,12 @@ class AIEngineV1(AIProtocolV1):
             try:
                 logger.info(
                     "LLM request: model=%s prompt=recipes/%s products=%d",
-                    AIEngineV1.MODEL_FOR_LLM,
+                    cls.MODEL_FOR_LLM,
                     version,
                     len(recipes_input.products),
                 )
                 response = await client.chat.completions.create(
-                    model=AIEngineV1.MODEL_FOR_LLM,
+                    model=cls.MODEL_FOR_LLM,
                     temperature=0.3,
                     max_tokens=1200,
                     messages=[
@@ -227,10 +229,10 @@ class AIEngineV1(AIProtocolV1):
                     reasoning_effort="none",
                     response_format=ResponseFormatJSONObject(type="json_object")
                 )
-                logger.info("Recipes generated by LLM model: model=%s prompt=recipes/%s", AIEngineV1.MODEL_FOR_LLM,
+                logger.info("Recipes generated by LLM model: model=%s prompt=recipes/%s", cls.MODEL_FOR_LLM,
                             version)
             except Exception as exc:
-                logger.error("LLM request failed: model=%s: %s", AIEngineV1.MODEL_FOR_LLM, exc, exc_info=True)
+                logger.error("LLM request failed: model=%s: %s", cls.MODEL_FOR_LLM, exc, exc_info=True)
                 raise AIServiceUnavailableError(exc) from exc
             content = response.choices[0].message.content
             try:
@@ -244,37 +246,15 @@ class AIEngineV1(AIProtocolV1):
         raise ValueError("Invalid input")
 
 
-class AIEngineV2(AIProtocolV2):
+class AIEngineV2(BaseAIEngine, AIProtocolV2):
     """
     TODO здесь должно выбрасываться исключение AIServiceUnavailableError в случае ошибки внешнего ИИ сервиса и ProductsNotFoundError,
     если продукты не распознаны - ProductsNotFoundError
     """
-    AI_API_URL = "https://ai.api.cloud.yandex.net/v1"
 
-    YANDEX_API_KEY = settings.YANDEX_API_KEY
-    YANDEX_FOLDER_ID = settings.YANDEX_FOLDER_ID
-
-    MODEL_FOR_CV = f"gpt://{YANDEX_FOLDER_ID}/qwen3.6-35b-a3b/latest"
-    MODEL_FOR_LLM = f"gpt://{YANDEX_FOLDER_ID}/yandexgpt/latest"
-
-    @staticmethod
-    def _build_client():
-        try:
-            client = AsyncOpenAI(
-                api_key=AIEngineV2.YANDEX_API_KEY,
-                base_url=AIEngineV2.AI_API_URL,
-                project=AIEngineV2.YANDEX_FOLDER_ID,
-            )
-        except OpenAIError as exc:
-            logger.error("Failed to build OpenAI client (OpenAIError): %s", exc, exc_info=True)
-            raise AIServiceUnavailableError(exc) from exc
-        except Exception as exc:
-            logger.error("Failed to build OpenAI client: %s", exc, exc_info=True)
-            raise AIServiceUnavailableError(exc) from exc
-        return client
-
-    @staticmethod
+    @classmethod
     async def _client_responses_create(
+            cls,
             prompt: str,
             input_type: str = "input_text",
     ) -> RecognizeResultV2:
@@ -314,17 +294,17 @@ class AIEngineV2(AIProtocolV2):
                 f"Unsupported input_type: {input_type}"
             )
 
-        client = AIEngineV2._build_client()
+        client = cls._build_client()
         try:
             logger.info(
                 "Recognize %s request: model=%s prompt=recognize/%s input_type=%s",
                 "image" if input_type == "input_image" else "text",
-                AIEngineV2.MODEL_FOR_CV,
+                cls.MODEL_FOR_CV,
                 version,
                 input_type,
             )
             response = await client.responses.create(
-                model=AIEngineV2.MODEL_FOR_CV,
+                model=cls.MODEL_FOR_CV,
                 instructions=system_prompt,
                 input=[user_message],
                 temperature=0.3,
@@ -335,7 +315,7 @@ class AIEngineV2(AIProtocolV2):
         except Exception as exc:
             logger.error("Recognize %s request failed: model=%s input_type=%s: %s",
                          "image" if input_type == "input_image" else "text",
-                         AIEngineV2.MODEL_FOR_CV, input_type, exc,
+                         cls.MODEL_FOR_CV, input_type, exc,
                          exc_info=True)
             raise AIServiceUnavailableError(exc) from exc
 
@@ -358,30 +338,30 @@ class AIEngineV2(AIProtocolV2):
 
         return result
 
-    @staticmethod
-    async def recognize_products(recognize_input: RecognizeInputV2) -> RecognizeResultV2:
+    @classmethod
+    async def recognize_products(cls, recognize_input: RecognizeInputV2) -> RecognizeResultV2:
         if recognize_input.img_base64 is not None:
             logger.info("Recognize request: input_type=image img_bytes=%d", len(recognize_input.img_base64))
-            result = await AIEngineV2._client_responses_create(
+            result = await cls._client_responses_create(
                 f"data:image/jpeg;base64,{base64.b64encode(recognize_input.img_base64).decode()}",
                 input_type="input_image")
             logger.info("Products recognized from image: count=%d", len(result.products))
             return result
         if recognize_input.text is not None:
             logger.info("Recognize request: input_type=text text_len=%d", len(recognize_input.text))
-            result = await AIEngineV2._client_responses_create(recognize_input.text)
+            result = await cls._client_responses_create(recognize_input.text)
             logger.info("Products recognized from text: count=%d", len(result.products))
             return result
         logger.warning("Invalid recognize input: neither image nor text provided")
         raise ValueError("Invalid input")
 
-    @staticmethod
-    async def generate_recipes(recipes_input: RecipesInputV2) -> RecipesResultV2:
+    @classmethod
+    async def generate_recipes(cls, recipes_input: RecipesInputV2) -> RecipesResultV2:
         if not recipes_input.products:
             logger.warning("Invalid recipes input: products is None")
             raise ValueError("Invalid input")
 
-        client = AIEngineV2._build_client()
+        client = cls._build_client()
         version, system_prompt, user_message = load_prompt_pair(
             "recipes",
             products=", ".join(f"{p.name} {p.quantity} {p.unit}" if p.quantity and p.unit else p.name for p in
@@ -390,12 +370,12 @@ class AIEngineV2(AIProtocolV2):
         try:
             logger.info(
                 "LLM request: model=%s prompt=recipes/%s products=%d",
-                AIEngineV2.MODEL_FOR_LLM,
+                cls.MODEL_FOR_LLM,
                 version,
                 len(recipes_input.products),
             )
             response = await client.chat.completions.create(
-                model=AIEngineV2.MODEL_FOR_LLM,
+                model=cls.MODEL_FOR_LLM,
                 temperature=0.3,
                 max_tokens=1200,
                 messages=[
@@ -405,10 +385,10 @@ class AIEngineV2(AIProtocolV2):
                 reasoning_effort="none",
                 response_format=ResponseFormatJSONObject(type="json_object")
             )
-            logger.info("Recipes generated by LLM model: model=%s prompt=recipes/%s", AIEngineV2.MODEL_FOR_LLM,
+            logger.info("Recipes generated by LLM model: model=%s prompt=recipes/%s", cls.MODEL_FOR_LLM,
                         version)
         except Exception as exc:
-            logger.error("LLM request failed: model=%s: %s", AIEngineV2.MODEL_FOR_LLM, exc, exc_info=True)
+            logger.error("LLM request failed: model=%s: %s", cls.MODEL_FOR_LLM, exc, exc_info=True)
             raise AIServiceUnavailableError(exc) from exc
         content = response.choices[0].message.content
         try:
@@ -421,18 +401,18 @@ class AIEngineV2(AIProtocolV2):
 
 
 class AIEngineStubV1(AIProtocolV1):
-    @staticmethod
-    async def recognize_products(recognize_input: RecognizeInput) -> RecognizeResult:
+    @classmethod
+    async def recognize_products(cls, recognize_input: RecognizeInput) -> RecognizeResult:
         if recognize_input.img_base64 is not None:
             return RecognizeResult(products=["base64 input"], confidence=1.0)
         if recognize_input.text is not None:
             return RecognizeResult(products=["text input"], confidence=1.0)
         raise ValueError("Invalid input")
 
-    @staticmethod
-    async def generate_recipes(recipes_input: RecipesInput) -> RecipesResult:
+    @classmethod
+    async def generate_recipes(cls, recipes_input: RecipesInput) -> RecipesResult:
         if recipes_input.products is not None:
-            return RecipesResult(recipes=AIEngineStubV1._mock_generate_recipes())
+            return RecipesResult(recipes=cls._mock_generate_recipes())
         raise ValueError("Invalid input")
 
     @staticmethod
@@ -470,8 +450,8 @@ class AIEngineStubV1(AIProtocolV1):
 
 
 class AIEngineStubV2(AIProtocolV2):
-    @staticmethod
-    async def recognize_products(recognize_input: RecognizeInputV2) -> RecognizeResultV2:
+    @classmethod
+    async def recognize_products(cls, recognize_input: RecognizeInputV2) -> RecognizeResultV2:
         if recognize_input.img_base64 is not None:
             return RecognizeResultV2.model_validate({
                 "products": [
@@ -499,11 +479,11 @@ class AIEngineStubV2(AIProtocolV2):
             })
         raise ValueError("Invalid input")
 
-    @staticmethod
-    async def generate_recipes(recipes_input: RecipesInputV2) -> RecipesResultV2:
+    @classmethod
+    async def generate_recipes(cls, recipes_input: RecipesInputV2) -> RecipesResultV2:
         if not recipes_input.products:
             raise ValueError("Invalid input")
-        return RecipesResultV2.model_validate(AIEngineStubV2._mock_generate_recipes())
+        return RecipesResultV2.model_validate(cls._mock_generate_recipes())
 
     @staticmethod
     def _mock_generate_recipes():
