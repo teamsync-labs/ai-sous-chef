@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import BaseModel, model_validator, Field
+from pydantic import BaseModel, model_validator, Field, ConfigDict
 
 
 class BaseAPIModel(BaseModel):
@@ -40,6 +40,7 @@ class Product(ProductInput):
 
 
 class RecognizeResult(BaseAPIModel):
+    model_config = ConfigDict(extra="ignore")
     products: list[Product]
     confidence: float = Field(default=0.0, ge=0, le=1.0)
     mode: Literal["single", "accumulate"] = "single"

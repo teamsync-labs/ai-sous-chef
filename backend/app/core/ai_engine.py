@@ -87,13 +87,6 @@ class BaseAIEngine:
             raise AIServiceUnavailableError(exc) from exc
         return client
 
-
-class AIEngineV1(BaseAIEngine, AIProtocolV1):
-    """
-    TODO здесь должно выбрасываться исключение AIServiceUnavailableError в случае ошибки внешнего ИИ сервиса и ProductsNotFoundError,
-    если продукты не распознаны - ProductsNotFoundError
-    """
-
     @classmethod
     async def _client_responses_create(
             cls,
@@ -162,15 +155,7 @@ class AIEngineV1(BaseAIEngine, AIProtocolV1):
             raise AIServiceUnavailableError(exc) from exc
 
         try:
-            output = response.output_text.strip()
-            data = json.loads(output)
-            result = RecognizeResult(
-                products=[
-                    product["name"] if isinstance(product, dict) else product
-                    for product in data["products"]
-                ],
-                confidence=data["confidence"],
-            )
+            result = json.loads(response.output_text.strip())
 
         except Exception as exc:
             logger.warning("No products in recognize %s response: input_type=%s",
@@ -178,30 +163,35 @@ class AIEngineV1(BaseAIEngine, AIProtocolV1):
                            input_type)
             raise ProductsNotFoundError() from exc
 
-        if not result.products:
-            logger.warning("No products in recognize %s response: input_type=%s",
-                           "image" if input_type == "input_image" else "text",
-                           input_type)
-            raise ProductsNotFoundError()
+        return result
 
-        return result.products
+
+class AIEngineV1(BaseAIEngine, AIProtocolV1):
+    """
+    TODO здесь должно выбрасываться исключение AIServiceUnavailableError в случае ошибки внешнего ИИ сервиса и ProductsNotFoundError,
+    если продукты не распознаны - ProductsNotFoundError
+    """
 
     @classmethod
     async def recognize_products(cls, recognize_input: RecognizeInput) -> RecognizeResult:
         if recognize_input.img_base64 is not None:
             logger.info("Recognize request: input_type=image img_bytes=%d", len(recognize_input.img_base64))
-            products = await cls._client_responses_create(
+            data = await cls._client_responses_create(
                 f"data:image/jpeg;base64,{base64.b64encode(recognize_input.img_base64).decode()}",
                 input_type="input_image")
-            logger.info("Products recognized from image: count=%d", len(products))
-            return RecognizeResult(products=products, confidence=1.0)
-        if recognize_input.text is not None:
+        elif recognize_input.text is not None:
             logger.info("Recognize request: input_type=text text_len=%d", len(recognize_input.text))
-            products = await cls._client_responses_create(recognize_input.text)
-            logger.info("Products recognized from text: count=%d", len(products))
-            return RecognizeResult(products=products, confidence=1.0)
-        logger.warning("Invalid recognize input: neither image nor text provided")
-        raise ValueError("Invalid input")
+            data = await cls._client_responses_create(recognize_input.text)
+        else:
+            logger.warning("Invalid recognize input: neither image nor text provided")
+            raise ValueError("Invalid input")
+
+        result = RecognizeResult.model_validate(data)
+        if not result.products:
+            logger.warning("No products in recognize response")
+            raise ProductsNotFoundError()
+        logger.info("Products recognized from text: count=%d", len(result.products))
+        return result
 
     @classmethod
     async def generate_recipes(cls, recipes_input: RecipesInput) -> RecipesResult:
@@ -253,107 +243,24 @@ class AIEngineV2(BaseAIEngine, AIProtocolV2):
     """
 
     @classmethod
-    async def _client_responses_create(
-            cls,
-            prompt: str,
-            input_type: str = "input_text",
-    ) -> RecognizeResultV2:
-        version, system_prompt, user_prompt = load_prompt_pair(
-            "recognize",
-            input=prompt if input_type == "input_text" else "",
-        )
-
-        if input_type == "input_text":
-            user_message = EasyInputMessageParam(
-                role="user",
-                content=[
-                    ResponseInputTextParam(
-                        type="input_text",
-                        text=user_prompt,
-                    )
-                ],
-            )
-
-        elif input_type == "input_image":
-            user_message = EasyInputMessageParam(
-                role="user",
-                content=[
-                    ResponseInputTextParam(
-                        type="input_text",
-                        text=user_prompt,
-                    ),
-                    ResponseInputImageParam(
-                        type="input_image",
-                        image_url=prompt,
-                    ),
-                ],
-            )
-
-        else:
-            raise ValueError(
-                f"Unsupported input_type: {input_type}"
-            )
-
-        client = cls._build_client()
-        try:
-            logger.info(
-                "Recognize %s request: model=%s prompt=recognize/%s input_type=%s",
-                "image" if input_type == "input_image" else "text",
-                cls.MODEL_FOR_CV,
-                version,
-                input_type,
-            )
-            response = await client.responses.create(
-                model=cls.MODEL_FOR_CV,
-                instructions=system_prompt,
-                input=[user_message],
-                temperature=0.3,
-                max_output_tokens=8000,
-                reasoning=Reasoning(effort="none")
-            )
-
-        except Exception as exc:
-            logger.error("Recognize %s request failed: model=%s input_type=%s: %s",
-                         "image" if input_type == "input_image" else "text",
-                         cls.MODEL_FOR_CV, input_type, exc,
-                         exc_info=True)
-            raise AIServiceUnavailableError(exc) from exc
-
-        try:
-            output = response.output_text.strip()
-            data = json.loads(output)
-            result = RecognizeResultV2.model_validate(data)
-
-        except Exception as exc:
-            logger.warning("No products in recognize %s response: input_type=%s",
-                           "image" if input_type == "input_image" else "text",
-                           input_type)
-            raise ProductsNotFoundError() from exc
-
-        if not result.products:
-            logger.warning("No products in recognize %s response: input_type=%s",
-                           "image" if input_type == "input_image" else "text",
-                           input_type)
-            raise ProductsNotFoundError()
-
-        return result
-
-    @classmethod
     async def recognize_products(cls, recognize_input: RecognizeInputV2) -> RecognizeResultV2:
         if recognize_input.img_base64 is not None:
             logger.info("Recognize request: input_type=image img_bytes=%d", len(recognize_input.img_base64))
-            result = await cls._client_responses_create(
+            data = await cls._client_responses_create(
                 f"data:image/jpeg;base64,{base64.b64encode(recognize_input.img_base64).decode()}",
                 input_type="input_image")
-            logger.info("Products recognized from image: count=%d", len(result.products))
-            return result
-        if recognize_input.text is not None:
+        elif recognize_input.text is not None:
             logger.info("Recognize request: input_type=text text_len=%d", len(recognize_input.text))
-            result = await cls._client_responses_create(recognize_input.text)
-            logger.info("Products recognized from text: count=%d", len(result.products))
-            return result
-        logger.warning("Invalid recognize input: neither image nor text provided")
-        raise ValueError("Invalid input")
+            data = await cls._client_responses_create(recognize_input.text)
+        else:
+            logger.warning("Invalid recognize input: neither image nor text provided")
+            raise ValueError("Invalid input")
+        result = RecognizeResultV2.model_validate(data)
+        if not result.products:
+            logger.warning("No products in recognize response")
+            raise ProductsNotFoundError()
+        logger.info("Products recognized from text: count=%d", len(result.products))
+        return result
 
     @classmethod
     async def generate_recipes(cls, recipes_input: RecipesInputV2) -> RecipesResultV2:

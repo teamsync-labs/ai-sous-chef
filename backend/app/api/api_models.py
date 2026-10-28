@@ -1,5 +1,6 @@
 from typing import Optional, List
-from pydantic import BaseModel, model_validator, Base64Bytes
+
+from pydantic import BaseModel, model_validator, ConfigDict, Field
 
 
 class BaseAPIModel(BaseModel):
@@ -8,7 +9,7 @@ class BaseAPIModel(BaseModel):
 
 class RecognizeInput(BaseAPIModel):
     text: Optional[str] = None
-    img_base64: Optional[Base64Bytes] = None
+    img_base64: Optional[bytes] = None
 
     @model_validator(mode='after')
     def check_only_one_not_null(self) -> 'RecognizeInput':
@@ -23,8 +24,9 @@ class RecognizeInput(BaseAPIModel):
 
 
 class RecognizeResult(BaseAPIModel):
+    model_config = ConfigDict(extra="ignore")
     products: List[str]
-    confidence: float
+    confidence: float = Field(default=0.0, ge=0, le=1.0)
 
 
 class RecipesInput(BaseAPIModel):
@@ -33,4 +35,3 @@ class RecipesInput(BaseAPIModel):
 
 class RecipesResult(BaseAPIModel):
     recipes: List[dict[str, str | list[str]]]
-
