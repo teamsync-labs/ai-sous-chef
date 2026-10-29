@@ -67,9 +67,9 @@ def test_same_telegram_id_maps_to_same_journal_subject():
     _, fake = _memory_mapping()
     captured: list[str] = []
     with (
-        patch("app.api.api.consent_subjects.get_or_create_id", new=fake),
+        patch("app.services.consent_subjects.get_or_create_id", new=fake),
         patch(
-            "app.api.api.consent_journal.record_consent",
+            "app.services.consent_journal.record_consent",
             new=AsyncMock(return_value={"id": "evt"}),
         ) as journal,
     ):
@@ -108,9 +108,9 @@ def test_same_telegram_id_maps_to_same_journal_subject():
 def test_app_channel_maps_install_id():
     _, fake = _memory_mapping()
     with (
-        patch("app.api.api.consent_subjects.get_or_create_id", new=fake),
+        patch("app.services.consent_subjects.get_or_create_id", new=fake),
         patch(
-            "app.api.api.consent_journal.record_consent",
+            "app.services.consent_journal.record_consent",
             new=AsyncMock(return_value={"id": "evt"}),
         ) as journal,
     ):
@@ -134,9 +134,9 @@ def test_app_channel_maps_install_id():
 def test_bot_and_app_are_not_merged():
     _, fake = _memory_mapping()
     with (
-        patch("app.api.api.consent_subjects.get_or_create_id", new=fake),
+        patch("app.services.consent_subjects.get_or_create_id", new=fake),
         patch(
-            "app.api.api.consent_journal.record_consent",
+            "app.services.consent_journal.record_consent",
             new=AsyncMock(return_value={"id": "evt"}),
         ) as journal,
     ):
@@ -168,11 +168,11 @@ def test_bot_and_app_are_not_merged():
 def test_site_does_not_use_mapping_table():
     with (
         patch(
-            "app.api.api.consent_subjects.get_or_create_id",
+            "app.services.consent_subjects.get_or_create_id",
             new=AsyncMock(),
         ) as mapped,
         patch(
-            "app.api.api.consent_journal.record_consent",
+            "app.services.consent_journal.record_consent",
             new=AsyncMock(return_value={"id": "evt"}),
         ) as journal,
     ):
