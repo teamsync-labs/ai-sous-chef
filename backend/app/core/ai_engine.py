@@ -8,6 +8,7 @@ from openai import AsyncOpenAI, OpenAIError
 from ..api.api_models import RecipesResult, RecognizeResult, RecipesInput, RecognizeInput
 
 from ..core.config import settings
+from .log_safe import truncate_for_log
 from ..core.prompts_loader import load_prompt_pair
 from openai import AsyncOpenAI
 from openai.types.chat import ChatCompletionSystemMessageParam, ChatCompletionUserMessageParam
@@ -263,7 +264,12 @@ class AIEngine(AIProtocol):
             try:
                 recipes = json.loads(content)
             except json.JSONDecodeError as exc:
-                logger.error("Failed to parse recipes JSON (%s) from model response: %s", content, exc)
+                logger.error(
+                    "Failed to parse recipes JSON. content_len=%d, preview=%s, error=%s",
+                    len(content) if content else 0,
+                    truncate_for_log(content),
+                    type(exc).__name__,
+                )
                 raise AIServiceError(exc) from exc
             logger.info("Recipes parsed successfully: count=%d", len(recipes.get("recipes", [])))
             return RecipesResult(recipes=recipes.get("recipes", []))
