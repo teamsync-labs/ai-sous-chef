@@ -7,11 +7,11 @@ from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from keyboards.product_list import ProductListCallback, keyboard_approve_products_builder, ProductListAction, \
+from ..keyboards.product_list import ProductListCallback, keyboard_approve_products_builder, ProductListAction, \
     keyboard_edit_products_builder, EditProductListPagination, EditProductListAction
-from keyboards.recipes_list import keyboard_recipes_builder, RecipesListCallback, keyboard_recipe_back_builder
-from services import api_client
-from states.recognize_states import RecognizeState
+from ..keyboards.recipes_list import keyboard_recipes_builder, RecipesListCallback, keyboard_recipe_back_builder
+from ..services import api_client
+from ..states.recognize_states import RecognizeState
 
 router = Router()
 logger = logging.getLogger(__name__)
@@ -40,22 +40,18 @@ async def handle_recognize(message: Message, state: FSMContext, params: dict):
 
     answer_message = await message.reply("В обработке...")
 
-    result = [
-        "Молоко", "Мясо", "Яйца", "Сыр", "Хлеб", "Картошка", "Кефир"
-    ]
-
-    # try:
-    #     result = (await api_client.recognize(**params)).get("products", [])
-    # except httpx.HTTPError as exc:
-    #     logger.warning("handle_recognize: user_id=%s recognize HTTP error: %s", user_id, exc)
-    #     await answer_message.edit_text(
-    #         "Не удалось распознать список продуктов. Попробуй еще раз отправить список/фото продуктов")
-    #     return
-    # except json.JSONDecodeError as exc:
-    #     logger.warning("handle_recognize: user_id=%s recognize JSON decode error: %s", user_id, exc)
-    #     await answer_message.edit_text(
-    #         "Не удалось распознать список продуктов. Попробуй еще раз отправить список/фото продуктов")
-    #     return
+    try:
+        result = (await api_client.recognize(**params)).get("products", [])
+    except httpx.HTTPError as exc:
+        logger.warning("handle_recognize: user_id=%s recognize HTTP error: %s", user_id, exc)
+        await answer_message.edit_text(
+            "Не удалось распознать список продуктов. Попробуй еще раз отправить список/фото продуктов")
+        return
+    except json.JSONDecodeError as exc:
+        logger.warning("handle_recognize: user_id=%s recognize JSON decode error: %s", user_id, exc)
+        await answer_message.edit_text(
+            "Не удалось распознать список продуктов. Попробуй еще раз отправить список/фото продуктов")
+        return
 
     if len(result) == 0:
         logger.warning("handle_recognize: user_id=%s no products recognized", user_id)
