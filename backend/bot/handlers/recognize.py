@@ -175,123 +175,128 @@ async def get_editing_product_list(cb: CallbackQuery, callback_data: ProductList
     logger.info("get_editing_product_list: user_id=%s page=%d products %d",
                 user_id, 0, len(products))
 
-    @answer_callback_once
-    @router.callback_query(RecognizeState.waiting_for_editing_product_list,
-                           EditProductListPagination.filter(
-                               F.action.in_([EditProductListAction.PREV, EditProductListAction.NEXT])))
-    async def get_pagination_product_list(cb: CallbackQuery, callback_data: EditProductListPagination,
-                                          state: FSMContext):
-        user_id = cb.from_user.id
-        products = await state.get_value("products", [])
-        await cb.message.edit_text(CHOOSE_PRODUCT,
-                                   reply_markup=keyboard_edit_products_builder(products, page=callback_data.page))
-        logger.info("get_pagination_product_list: user_id=%s page=%d products %d", user_id, callback_data.page,
-                    len(products))
 
-    @answer_callback_once
-    @router.callback_query(RecognizeState.waiting_for_editing_product_list,
-                           EditProductListPagination.filter(F.action == EditProductListAction.SELECT))
-    async def get_remove_product_from_list(cb: CallbackQuery, callback_data: EditProductListPagination,
-                                           state: FSMContext):
-        user_id = cb.from_user.id
-        products: list = await state.get_value("products", [])
+@answer_callback_once
+@router.callback_query(RecognizeState.waiting_for_editing_product_list,
+                       EditProductListPagination.filter(
+                           F.action.in_([EditProductListAction.PREV, EditProductListAction.NEXT])))
+async def get_pagination_product_list(cb: CallbackQuery, callback_data: EditProductListPagination,
+                                      state: FSMContext):
+    user_id = cb.from_user.id
+    products = await state.get_value("products", [])
+    await cb.message.edit_text(CHOOSE_PRODUCT,
+                               reply_markup=keyboard_edit_products_builder(products, page=callback_data.page))
+    logger.info("get_pagination_product_list: user_id=%s page=%d products %d", user_id, callback_data.page,
+                len(products))
 
-        if not (0 <= callback_data.index < len(products)):
-            logger.warning("get_remove_product_from_list: user_id=%s index=%d out of range for %d products", user_id,
-                           callback_data.index, len(products))
-            await cb.message.edit_text(
-                "Что-то пошло не так, попробуйте еще раз, либо завершите работу с редактированием списка товаров")
-            return
 
-        products = products.copy()
-        del products[callback_data.index]
-        if len(products) == 0:
-            logger.info("get_remove_product_from_list: user_id=%s product list emptied", user_id)
-            await cb.message.edit_text(
-                "Список продуктов пуст. Напишите новый продукт текстом или завершите редактирование.",
-                reply_markup=keyboard_edit_products_builder(products, page=0)
-            )
-            return
+@answer_callback_once
+@router.callback_query(RecognizeState.waiting_for_editing_product_list,
+                       EditProductListPagination.filter(F.action == EditProductListAction.SELECT))
+async def get_remove_product_from_list(cb: CallbackQuery, callback_data: EditProductListPagination,
+                                       state: FSMContext):
+    user_id = cb.from_user.id
+    products: list = await state.get_value("products", [])
 
-        await state.update_data({"products": products})
-        await cb.message.edit_text(CHOOSE_PRODUCT,
-                                   reply_markup=keyboard_edit_products_builder(products, page=callback_data.page))
-        logger.info("get_remove_product_from_list: user_id=%s page=%d products %d", user_id, callback_data.page,
-                    len(products))
+    if not (0 <= callback_data.index < len(products)):
+        logger.warning("get_remove_product_from_list: user_id=%s index=%d out of range for %d products", user_id,
+                       callback_data.index, len(products))
+        await cb.message.edit_text(
+            "Что-то пошло не так, попробуйте еще раз, либо завершите работу с редактированием списка товаров")
+        return
 
-    @answer_callback_once
-    @router.callback_query(RecognizeState.waiting_for_editing_product_list,
-                           EditProductListPagination.filter(F.action == EditProductListAction.FINISH))
-    @router.callback_query(RecognizeState.waiting_for_product_list_approval,
-                           ProductListCallback.filter(F.action == ProductListAction.APPROVE))
-    async def get_approval_product_list(cb: CallbackQuery,
-                                        callback_data: ProductListCallback | EditProductListPagination,
-                                        state: FSMContext):
-        user_id = cb.from_user.id
-        await cb.message.edit_text("Генерируем рецепты...", reply_markup=None)
-        await state.set_state(RecognizeState.waiting_for_choose_recipe)
-        products = await state.get_value("products", [])
-        logger.info("get_approval_product_list: user_id=%s generating recipes for %d products from %s state", user_id,
-                    len(products), (await state.get_state()))
+    products = products.copy()
+    del products[callback_data.index]
+    if len(products) == 0:
+        logger.info("get_remove_product_from_list: user_id=%s product list emptied", user_id)
+        await cb.message.edit_text(
+            "Список продуктов пуст. Напишите новый продукт текстом или завершите редактирование.",
+            reply_markup=keyboard_edit_products_builder(products, page=0)
+        )
+        return
 
-        try:
-            result = (await api_client.get_recipes(products)).get("recipes", [])
-        except httpx.HTTPError as exc:
-            logger.warning("get_approval_product_list: user_id=%s recipes HTTP error: %s", user_id, exc)
-            await cb.message.reply(ERROR_RECIPES)
-            return
-        except json.JSONDecodeError as exc:
-            logger.warning("get_approval_product_list: user_id=%s recipes JSON decode error: %s", user_id, exc)
-            await cb.message.reply(ERROR_RECIPES)
-            return
-        except Exception as exc:
-            logger.warning("get_approval_product_list: user_id=%s recipes error: %s", user_id, exc, exc_info=True)
-            await cb.message.reply(ERROR_RECIPES)
-            return
+    await state.update_data({"products": products})
+    await cb.message.edit_text(CHOOSE_PRODUCT,
+                               reply_markup=keyboard_edit_products_builder(products, page=callback_data.page))
+    logger.info("get_remove_product_from_list: user_id=%s page=%d products %d", user_id, callback_data.page,
+                len(products))
 
-        logger.info("get_approval_product_list: user_id=%s recipes generated, count=%d", user_id, len(result))
-        await state.update_data({"recipes": result})
+
+@answer_callback_once
+@router.callback_query(RecognizeState.waiting_for_editing_product_list,
+                       EditProductListPagination.filter(F.action == EditProductListAction.FINISH))
+@router.callback_query(RecognizeState.waiting_for_product_list_approval,
+                       ProductListCallback.filter(F.action == ProductListAction.APPROVE))
+async def get_approval_product_list(cb: CallbackQuery,
+                                    callback_data: ProductListCallback | EditProductListPagination,
+                                    state: FSMContext):
+    user_id = cb.from_user.id
+    await cb.message.edit_text("Генерируем рецепты...", reply_markup=None)
+    await state.set_state(RecognizeState.waiting_for_choose_recipe)
+    products = await state.get_value("products", [])
+    logger.info("get_approval_product_list: user_id=%s generating recipes for %d products from %s state", user_id,
+                len(products), (await state.get_state()))
+
+    try:
+        result = (await api_client.get_recipes(products)).get("recipes", [])
+    except httpx.HTTPError as exc:
+        logger.warning("get_approval_product_list: user_id=%s recipes HTTP error: %s", user_id, exc)
+        await cb.message.reply(ERROR_RECIPES)
+        return
+    except json.JSONDecodeError as exc:
+        logger.warning("get_approval_product_list: user_id=%s recipes JSON decode error: %s", user_id, exc)
+        await cb.message.reply(ERROR_RECIPES)
+        return
+    except Exception as exc:
+        logger.warning("get_approval_product_list: user_id=%s recipes error: %s", user_id, exc, exc_info=True)
+        await cb.message.reply(ERROR_RECIPES)
+        return
+
+    logger.info("get_approval_product_list: user_id=%s recipes generated, count=%d", user_id, len(result))
+    await state.update_data({"recipes": result})
+
+    await cb.message.edit_text("Список рецептов: ",
+                               reply_markup=keyboard_recipes_builder(_recipes_for_kb(result)))
+
+
+@answer_callback_once
+@router.callback_query(RecognizeState.waiting_for_choose_recipe, RecipesListCallback.filter())
+async def get_recipe_callback(cb: CallbackQuery, callback_data: RecipesListCallback, state: FSMContext):
+    user_id = cb.from_user.id
+
+    if callback_data.back:
+        result = await state.get_value("recipes", [])
+        logger.info("get_recipe_callback: user_id=%s back to recipes list", user_id)
 
         await cb.message.edit_text("Список рецептов: ",
                                    reply_markup=keyboard_recipes_builder(_recipes_for_kb(result)))
+        return
 
-    @answer_callback_once
-    @router.callback_query(RecognizeState.waiting_for_choose_recipe, RecipesListCallback.filter())
-    async def get_recipe_callback(cb: CallbackQuery, callback_data: RecipesListCallback, state: FSMContext):
-        user_id = cb.from_user.id
+    recipe_num = callback_data.recipe_num
+    recipes = await state.get_value("recipes", [])
+    if not recipes or len(recipes) == 0 or recipe_num >= len(recipes) or len(
+            recipes[recipe_num].get("steps", [])) == 0:
+        logger.warning("get_recipe_callback: user_id=%s invalid recipe selection num=%d total=%d",
+                       user_id, recipe_num, len(recipes))
+        await cb.message.answer(
+            "Что-то пошло не так. Попробуйте еще раз выбрать рецепт, либо отправить список/фото продуктов")
+        return
 
-        if callback_data.back:
-            result = await state.get_value("recipes", [])
-            logger.info("get_recipe_callback: user_id=%s back to recipes list", user_id)
+    text = recipes[recipe_num].get("title", "Тут должно быть название рецепта") + "\n\n"
+    text += '\n'.join(f"Шаг {i + 1}. {recipe}" for i, recipe in enumerate(recipes[recipe_num].get("steps", [])))
+    logger.info("get_recipe_callback: user_id=%s opened recipe num=%d", user_id, recipe_num)
 
-            await cb.message.edit_text("Список рецептов: ",
-                                       reply_markup=keyboard_recipes_builder(_recipes_for_kb(result)))
-            return
+    await cb.message.edit_text(text, reply_markup=keyboard_recipe_back_builder())
 
-        recipe_num = callback_data.recipe_num
-        recipes = await state.get_value("recipes", [])
-        if not recipes or len(recipes) == 0 or recipe_num >= len(recipes) or len(
-                recipes[recipe_num].get("steps", [])) == 0:
-            logger.warning("get_recipe_callback: user_id=%s invalid recipe selection num=%d total=%d",
-                           user_id, recipe_num, len(recipes))
-            await cb.message.answer(
-                "Что-то пошло не так. Попробуйте еще раз выбрать рецепт, либо отправить список/фото продуктов")
-            return
 
-        text = recipes[recipe_num].get("title", "Тут должно быть название рецепта") + "\n\n"
-        text += '\n'.join(f"Шаг {i + 1}. {recipe}" for i, recipe in enumerate(recipes[recipe_num].get("steps", [])))
-        logger.info("get_recipe_callback: user_id=%s opened recipe num=%d", user_id, recipe_num)
+@router.callback_query(ProductListCallback.filter())
+async def reset_approval_product_list(cb: CallbackQuery, callback_data: ProductListCallback, state: FSMContext):
+    user_id = cb.from_user.id
+    logger.info("reset_approval_product_list: user_id=%s stale approval button pressed", user_id)
+    await state.set_state(None)
+    await state.update_data({"products": [],
+                             "recipes": [],
+                             "editing_message_id": None})
 
-        await cb.message.edit_text(text, reply_markup=keyboard_recipe_back_builder())
-
-    @router.callback_query(ProductListCallback.filter())
-    async def reset_approval_product_list(cb: CallbackQuery, callback_data: ProductListCallback, state: FSMContext):
-        user_id = cb.from_user.id
-        logger.info("reset_approval_product_list: user_id=%s stale approval button pressed", user_id)
-        await state.set_state(None)
-        await state.update_data({"products": [],
-                                 "recipes": [],
-                                 "editing_message_id": None})
-
-        await cb.answer(text="Эта кнопка устарела")
-        await cb.message.delete()
+    await cb.answer(text="Эта кнопка устарела")
+    await cb.message.delete()
