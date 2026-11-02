@@ -44,7 +44,7 @@ def teardown_function():
 def test_record_consent_proxies_to_journal():
     recorded = {"id": "evt-1"}
     with patch(
-        "app.api.api.consent_journal.record_consent",
+        "app.services.consent_journal.record_consent",
         new=AsyncMock(return_value=recorded),
     ) as mocked:
         response = client.post("/app/api/consent", headers=_SITE_HEADERS, json=_RECORD)
@@ -61,11 +61,11 @@ def test_record_pdn_granted():
     mapped_id = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
     with (
         patch(
-            "app.api.api.consent_subjects.get_or_create_id",
+            "app.services.consent_subjects.get_or_create_id",
             new=AsyncMock(return_value=mapped_id),
         ),
         patch(
-            "app.api.api.consent_journal.record_consent",
+            "app.services.consent_journal.record_consent",
             new=AsyncMock(return_value={"id": "evt-pdn"}),
         ) as mocked,
     ):
@@ -90,11 +90,11 @@ def test_latest_consent_check():
     latest = {"latest": {"action": "granted"}}
     with (
         patch(
-            "app.api.api.consent_subjects.get_or_create_id",
+            "app.services.consent_subjects.get_or_create_id",
             new=AsyncMock(return_value=mapped_id),
         ),
         patch(
-            "app.api.api.consent_journal.latest_consent",
+            "app.services.consent_journal.latest_consent",
             new=AsyncMock(return_value=latest),
         ) as mocked,
     ):
@@ -121,15 +121,15 @@ def test_withdraw_with_erase():
     withdrawn = {"withdrawn": [{"id": "evt-2"}]}
     with (
         patch(
-            "app.api.api.consent_subjects.get_id",
+            "app.services.consent_subjects.get_id",
             new=AsyncMock(return_value=mapped_id),
         ),
         patch(
-            "app.api.api.consent_journal.withdraw_consent",
+            "app.services.consent_journal.withdraw_consent",
             new=AsyncMock(return_value=withdrawn),
         ) as mocked,
         patch(
-            "app.api.api.consent_subjects.delete_by_channel_external",
+            "app.services.consent_subjects.delete_by_channel_external",
             new=AsyncMock(return_value=True),
         ) as deleted,
     ):
@@ -154,15 +154,15 @@ def test_withdraw_with_erase():
 def test_withdraw_without_mapping_is_ok_and_skips_journal():
     with (
         patch(
-            "app.api.api.consent_subjects.get_id",
+            "app.services.consent_subjects.get_id",
             new=AsyncMock(return_value=None),
         ),
         patch(
-            "app.api.api.consent_journal.withdraw_consent",
+            "app.services.consent_journal.withdraw_consent",
             new=AsyncMock(),
         ) as mocked,
         patch(
-            "app.api.api.consent_subjects.delete_by_channel_external",
+            "app.services.consent_subjects.delete_by_channel_external",
             new=AsyncMock(),
         ) as deleted,
     ):
@@ -183,7 +183,7 @@ def test_withdraw_without_mapping_is_ok_and_skips_journal():
 
 def test_journal_error_returns_502():
     with patch(
-        "app.api.api.consent_journal.record_consent",
+        "app.services.consent_journal.record_consent",
         new=AsyncMock(side_effect=ConsentJournalError(
             "journal_error", status_code=401)),
     ):
@@ -194,7 +194,7 @@ def test_journal_error_returns_502():
 
 def test_bot_consent_without_key_is_401():
     with patch(
-        "app.api.api.consent_journal.record_consent",
+        "app.services.consent_journal.record_consent",
         new=AsyncMock(),
     ) as mocked:
         response = client.post(
@@ -212,7 +212,7 @@ def test_bot_consent_without_key_is_401():
 
 def test_bot_consent_rejects_app_key():
     with patch(
-        "app.api.api.consent_journal.record_consent",
+        "app.services.consent_journal.record_consent",
         new=AsyncMock(),
     ) as mocked:
         response = client.post(
@@ -233,11 +233,11 @@ def test_app_consent_requires_app_key():
     mapped_id = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
     with (
         patch(
-            "app.api.api.consent_subjects.get_or_create_id",
+            "app.services.consent_subjects.get_or_create_id",
             new=AsyncMock(return_value=mapped_id),
         ),
         patch(
-            "app.api.api.consent_journal.record_consent",
+            "app.services.consent_journal.record_consent",
             new=AsyncMock(return_value={"id": "evt-app"}),
         ) as mocked,
     ):
@@ -257,7 +257,7 @@ def test_app_consent_requires_app_key():
 
 def test_site_consent_without_key_is_401():
     with patch(
-        "app.api.api.consent_journal.record_consent",
+        "app.services.consent_journal.record_consent",
         new=AsyncMock(),
     ) as mocked:
         response = client.post("/app/api/consent", json=_RECORD)
@@ -267,7 +267,7 @@ def test_site_consent_without_key_is_401():
 
 def test_site_consent_rejects_app_key():
     with patch(
-        "app.api.api.consent_journal.record_consent",
+        "app.services.consent_journal.record_consent",
         new=AsyncMock(),
     ) as mocked:
         response = client.post(
