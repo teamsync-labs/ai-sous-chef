@@ -54,6 +54,12 @@ async def start_cmd(message: Message, state: FSMContext):
             "Вы уже прошли регистрацию. Для отзыва согласия на обработку персональных данных /delete")
         return
 
+    current = await state.get_state()
+    if current == AcceptConsent.waiting_for_accept_second_consent.state:
+        # Первое согласие уже дано — не откатываем пользователя назад.
+        await send_second_consent_message(message)
+        return
+
     await state.set_state(AcceptConsent.waiting_for_accept_first_consent)
     await send_first_consent_message(message)
 
