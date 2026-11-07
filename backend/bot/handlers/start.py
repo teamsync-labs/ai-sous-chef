@@ -5,9 +5,9 @@ from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from ..keyboards.consent import keyboard_consent_builder, ConsentCallback
-from ..services.api_client import record_consent
-from ..states.accept_states import AcceptConsent
+from keyboards.consent import keyboard_consent_builder, ConsentCallback
+from services.api_client import record_consent
+from states.accept_states import AcceptConsent
 
 router = Router()
 

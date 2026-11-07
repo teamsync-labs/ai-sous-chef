@@ -7,11 +7,11 @@ from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from ..keyboards.product_list import ProductListCallback, keyboard_approve_products_builder, ProductListAction, \
+from keyboards.product_list import ProductListCallback, keyboard_approve_products_builder, ProductListAction, \
     keyboard_edit_products_builder, EditProductListPagination, EditProductListAction
-from ..keyboards.recipes_list import keyboard_recipes_builder, RecipesListCallback, keyboard_recipe_back_builder
-from ..services import api_client
-from ..states.recognize_states import RecognizeState
+from keyboards.recipes_list import keyboard_recipes_builder, RecipesListCallback, keyboard_recipe_back_builder
+from services import api_client
+from states.recognize_states import RecognizeState
 
 router = Router()
 logger = logging.getLogger(__name__)
