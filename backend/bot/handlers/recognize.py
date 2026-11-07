@@ -35,32 +35,23 @@ def answer_callback_once(func):
     return wrapper
 
 
+async def fetch_recognized_products(params: dict) -> list[str]:
+    response = await api_client.recognize(**params)
+    result = response.get("products", [])
+    return result
+
+
 async def handle_recognize(message: Message, state: FSMContext, params: dict):
     user_id = message.from_user.id
 
     answer_message = await message.reply("В обработке...")
 
     try:
-        result = (await api_client.recognize(**params)).get("products", [])
-    except httpx.HTTPError as exc:
-        logger.warning("handle_recognize: user_id=%s recognize HTTP error: %s", user_id, exc)
+        result = await fetch_recognized_products(params)
+    except (httpx.HTTPError, json.JSONDecodeError) as exc:
+        logger.warning("handle_recognize: user_id=%s recognize failed: %s", user_id, exc)
         await answer_message.edit_text(
             "Не удалось распознать список продуктов. Попробуй еще раз отправить список/фото продуктов")
-        return
-    except json.JSONDecodeError as exc:
-        logger.warning("handle_recognize: user_id=%s recognize JSON decode error: %s", user_id, exc)
-        await answer_message.edit_text(
-            "Не удалось распознать список продуктов. Попробуй еще раз отправить список/фото продуктов")
-        return
-
-    if len(result) == 0:
-        logger.warning("handle_recognize: user_id=%s no products recognized", user_id)
-        await answer_message.edit_text(ERROR_RECOGNIZE)
-        return
-
-    if not all(isinstance(r, str) for r in result):
-        logger.warning("handle_recognize: user_id=%s invalid products structure: %r", user_id, result)
-        await answer_message.edit_text(ERROR_RECOGNIZE)
         return
 
     logger.info("handle_recognize: user_id=%s products recognized, count=%d", user_id, len(result))
@@ -228,8 +219,19 @@ async def get_approval_product_list(cb: CallbackQuery,
                                     state: FSMContext):
     user_id = cb.from_user.id
     await cb.message.edit_text("Генерируем рецепты...", reply_markup=None)
-    await state.set_state(RecognizeState.waiting_for_choose_recipe)
+
     products = await state.get_value("products", [])
+
+    if isinstance(callback_data, EditProductListPagination):
+        try:
+            products = await fetch_recognized_products({"text": ", ".join(products)})
+        except (httpx.HTTPError, json.JSONDecodeError):
+            logger.warning("get_approval_product_list: user_id=%s recognize failed", user_id, exc_info=True)
+            await cb.message.reply(ERROR_RECIPES)
+            return
+
+    await state.set_state(RecognizeState.waiting_for_choose_recipe)
+
     logger.info("get_approval_product_list: user_id=%s generating recipes for %d products from %s state", user_id,
                 len(products), (await state.get_state()))
 
