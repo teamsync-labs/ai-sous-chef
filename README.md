@@ -93,3 +93,7 @@ curl -fsS http://localhost:8080/health
 ```
 
 Статический сайт можно открыть напрямую: `frontend/index.html`.
+
+## Лицензия
+
+Проект распространяется под лицензией [GNU AGPL v3.0](LICENSE).
