@@ -262,7 +262,13 @@ class AIEngineV1(BaseAIEngine, AIProtocolV1):
 
     @classmethod
     def _build_recognize_result(cls, data: dict) -> RecognizeResult:
-        return RecognizeResult.model_validate(data)
+        # Модель часто отдаёт объекты {name, quantity, unit} вместо строк (см. v2-схему).
+        products = data.get("products") or []
+        normalized = [
+            product["name"] if isinstance(product, dict) else product
+            for product in products
+        ]
+        return RecognizeResult.model_validate({**data, "products": normalized})
 
     @classmethod
     def _build_recipes_result(cls, data: dict) -> RecipesResult:
