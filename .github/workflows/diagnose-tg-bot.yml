@@ -57,6 +57,7 @@ jobs:
 
               echo ""
               echo "===== TG_PROXY_URL ====="
+              docker exec "$BOT_ID" sh -c 'echo "${TG_PROXY_URL:-}"'
 
               docker exec "$BOT_ID" sh -c '
                 if [ -n "${TG_PROXY_URL:-}" ]; then
