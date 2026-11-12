@@ -1,0 +1,76 @@
+name: Diagnose TG Bot
+
+on: workflow_dispatch
+
+permissions:
+  contents: read
+
+concurrency:
+  group: diagnose_tg_bot
+  cancel-in-progress: false
+
+jobs:
+  diagnose:
+    name: Diagnose TG Bot
+    runs-on: ubuntu-latest
+    environment: prod
+    timeout-minutes: 5
+
+    steps:
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "${{ vars.SERVER_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Diagnose containers
+        run: |
+          ssh -o StrictHostKeyChecking=yes \
+            "${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }}" \
+            bash << 'EOF'
+
+          set -euo pipefail
+
+          cd "${{ vars.SERVER_PATH }}" || exit 1
+
+          COMPOSE_PROJECT_NAME="${{ vars.COMPOSE_PROJECT_NAME }}"
+          COMPOSE="docker compose -p ${COMPOSE_PROJECT_NAME} -f docker-compose.yml -f docker-compose.prod.yml"
+
+          echo "===== CONTAINERS ====="
+          $COMPOSE ps -a
+
+          echo ""
+          echo "===== BOT STATUS ====="
+
+          BOT_ID=$($COMPOSE ps -q bot)
+
+          if [ -z "$BOT_ID" ]; then
+              echo "Bot container не найден"
+          else
+              docker inspect "$BOT_ID" \
+                --format='Status={{.State.Status}} ExitCode={{.State.ExitCode}} RestartCount={{.RestartCount}} Error={{.State.Error}} StartedAt={{.State.StartedAt}}'
+
+              echo ""
+              echo "===== TG_PROXY_URL ====="
+
+              docker exec "$BOT_ID" sh -c '
+                if [ -n "${TG_PROXY_URL:-}" ]; then
+                    echo "TG_PROXY_URL настроен"
+                else
+                    echo "TG_PROXY_URL отсутствует"
+                fi
+              '
+
+              echo ""
+              echo "===== BOT LOGS ====="
+              docker logs --tail=150 "$BOT_ID" 2>&1
+          fi
+
+          echo ""
+
+          EOF
