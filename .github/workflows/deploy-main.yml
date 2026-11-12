@@ -114,7 +114,7 @@ jobs:
           HEALTHCHECK_URL: ${{ steps.meta.outputs.healthcheck_url }}
           DATA_PATH: ${{ vars.DATA_PATH }}
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          TG_PROXY_URL: ${{ secrets.TG_PROXY_URL }}
+          TG_PROXY_URL: ${{ secrets.TG_PROXY_URL2 }}
           AI_MODE: ${{ vars.AI_MODE }}
           YANDEX_API_KEY: ${{ secrets.YANDEX_API_KEY }}
           YANDEX_FOLDER_ID: ${{ secrets.YANDEX_FOLDER_ID }}
