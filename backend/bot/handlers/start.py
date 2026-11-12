@@ -1,10 +1,9 @@
 import os
 
 from aiogram import Router, F
+from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
-
-from aiogram.filters import CommandStart
 
 from keyboards.consent import keyboard_consent_builder, ConsentCallback
 from services.api_client import record_consent
