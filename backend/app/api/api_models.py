@@ -1,15 +1,46 @@
-from typing import Optional, List
+import base64
+from typing import Optional, List, Any
 
-from pydantic import BaseModel, model_validator, ConfigDict, Field
+from pydantic import BaseModel, model_validator, ConfigDict, Field, field_validator
 
 
 class BaseAPIModel(BaseModel):
     pass
 
 
+def coerce_img_base64(value: Any) -> Any:
+    """JSON/ASCII base64 → сырые байты изображения; готовый JPEG/PNG/WebP не трогаем."""
+    if value is None:
+        return None
+    if isinstance(value, str):
+        s = value.strip()
+        if s.startswith("data:") and "," in s:
+            s = s.split(",", 1)[1]
+        return base64.b64decode(s)
+    if isinstance(value, (bytes, bytearray, memoryview)):
+        raw = bytes(value)
+        if (
+            raw.startswith(b"\xff\xd8\xff")
+            or raw.startswith(b"\x89PNG")
+            or raw.startswith(b"RIFF")
+        ):
+            return raw
+        # FastAPI/Pydantic иногда отдают base64-строку уже как utf-8 bytes («/9j/...»).
+        if raw[:4] in (b"/9j/", b"iVBO", b"UklG"):
+            return base64.b64decode(raw)
+        return raw
+    return value
+
+
 class RecognizeInput(BaseAPIModel):
     text: Optional[str] = None
+    # Клиенты шлют JSON-строку base64; без coerce оставался ASCII «/9j/...» → double-encode в engine.
     img_base64: Optional[bytes] = None
+
+    @field_validator("img_base64", mode="before")
+    @classmethod
+    def _coerce_img_base64(cls, value: Any) -> Any:
+        return coerce_img_base64(value)
 
     @model_validator(mode='after')
     def check_only_one_not_null(self) -> 'RecognizeInput':

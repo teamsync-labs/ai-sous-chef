@@ -1,6 +1,8 @@
-from typing import Literal
+from typing import Any, Literal
 
-from pydantic import BaseModel, model_validator, Field, ConfigDict
+from pydantic import BaseModel, model_validator, Field, ConfigDict, field_validator
+
+from ..api_models import coerce_img_base64
 
 
 class BaseAPIModel(BaseModel):
@@ -10,6 +12,11 @@ class BaseAPIModel(BaseModel):
 class RecognizeInput(BaseAPIModel):
     text: str | None = None
     img_base64: bytes | None = None
+
+    @field_validator("img_base64", mode="before")
+    @classmethod
+    def _coerce_img_base64(cls, value: Any) -> Any:
+        return coerce_img_base64(value)
 
     @model_validator(mode='after')
     def check_only_one_not_null(self) -> 'RecognizeInput':
