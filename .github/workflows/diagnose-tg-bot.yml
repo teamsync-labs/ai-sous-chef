@@ -56,6 +56,10 @@ jobs:
                 --format='Status={{.State.Status}} ExitCode={{.State.ExitCode}} RestartCount={{.RestartCount}} Error={{.State.Error}} StartedAt={{.State.StartedAt}}'
 
               echo ""
+              echo "===== BOT LOGS ====="
+              docker logs --tail=150 "$BOT_ID" 2>&1
+
+              echo ""
               echo "===== TG_PROXY_URL ====="
               docker exec "$BOT_ID" sh -c 'echo "${TG_PROXY_URL:-}"'
 
@@ -66,12 +70,6 @@ jobs:
                     echo "TG_PROXY_URL отсутствует"
                 fi
               '
-
-              echo ""
-              echo "===== BOT LOGS ====="
-              docker logs --tail=150 "$BOT_ID" 2>&1
           fi
-
-          echo ""
 
           EOF
